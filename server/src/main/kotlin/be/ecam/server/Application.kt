@@ -1,8 +1,14 @@
 package be.ecam.server
 
+// Database
+import be.ecam.server.db.DatabaseFactory
+
+// Functions
 import be.ecam.common.Greeting
 import be.ecam.common.api.HelloResponse
 import be.ecam.common.api.ScheduleItem
+
+// Ktor
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -18,12 +24,22 @@ import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+
 import java.io.File
 import java.nio.file.Paths
+
+
+// ====================== Main ==========================
+
 
 fun main(args: Array<String>) {
     // Start Ktor with configuration from application.conf (HTTP)
     EngineMain.main(args)
+
+
+    DatabaseFactory.init()
+
+
 }
 
 fun Application.module() {
@@ -78,6 +94,9 @@ fun Application.module() {
             }
         }
 
+
+
+//        route(path= "/")Greeting
         route("/api") {
             get("/") {
                 call.respondText("Ktor: ${Greeting().greet()}")
