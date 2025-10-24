@@ -2,13 +2,13 @@ package be.ecam.server.db
 
 import org.jetbrains.exposed.sql.Database    // Imports Exposed’s Database object which manages the JDBC connection for Exposed (the JetBrains SQL library).
 
-
-
+// DAO Schema
 import be.ecam.server.models.AdminTable
+
+// DAO Class
 import be.ecam.server.models.Admin
 
 
-import be.ecam.server.services.AdminService
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -19,25 +19,31 @@ import java.io.File
 
 object DatabaseFactory {
     fun connect() {
-        Database.connect("jdbc:sqlite:data/school.db", driver = "org.sqlite.JDBC")
-        println("Connected to SQLite database.")
 
-        transaction {
-//            SchemaUtils.createMissingTablesAndColumns(AdminTable)
-            SchemaUtils.create(AdminTable)
-            println("✅ AdminTable created.")
+        val dbFolder = File("data")
+        if (!dbFolder.exists()){
+            dbFolder.mkdirs()
+            println("Created data directory")
         }
 
+        // Get DB file path
+        val dbPath = File(dbFolder, "sqlite.db").absolutePath
 
 
+        Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
+        println("Connected to SQLite database, path is : $dbPath")
+
+//        transaction {
+////            SchemaUtils.createMissingTablesAndColumns(AdminTable)
+//            SchemaUtils.create(AdminTable)
+//
+//        }
 
     }
 
     fun initDb() {
-//        transaction {
-//            SchemaUtils.create(Students)
-//        }
         initMockData()
+
     }
 
 
@@ -47,6 +53,7 @@ object DatabaseFactory {
 
         transaction {
             SchemaUtils.create(AdminTable)
+            println("✅ AdminTable created.")
 
             if (Admin.all().empty()) {
                 Admin.new {
