@@ -7,3 +7,8 @@ data class HelloResponse(val message: String)
 
 @Serializable
 data class ScheduleItem(val title: String)
+
+
+
+
+

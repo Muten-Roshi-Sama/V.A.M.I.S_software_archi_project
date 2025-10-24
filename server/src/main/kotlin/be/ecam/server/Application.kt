@@ -22,12 +22,14 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 fun main(args: Array<String>) {
     // Start Ktor with configuration from application.conf (HTTP)
     EngineMain.main(args)  // Starts the Ktor web server, also loads Application.module() down here
-
-    DatabaseFactory.init()
 }
 
 fun Application.module() {
     install(ContentNegotiation) { json() }   // Uses Ktor's Serialization when sending/receiving JSON's
+
+    // ------- Database ---------
+    DatabaseFactory.connect()
+    DatabaseFactory.initDb()
 
 
     // ----------- ROUTES ----------
