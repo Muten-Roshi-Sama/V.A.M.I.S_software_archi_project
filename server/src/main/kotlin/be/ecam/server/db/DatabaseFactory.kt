@@ -7,6 +7,11 @@ import be.ecam.server.models.AdminTable
 
 // DAO Class
 import be.ecam.server.models.Admin
+import be.ecam.common.api.AdminDTO
+
+// DAO Services
+import be.ecam.server.services.AdminService
+
 
 
 import kotlinx.serialization.decodeFromString
@@ -14,9 +19,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
-
-
-
+// ====================================================================
 object DatabaseFactory {
     fun connect() {
 
@@ -42,30 +45,55 @@ object DatabaseFactory {
     }
 
     fun initDb() {
-        initMockData()
+        initAdmins()
 
     }
 
 
 // ===========================================================================
-    private fun initMockData() {
+    private fun initAdmins() {
+        //
 
+        val file = File("server/src/main/resources/data/admin.json")
+            if (!file.exists()) {
+                println("⚠️ No mock data file found at ${file.path}")
+                return
+            }
 
         transaction {
             SchemaUtils.create(AdminTable)
             println("✅ AdminTable created.")
-
-            if (Admin.all().empty()) {
-                Admin.new {
-                    username = "admin"
-                    password = "1234"
-                    email = "admin@example.com"
-                }
-                println("✅ Mock admin created.")
-            } else {
-                println("ℹ️ Admin table already contains data.")
             }
+//            if (Admin.all().empty()) {
+//                // Read JSON file
+//                val jsonString = file.readText()
+//                val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+//
+//                // Insert each DTO as a DAO entity
+//
+//
+//
+//                println("✅ Mock admin created.")
+//            } else {
+//                println("ℹ️ Admin table already contains data.")
+//            }
 
+    // Use service for business logic
+    val service = AdminService()
+    val existing = service.getAll()
+
+    if (existing.isEmpty()) {
+        val jsonString = file.readText()
+        val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+
+        adminDTOs.forEach { dto ->
+            service.create(dto)  // ← Service handles DTO → DAO conversion
+        }
+
+        println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
+    } else {
+        println("ℹ️ Admin table already contains ${existing.size} admins.")
+    }
 
             // ✅ DEBUG: Print all admins in DB
             println("=== Current Admins in DB ===")
@@ -77,44 +105,6 @@ object DatabaseFactory {
 
         }
 
-
-//        val file = File("server/src/main/resources/data/admin.json")
-//        if (!file.exists()) {
-//            println("⚠️ No mock data file found at ${file.path}")
-//            return
-//        }
-//
-//
-//
-//
-//        val jsonString = file.readText()
-//        val admins = Json.decodeFromString<List<AdminDTO>>(jsonString)
-//        val service = AdminService()
-
-
-
-//        val existing = service.getAll()
-//        if (existing.isEmpty()) {
-//            admins.forEach {
-//                service.insert(
-//                    be.ecam.server.models.Admin(
-//                        username = it.username,
-//                        password = it.password,
-//                        email = it.email
-//                    )
-//                )
-//            }
-//            println("✅ Inserted ${admins.size} mock admins.")
-//        } else {
-//            println("ℹ️ Admins table already populated.")
-//        }
-    }
-
-    @kotlinx.serialization.Serializable
-    private data class AdminDTO(
-        val username: String,
-        val password: String,
-        val email: String
-    )
-
 }
+
+

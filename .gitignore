@@ -17,6 +17,10 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
-# Server folder
+# Server
 server/bin/
 server/data/
+
+# Shared
+shared/bin/
+shared/data/
