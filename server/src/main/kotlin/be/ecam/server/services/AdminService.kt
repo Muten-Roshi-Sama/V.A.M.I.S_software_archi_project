@@ -30,12 +30,13 @@ class AdminService {
         val admin = Admin.new {
             username = dto.username
             email = dto.email
-            password = "default123" // or hash a provided password
+            password = dto.password ?: "default123"  // Use provided password or fallback
         }
         AdminDTO(
             id = admin.id.value,
             username = admin.username,
-            email = admin.email
+            email = admin.email,
+            password = null  // Never send password back to client
         )
     }
 

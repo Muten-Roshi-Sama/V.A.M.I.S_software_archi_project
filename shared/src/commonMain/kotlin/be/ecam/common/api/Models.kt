@@ -17,7 +17,8 @@ data class ScheduleItem(val title: String)
 data class AdminDTO(
     val id: Int? = null,
     val username: String,
-    val email: String
+    val email: String,
+    val password: String? = null
 )
 
 

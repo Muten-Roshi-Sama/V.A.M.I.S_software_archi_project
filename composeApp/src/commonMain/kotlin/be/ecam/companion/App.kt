@@ -90,7 +90,29 @@ fun App(extraModules: List<Module> = emptyList()) {
                     ) {
                         when (selectedScreen) {
                             BottomItem.HOME -> {
-                                LaunchedEffect(Unit) { vm.load() }
+                                val repository = koinInject<be.ecam.companion.data.ApiRepository>()  // Get it here
+
+
+                                LaunchedEffect(Unit) {
+                                    vm.load()
+
+                                    // TEST: Fetch admins and print to console
+                                    try {
+                                        val admins = repository.fetchAdmins()
+                                        println("✅ ADMINS FETCHED: $admins")
+                                        admins.forEach { admin ->
+                                            println("   ID: ${admin.id}, Username: ${admin.username}, Email: ${admin.email}")
+                                        }
+                                    } catch (e: Exception) {
+                                        println("❌ ERROR FETCHING ADMINS: ${e.message}")
+                                        e.printStackTrace()
+                                    }
+
+
+                                }
+
+
+
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
                                         text = selectedScreen.getLabel(),

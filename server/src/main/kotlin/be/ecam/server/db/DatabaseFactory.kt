@@ -46,65 +46,136 @@ object DatabaseFactory {
 
     fun initDb() {
         initAdmins()
+//        initTeachers()
 
     }
 
 
 // ===========================================================================
-    private fun initAdmins() {
-        //
+//    private fun initAdmins() {
+//        //
+//
+//        val file = File("server/src/main/resources/data/admin.json")
+//            if (!file.exists()) {
+//                println("⚠️ No mock data file found at ${file.path}")
+//                return
+//            }
+//
+//        transaction {
+//            SchemaUtils.createMissingTablesAndColumns(AdminTable)
+//            println("✅ AdminTable created.")
+//            }
+////            if (Admin.all().empty()) {
+////                // Read JSON file
+////                val jsonString = file.readText()
+////                val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+////
+////                // Insert each DTO as a DAO entity
+////
+////
+////
+////                println("✅ Mock admin created.")
+////            } else {
+////                println("ℹ️ Admin table already contains data.")
+////            }
+//
+//    // Use service for business logic
+//    val service = AdminService()
+//    val existing = service.getAll()
+//
+//    if (existing.isEmpty()) {
+//        val jsonString = file.readText()
+//        val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+//
+//        adminDTOs.forEach { dto ->
+//            service.create(dto)  // ← Service handles DTO → DAO conversion
+//        }
+//
+//        println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
+//    } else {
+//        println("ℹ️ Admin table already contains ${existing.size} admins.")
+//    }
+//
+//            // ✅ DEBUG: Print all admins in DB
+//            println("=== Current Admins in DB ===")
+//            for (admin in Admin.all()) {
+//                println("ID=${admin.id.value} | username=${admin.username} | email=${admin.email}")
+//            }
+//            println("============================")
+//
+//
+//        }
+//
+//}
 
-        val file = File("server/src/main/resources/data/admin.json")
-            if (!file.exists()) {
-                println("⚠️ No mock data file found at ${file.path}")
+    private fun initAdmins() {
+        // Try multiple possible paths for the JSON file
+        val possiblePaths = listOf(
+            "server/src/main/resources/data/admin.json",  // When running from project root
+            "src/main/resources/data/admin.json",         // When running from server directory
+            "data/admin.json"                              // Alternative location
+        )
+
+        val adminFile = possiblePaths
+            .map { File(it) }
+            .firstOrNull { it.exists() }
+
+        if (adminFile == null) {
+            // Try loading from classpath as fallback
+            val resourceStream = this::class.java.classLoader.getResourceAsStream("data/admin.json")
+            if (resourceStream != null) {
+                val jsonString = resourceStream.bufferedReader().use { it.readText() }
+                processAdminData(jsonString)
                 return
             }
 
-        transaction {
-            SchemaUtils.create(AdminTable)
-            println("✅ AdminTable created.")
-            }
-//            if (Admin.all().empty()) {
-//                // Read JSON file
-//                val jsonString = file.readText()
-//                val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
-//
-//                // Insert each DTO as a DAO entity
-//
-//
-//
-//                println("✅ Mock admin created.")
-//            } else {
-//                println("ℹ️ Admin table already contains data.")
-//            }
-
-    // Use service for business logic
-    val service = AdminService()
-    val existing = service.getAll()
-
-    if (existing.isEmpty()) {
-        val jsonString = file.readText()
-        val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
-
-        adminDTOs.forEach { dto ->
-            service.create(dto)  // ← Service handles DTO → DAO conversion
+            println("⚠️ No mock data file found. Tried paths:")
+            possiblePaths.forEach { println("   - $it") }
+            println("   - classpath: data/admin.json")
+            return
         }
 
-        println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
-    } else {
-        println("ℹ️ Admin table already contains ${existing.size} admins.")
+        println("📂 Loading admin data from: ${adminFile.absolutePath}")
+        val jsonString = adminFile.readText()
+        processAdminData(jsonString)
     }
 
-            // ✅ DEBUG: Print all admins in DB
-            println("=== Current Admins in DB ===")
-            for (admin in Admin.all()) {
-                println("ID=${admin.id.value} | username=${admin.username} | email=${admin.email}")
+    private fun processAdminData(jsonString: String) {
+        transaction {
+            // Use create() instead of createMissingTablesAndColumns()
+            // This will only work on first run; on subsequent runs it will throw an exception we'll catch
+            try {
+                SchemaUtils.create(AdminTable)
+                println("✅ AdminTable created.")
+            } catch (e: Exception) {
+                // Table already exists, which is fine
+                println("ℹ️ AdminTable already exists.")
             }
-            println("============================")
-
-
         }
 
+        // Use service for business logic
+        val service = AdminService()
+        val existing = service.getAll()
+
+        if (existing.isEmpty()) {
+            val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+
+            adminDTOs.forEach { dto ->
+                service.create(dto)  // ← Service handles DTO → DAO conversion
+            }
+
+            println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
+
+            // ✅ DEBUG: Print all admins in DB
+            transaction {
+                println("=== Current Admins in DB ===")
+                for (admin in Admin.all()) {
+                    println("ID=${admin.id.value} | username=${admin.username} | email=${admin.email}")
+                }
+                println("============================")
+            }
+        } else {
+            println("ℹ️ Admin table already contains ${existing.size} admins.")
+        }
+    }
 }
-
-
