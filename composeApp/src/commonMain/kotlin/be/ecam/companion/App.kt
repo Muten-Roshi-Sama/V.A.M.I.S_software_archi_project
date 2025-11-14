@@ -15,8 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.ecam.companion.data.SettingsRepository
 import be.ecam.companion.di.appModule
-import be.ecam.companion.ui.CalendarScreen
-import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.viewmodel.HomeViewModel
 import companion.composeapp.generated.resources.Res
 import companion.composeapp.generated.resources.calendar
@@ -28,121 +26,164 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.Module
 
+// Import ui
+import be.ecam.companion.ui.ListAdmins
+import be.ecam.companion.ui.Screen
+//import be.ecam.companion.ui.AppTopBar
+//import be.ecam.companion.ui.AppBottomBar
+import be.ecam.companion.ui.HomeScreen
+import be.ecam.companion.ui.CalendarScreen
+import be.ecam.companion.ui.SettingsScreen
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(extraModules: List<Module> = emptyList()) {
     KoinApplication(application = { modules(appModule + extraModules) }) {
         val vm = koinInject<HomeViewModel>()
+
+
         MaterialTheme {
-            var selectedScreen by remember { mutableStateOf(BottomItem.HOME) }
+
+            // inside your KoinApplication -> MaterialTheme -> content
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
+
             ModalNavigationDrawer(
                 drawerState = drawerState,
-                gesturesEnabled = selectedScreen != BottomItem.CALENDAR,
-                drawerContent = {
-                    ModalDrawerSheet(modifier = Modifier.width(280.dp)) {
-                        Text("Drawer content here")
-                    }
-                }
+                drawerContent = { /* small drawer */ }
             ) {
                 Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { Text(selectedScreen.getLabel()) },
-                            navigationIcon = {
-                                if (selectedScreen != BottomItem.CALENDAR) {
-                                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                        Icon(Icons.Filled.Menu, contentDescription = "Open drawer")
-                                    }
-                                }
-                            }
-                        )
-                    },
-                    bottomBar = {
-                        NavigationBar {
-                            BottomItem.entries.forEach { item ->
-                                NavigationBarItem(
-                                    selected = selectedScreen == item,
-                                    onClick = { selectedScreen = item },
-                                    icon = {
-                                        Icon(
-                                            item.getIconRes(),
-                                            contentDescription = item.getLabel()
-                                        )
-                                    },
-                                    label = { Text(item.getLabel()) },
-                                    alwaysShowLabel = true
-                                )
-                            }
-                        }
-                    }
-                ) { paddingValues ->
-                    // Main content area
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)
-                            .padding(16.dp)
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        when (selectedScreen) {
-                            BottomItem.HOME -> {
-                                val repository = koinInject<be.ecam.companion.data.ApiRepository>()  // Get it here
-
-
-                                LaunchedEffect(Unit) {
-                                    vm.load()
-
-                                    // TEST: Fetch admins and print to console
-                                    try {
-                                        val admins = repository.fetchAdmins()
-                                        println("✅ ADMINS FETCHED: $admins")
-                                        admins.forEach { admin ->
-                                            println("   ID: ${admin.id}, Username: ${admin.username}, Email: ${admin.email}")
-                                        }
-                                    } catch (e: Exception) {
-                                        println("❌ ERROR FETCHING ADMINS: ${e.message}")
-                                        e.printStackTrace()
-                                    }
-
-
-                                }
+//                    topBar = { AppTopBar(title = currentScreen.key.capitalize()) { scope.launch { drawerState.open() } } },
+//                    bottomBar = { AppBottomBar(selected = currentScreen) { currentScreen = it } }
+                ) { padding ->
+                    Box(modifier = Modifier.padding(padding)) {
+                        when (currentScreen) {
+                            is Screen.Home -> HomeScreen(onOpenAdmins = { currentScreen = Screen.ListAdmins })
+                            is Screen.Calendar -> CalendarScreen(modifier = Modifier.fillMaxSize(), scheduledByDate = vm.scheduledByDate)
+                            is Screen.Settings -> SettingsScreen(repo = koinInject(), onSaved = { vm.load() })
+                            is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
 
 
 
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        text = selectedScreen.getLabel(),
-                                        style = MaterialTheme.typography.titleLarge
-                                    )
-                                    Spacer(Modifier.height(12.dp))
-                                    if (vm.lastErrorMessage.isNotEmpty()) {
-                                        Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
-                                        Spacer(Modifier.height(8.dp))
-                                    }
-                                    Text(vm.helloMessage)
-                                }
-                            }
 
-                            BottomItem.CALENDAR -> {
-                                LaunchedEffect(Unit) { vm.load() }
-                                CalendarScreen(
-                                    modifier = Modifier.fillMaxSize(),
-                                    scheduledByDate = vm.scheduledByDate
-                                )
-                            }
 
-                            BottomItem.SETTINGS -> {
-                                val settingsRepo = koinInject<SettingsRepository>()
-                                SettingsScreen(repo = settingsRepo, onSaved = { scope.launch {vm.load()} })
-                            }
                         }
                     }
                 }
             }
+
+
+
+//            var selectedScreen by remember { mutableStateOf(BottomItem.HOME) }
+//            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+//            val scope = rememberCoroutineScope()
+//            ModalNavigationDrawer(
+//                drawerState = drawerState,
+//                gesturesEnabled = selectedScreen != BottomItem.CALENDAR,
+//                drawerContent = {
+//                    ModalDrawerSheet(modifier = Modifier.width(280.dp)) {
+//                        Text("Drawer content here")
+//                    }
+//                }
+//            ) {
+//                Scaffold(
+//                    topBar = {
+//                        TopAppBar(
+//                            title = { Text(selectedScreen.getLabel()) },
+//                            navigationIcon = {
+//                                if (selectedScreen != BottomItem.CALENDAR) {
+//                                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+//                                        Icon(Icons.Filled.Menu, contentDescription = "Open drawer")
+//                                    }
+//                                }
+//                            }
+//                        )
+//                    },
+//                    bottomBar = {
+//                        NavigationBar {
+//                            BottomItem.entries.forEach { item ->
+//                                NavigationBarItem(
+//                                    selected = selectedScreen == item,
+//                                    onClick = { selectedScreen = item },
+//                                    icon = {
+//                                        Icon(
+//                                            item.getIconRes(),
+//                                            contentDescription = item.getLabel()
+//                                        )
+//                                    },
+//                                    label = { Text(item.getLabel()) },
+//                                    alwaysShowLabel = true
+//                                )
+//                            }
+//                        }
+//                    }
+//                ) { paddingValues ->
+//                    // Main content area
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(paddingValues)
+//                            .padding(16.dp)
+//                            .verticalScroll(rememberScrollState()),
+//                        verticalArrangement = Arrangement.Top,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        when (selectedScreen) {
+//                            BottomItem.HOME -> {
+//                                val repository = koinInject<be.ecam.companion.data.ApiRepository>()  // Get it here
+//
+//
+//                                LaunchedEffect(Unit) {
+//                                    vm.load()
+//
+//                                    // TEST: Fetch admins and print to console
+//                                    try {
+//                                        val admins = repository.fetchAdmins()
+//                                        println("✅ ADMINS FETCHED: $admins")
+//                                        admins.forEach { admin ->
+//                                            println("   ID: ${admin.id}, Username: ${admin.username}, Email: ${admin.email}")
+//                                        }
+//                                    } catch (e: Exception) {
+//                                        println("❌ ERROR FETCHING ADMINS: ${e.message}")
+//                                        e.printStackTrace()
+//                                    }
+//
+//
+//                                }
+//
+//
+//
+//                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                    Text(
+//                                        text = selectedScreen.getLabel(),
+//                                        style = MaterialTheme.typography.titleLarge
+//                                    )
+//                                    Spacer(Modifier.height(12.dp))
+//                                    if (vm.lastErrorMessage.isNotEmpty()) {
+//                                        Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
+//                                        Spacer(Modifier.height(8.dp))
+//                                    }
+//                                    Text(vm.helloMessage)
+//                                }
+//                            }
+//
+//                            BottomItem.CALENDAR -> {
+//                                LaunchedEffect(Unit) { vm.load() }
+//                                CalendarScreen(
+//                                    modifier = Modifier.fillMaxSize(),
+//                                    scheduledByDate = vm.scheduledByDate
+//                                )
+//                            }
+//
+//                            BottomItem.SETTINGS -> {
+//                                val settingsRepo = koinInject<SettingsRepository>()
+//                                SettingsScreen(repo = settingsRepo, onSaved = { scope.launch {vm.load()} })
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 }

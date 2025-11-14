@@ -26,6 +26,7 @@ class KtorApiRepository(
 
     // ========== version prof ===========
     override suspend fun fetchHello(): HelloResponse {
+        println("baseUrl" + baseUrl())
         return client.get("${baseUrl()}/api/hello").body()
     }
 
