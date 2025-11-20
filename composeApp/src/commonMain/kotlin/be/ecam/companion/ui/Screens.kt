@@ -5,5 +5,5 @@ sealed class Screen(val key: String) {
     object Calendar : Screen("calendar")
     object Settings : Screen("settings")
     object ListAdmins : Screen("admins")
-//    Object SettingsScreen
+    object DataStudents : Screen("dataStudents")
 }

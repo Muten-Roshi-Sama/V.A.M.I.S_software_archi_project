@@ -10,25 +10,30 @@ import org.koin.compose.koinInject
 import be.ecam.companion.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(onOpenAdmins: () -> Unit) {
+fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Home", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
+
         if (vm.lastErrorMessage.isNotEmpty()) {
             Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
             Spacer(Modifier.height(8.dp))
         }
-        Button(onClick = onOpenAdmins) {
-            Text("Open Admins List")
+
+        Button(onClick = onOpenAdmins) { Text("Open Admins List") }
+        Spacer(Modifier.height(12.dp))
+
+        //When you click → the onOpenStudents() function is called(Which is defined in App.kt)
+        Button(onClick = onOpenStudents) {
+            Text("See all student reports")
         }
+
         Spacer(Modifier.height(12.dp))
         Text(vm.helloMessage)
     }

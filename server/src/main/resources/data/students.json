@@ -1,0 +1,46 @@
+[
+  {
+    "studentEmail": "alice@student.ecam.be",
+    "firstName": "Alice",
+    "lastName": "Dubois",
+    "matricule": "25347",
+    "year": "BA1",
+    "option": null,
+    "evaluations": [
+      {
+        "activityName": "Cours magistral INFO1",
+        "session": "Janvier 2025",
+        "score": 14,
+        "maxScore": 20
+      },
+      {
+        "activityName": "TP Kotlin Multiplatform",
+        "session": "Janvier 2025",
+        "score": 18,
+        "maxScore": 20
+      }
+    ]
+  },
+  {
+    "studentEmail": "bob@student.ecam.be",
+    "firstName": "Bob",
+    "lastName": "Leroy",
+    "matricule": "25189",
+    "year": "BA1",
+    "option": null,
+    "evaluations": [
+      {
+        "activityName": "Cours magistral INFO1",
+        "session": "Janvier 2025",
+        "score": 9,
+        "maxScore": 20
+      },
+      {
+        "activityName": "TP Kotlin Multiplatform",
+        "session": "Janvier 2025",
+        "score": 12,
+        "maxScore": 20
+      }
+    ]
+  }
+]

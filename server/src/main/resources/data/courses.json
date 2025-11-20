@@ -1,0 +1,5 @@
+[
+  { "code": "INFO1", "name": "Introduction to Programming", "year": 1 },
+  { "code": "MATH2", "name": "Mathematics", "year": 2 },
+  { "code": "PHYS1", "name": "Physics", "year": 1 }
+]
