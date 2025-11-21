@@ -29,7 +29,8 @@ fun Application.module() {
 
     // ------- Database ---------
     DatabaseFactory.connect()
-    DatabaseFactory.initDb()
+    DatabaseFactory.enableForeignKeys()
+    DatabaseFactory.resetDb()
 
 
     // ----------- ROUTES ----------

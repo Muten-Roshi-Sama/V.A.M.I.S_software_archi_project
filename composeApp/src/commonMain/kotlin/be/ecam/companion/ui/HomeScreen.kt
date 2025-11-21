@@ -30,4 +30,3 @@ fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         Text(vm.helloMessage)
     }
-}

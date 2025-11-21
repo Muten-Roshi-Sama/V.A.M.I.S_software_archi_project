@@ -14,6 +14,8 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+val exposedVersion = "0.41.1"
+
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
@@ -32,7 +34,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
     implementation("org.xerial:sqlite-jdbc:3.50.3.0")
 
-
+    // datetime
+    implementation("org.jetbrains.exposed:exposed-java-time:${exposedVersion}")
 
 }
 

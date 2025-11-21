@@ -30,7 +30,7 @@ fun ListAdmins(onBack: () -> Unit) {
             admins = repository.fetchAdmins()
             println("✅ ADMINS FETCHED: $admins")
             admins.forEach { a ->
-                println("   ID=${a.id} | ${a.username} | ${a.email}")
+                println("   ID=${a.id} | name=${a.firstName} ${a.lastName} | email=${a.email}")
             }
         } catch (e: Exception) {
             error = e.message ?: "Unknown error"
@@ -70,7 +70,7 @@ fun ListAdmins(onBack: () -> Unit) {
                             .padding(12.dp)
                         ) {
                             Text("ID: ${admin.id}", style = MaterialTheme.typography.labelSmall)
-                            Text(admin.username, style = MaterialTheme.typography.titleMedium)
+                            Text("${admin.firstName} ${admin.lastName}", style = MaterialTheme.typography.titleMedium)
                             Text(admin.email, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
