@@ -4,10 +4,22 @@ import org.jetbrains.exposed.sql.Database    // Imports Exposed’s Database obj
 
 // DAO Schema
 import be.ecam.server.models.AdminTable
+//import be.ecam.server.models.CourseTable
+//import be.ecam.server.models.TeacherTable
+//import be.ecam.server.db.StudentTable
 
 // DAO Class
 import be.ecam.server.models.Admin
+//import be.ecam.server.models.Course
+//import be.ecam.server.models.Teacher
+//import be.ecam.server.models.Student
+
+// Shared DTO
 import be.ecam.common.api.AdminDTO
+//import be.ecam.common.aoi.CourseDTO
+//import be.ecam.common.aoi.TeacherDTO
+//import be.ecam.common.aoi.DTO
+//import be.ecam.common.aoi.CourseDTO
 
 // DAO Services
 import be.ecam.server.services.AdminService
@@ -52,61 +64,7 @@ object DatabaseFactory {
 
 
 // ===========================================================================
-//    private fun initAdmins() {
-//        //
-//
-//        val file = File("server/src/main/resources/data/admin.json")
-//            if (!file.exists()) {
-//                println("⚠️ No mock data file found at ${file.path}")
-//                return
-//            }
-//
-//        transaction {
-//            SchemaUtils.createMissingTablesAndColumns(AdminTable)
-//            println("✅ AdminTable created.")
-//            }
-////            if (Admin.all().empty()) {
-////                // Read JSON file
-////                val jsonString = file.readText()
-////                val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
-////
-////                // Insert each DTO as a DAO entity
-////
-////
-////
-////                println("✅ Mock admin created.")
-////            } else {
-////                println("ℹ️ Admin table already contains data.")
-////            }
-//
-//    // Use service for business logic
-//    val service = AdminService()
-//    val existing = service.getAll()
-//
-//    if (existing.isEmpty()) {
-//        val jsonString = file.readText()
-//        val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
-//
-//        adminDTOs.forEach { dto ->
-//            service.create(dto)  // ← Service handles DTO → DAO conversion
-//        }
-//
-//        println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
-//    } else {
-//        println("ℹ️ Admin table already contains ${existing.size} admins.")
-//    }
-//
-//            // ✅ DEBUG: Print all admins in DB
-//            println("=== Current Admins in DB ===")
-//            for (admin in Admin.all()) {
-//                println("ID=${admin.id.value} | username=${admin.username} | email=${admin.email}")
-//            }
-//            println("============================")
-//
-//
-//        }
-//
-//}
+
 
     private fun initAdmins() {
         // Try multiple possible paths for the JSON file
