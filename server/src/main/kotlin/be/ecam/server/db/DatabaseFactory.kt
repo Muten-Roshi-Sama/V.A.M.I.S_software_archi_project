@@ -1,6 +1,7 @@
 package be.ecam.server.db
 
 // DAO Schema
+import be.ecam.server.models.PersonTable
 import be.ecam.server.models.AdminTable
 import be.ecam.server.models.EvaluationTable
 import be.ecam.server.models.StudentTable   //Add
@@ -32,8 +33,12 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.TransactionManager
+
 import org.jetbrains.exposed.sql.selectAll           //Add
 import java.io.File
+import java.sql.Statement
+import org.jetbrains.exposed.sql.selectAll
 
 // ====================================================================
 object DatabaseFactory {
@@ -47,17 +52,35 @@ object DatabaseFactory {
         // Get DB file path
         val dbPath = File(dbFolder, "sqlite.db").absolutePath
 
-        Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
+//        Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
+        Database.connect("jdbc:sqlite:$dbPath?foreign_keys=true", driver = "org.sqlite.JDBC")
         println("Connected to SQLite database, path is : $dbPath")
     }
 
-    fun enableForeignKeys(){
-        // enable foreign keys for SQLite connections
-        transaction {
-            exec("PRAGMA foreign_keys = ON;")
-        }
-    }
-
+    /**
+         * Enable SQLite PRAGMA foreign_keys = ON using a plain JDBC Statement inside an Exposed transaction.
+         * Using TransactionManager.current().connection and a JDBC execute avoids Exposed's "Query does not return results"
+         * exception when executing PRAGMA statements that don't return a result set.
+     */
+//        fun enableForeignKeys() {
+//                try {
+//                        transaction {
+//                                val conn = TransactionManager.current().connection
+//                                try {
+//                                        conn.createStatement().use { stmt: Statement ->
+//                                                stmt.execute("PRAGMA foreign_keys = ON;")
+//                                            }
+//                                        println("✅ SQLite PRAGMA foreign_keys = ON applied.")
+//                                    } catch (e: Exception) {
+//                                        println("⚠️ Failed to apply PRAGMA foreign_keys: ${e.message}")
+//                                    }
+//                            }
+//                    } catch (e: Exception) {
+//                        // If transactions are not available for some reason, still log the problem.
+//                        println("⚠️ enableForeignKeys() failed: ${e.message}")
+//                    }
+//            }
+//
 
 
     fun resetDb(){
@@ -84,7 +107,11 @@ object DatabaseFactory {
 
 
         // run all registered seeders
-        SeedManager.seedAll()
+        try {
+            SeedManager.seedAll()
+        } catch (e: Exception) {
+            println("⚠️ SeedManager.seedAll() threw an exception: ${e.message}")
+        }
         println("=> Database reset completed.")
 
     }
@@ -109,6 +136,7 @@ object DatabaseFactory {
 //                    TeacherTable,
                     AdminTable,
 //                    CourseTable,
+                    PersonTable
                 )
                 println("✅ All listed tables dropped.")
             } catch (e: Exception) {
@@ -127,6 +155,7 @@ object DatabaseFactory {
         transaction {
             try {
                 SchemaUtils.create(
+                    PersonTable,
 //                    CourseTable,
                     // role tables
                     AdminTable,

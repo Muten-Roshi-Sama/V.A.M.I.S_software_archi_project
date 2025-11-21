@@ -14,7 +14,7 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
-val exposedVersion = "0.41.1"
+val exposedVersion = "0.61.0"
 
 dependencies {
     implementation(projects.shared)

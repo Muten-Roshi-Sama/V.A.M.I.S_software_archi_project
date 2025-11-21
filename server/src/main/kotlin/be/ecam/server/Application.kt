@@ -29,7 +29,7 @@ fun Application.module() {
 
     // ------- Database ---------
     DatabaseFactory.connect()
-    DatabaseFactory.enableForeignKeys()
+//    DatabaseFactory.enableForeignKeys()
     DatabaseFactory.resetDb()
 
 

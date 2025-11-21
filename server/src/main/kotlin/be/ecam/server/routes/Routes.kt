@@ -44,7 +44,6 @@ fun Application.configureRoutes() {
         }
 
 
-
         // ---------- API ----------
         route("/api") {
 
@@ -181,27 +180,28 @@ fun Application.configureRoutes() {
             //When the frontend calls this URL → the server returns the contents of the JSON file :
             route("/students") {
                 get("/all/grades") {
-                    val possiblePaths = listOf(
-                        "server/src/main/resources/data/students.json",
-                        "src/main/resources/data/students.json",
-                        "data/students.json"
-                    )
-                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
-
-                    call.respondText(file.readText(), ContentType.Application.Json)
+                    call.respond("ok")
+//                    val possiblePaths = listOf(
+//                        "server/src/main/resources/data/students.json",
+//                        "src/main/resources/data/students.json",
+//                        "data/students.json"
+//                    )
+//                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
+//                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
+//
+//                    call.respondText(file.readText(), ContentType.Application.Json)
+//                }
                 }
-            }
-            route("/teachers") {
+                route("/teachers") {
+
+                }
 
             }
 
-        }
 
-
-        // -------- DATABASE MANAGEMENT (Admin Only) -----
-        route("/db") {
-            // Initialize database with seed data
+            // -------- DATABASE MANAGEMENT (Admin Only) -----
+            route("/db") {
+                // Initialize database with seed data
 //            post("/init") {
 //                call.respondText("Initialize DB - TODO", status = HttpStatusCode.NotImplemented)
 //            }
@@ -215,6 +215,8 @@ fun Application.configureRoutes() {
 //            get("/stats") {
 //                call.respondText("DB Stats - TODO", status = HttpStatusCode.NotImplemented)
 //            }
+            }
         }
     }
+
 }
