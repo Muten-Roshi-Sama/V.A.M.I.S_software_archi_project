@@ -8,8 +8,12 @@ import kotlinx.serialization.Serializable
 //Creation of a contract (anything that wants to retrieve data must comply with this contract) :
 interface ApiRepository {
     //we must be able to retrieve the following items (suspend = this function can wait for the server's response without blocking the interface)
+
+
+    // -------- CRUD ----------
     suspend fun fetchAdmins(): List<AdminDTO>
     suspend fun fetchHello(): HelloResponse
+    // Directly return the raw map instead of wrapping in ScheduleResponse for simplicity
     suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>
     suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
 }

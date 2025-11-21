@@ -64,20 +64,3 @@ class StudentService {
                     row[year] = studentDto.year
                     row[option] = studentDto.option
                 }
-
-                // Insertion de toutes ses évaluations
-                studentDto.evaluations.forEach { eval ->
-                    EvaluationTable.insert { row ->
-                        row[this.student] = studentId.value
-                        row[activityName] = eval.activityName
-                        row[session] = eval.session
-                        row[score] = eval.score
-                        row[maxScore] = eval.maxScore
-                    }
-                }
-            }
-
-            println("Success: ${students.size} students + their evaluations seeded from students.json")
-        }
-    }
-}
