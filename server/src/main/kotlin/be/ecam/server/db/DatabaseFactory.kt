@@ -103,16 +103,27 @@ object DatabaseFactory {
 
         // register seed tasks (order matters if there are FK deps)
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
-//        SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
+        // SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
 
 
-        // run all registered seeders
-        try {
-            SeedManager.seedAll()
-        } catch (e: Exception) {
-            println("⚠️ SeedManager.seedAll() threw an exception: ${e.message}")
+
+        // run all registered seeders and gather results
+        val seedReports = SeedManager.seedAll()
+
+        // Log concise summary
+        seedReports.forEach { (name, result) ->
+            println("Seed report — $name: inserted=${result.inserted}, skipped=${result.skipped}, errors=${result.errors.size}")
+            if (result.errors.isNotEmpty()) {
+                result.errors.forEach { err -> println("  • $name error: $err") }
+            }
         }
-        println("=> Database reset completed.")
+
+        // Optionally fail fast if a JVM property is set:
+        val failOnSeedErrors = System.getProperty("dev.failOnSeedErrors", "false").toBoolean()
+        val totalErrors = seedReports.sumOf { it.second.errors.size }
+        if (failOnSeedErrors && totalErrors > 0) {
+            error("Stopping startup: $totalErrors seed errors (dev.failOnSeedErrors=true)")
+        }
 
     }
 

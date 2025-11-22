@@ -20,7 +20,8 @@ data class AdminDTO(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val password: String? = null    // NEVER send pswd to frontend, this is ONLY to retrieve password from frontend,
+    val password: String? = null,    // NEVER send pswd to frontend, this is ONLY to retrieve password from frontend,
+    val createdAt: String
 )
 
 

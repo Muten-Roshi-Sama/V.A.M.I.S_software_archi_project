@@ -18,7 +18,7 @@ object PersonTable : IntIdTable(name = "persons") {
     val lastName = varchar("last_name", 120)
     val email = varchar("email", 255).uniqueIndex()
     val password = varchar("password", 255)
-    val createdAt = datetime("created_at").clientDefault { java.time.LocalDateTime.now() }
+    val createdAt = varchar("createdAt", 255)
 }
 
 class Person(id: EntityID<Int>) : IntEntity(id) {

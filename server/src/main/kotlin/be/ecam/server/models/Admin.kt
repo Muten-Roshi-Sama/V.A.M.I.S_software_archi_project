@@ -31,13 +31,16 @@ class Admin(id: EntityID<Int>) : IntEntity(id) {
     val firstName get() = person.firstName
     val lastName get() = person.lastName
     val email get() = person.email
+    val password get() = person.password
+    val createdAt get() = person.createdAt
 
     fun toDto(): AdminDTO = AdminDTO(
         id = this.id.value,
         firstName = this.firstName,
         lastName = this.lastName,
-        email = this.email
-        // add firstName = this.firstName, lastName = this.lastName if AdminDTO requires them
+        email = this.email,
+        password = null,                  // HIDE the password, DTO is public
+        createdAt = this.createdAt
     )
 
 
