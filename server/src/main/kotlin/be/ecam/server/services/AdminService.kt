@@ -22,6 +22,7 @@ import be.ecam.server.util.requireValidPassword
 //Exposed
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.time.LocalDateTime
 
 // ----------------------------
@@ -42,28 +43,56 @@ class AdminService {
 
     // Create admin from DTO
     fun create(createDto: AdminCreateDTO): AdminDTO = transaction {
-
         // REQUIRED Fields
-        requireValidEmail(createDto.email)
-        requireValidPassword(createDto.password, )
-//        val password_field = createDto.password ?: throw IllegalArgumentException("Password is required to create an admin.")
-//        val email_field = createDto.email ?: throw IllegalArgumentException("Email is required to create an admin.")
+        val email_field = createDto.email
+        val password_field = createDto.password
+        requireValidEmail(email_field)
+        requireValidPassword(password_field, minLength = 6)
 
-
-        // TODO: check if email doesnt already exits
-
-
-        val person = Person.new {
-            firstName = createDto.firstName
-            lastName = createDto.lastName
-            email = createDto.email
-            password = createDto.password
-            createdAt = createDto.createdAt
+        // check if email doesn't already exits
+        if (existsByEmail(email_field)) {
+            throw IllegalArgumentException("Email '$email_field' is already registered")
         }
 
-        val admin = Admin.createForPerson(person)
-        admin.toDto()
+        try {
+            val person = Person.new {
+                firstName = createDto.firstName
+                lastName = createDto.lastName
+                email = email_field
+                password = password_field
+                createdAt = createDto.createdAt
+            }
+
+            val admin = Admin.createForPerson(person)
+            admin.toDto()
+        } catch (ex: ExposedSQLException) {
+            // Handle unique-constraint race (another process created the same email concurrently).
+            // The driver message varies; translate to a friendly message.
+            val msg = ex.message ?: ""
+            if (msg.contains("UNIQUE") || msg.contains("unique") || msg.contains("constraint")) {
+                throw IllegalArgumentException("Email '$email_field' is already registered (unique constraint).")
+            }
+            throw ex
+        }
     }
+
+    // convert incoming AdminDTO (frontend) to AdminCreateDTO then call create()
+    fun createAdminFromDto(dto: AdminDTO) {
+        // Map AdminDTO -> AdminCreateDTO (create(...) expects AdminCreateDTO)
+        val createDto = AdminCreateDTO(
+            firstName = dto.firstName,
+            lastName = dto.lastName,
+            email = dto.email,
+            password = dto.password ?: "", // fallback if password is null in seed
+            createdAt = dto.createdAt ?: LocalDateTime.now().toString()
+        )
+        // Use existing create(createDto) which returns AdminDTO
+        create(createDto)
+    }
+
+
+
+
 
     // Get by ID
     fun getById(id: Int): AdminDTO? = transaction {
@@ -85,19 +114,6 @@ class AdminService {
         be.ecam.server.models.Person.find { be.ecam.server.models.PersonTable.email eq email }.empty().not()
     }
 
-    // create wrapper: convert incoming AdminDTO (seed shape) to AdminCreateDTO then call create()
-    fun createAdminFromDto(dto: AdminDTO) {
-        // Map AdminDTO -> AdminCreateDTO (create(...) expects AdminCreateDTO)
-        val createDto = AdminCreateDTO(
-            firstName = dto.firstName,
-            lastName = dto.lastName,
-            email = dto.email,
-            password = dto.password ?: "", // fallback if password is null in seed
-            createdAt = dto.createdAt ?: LocalDateTime.now().toString()
-        )
-        // Use existing create(createDto) which returns AdminDTO
-        create(createDto)
-    }
 
     // idempotent seeder entrypoint (called from DatabaseFactory)
     fun seedFromResource(resourcePath: String = "data/admin.json"): SeedResult {

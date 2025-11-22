@@ -1,10 +1,10 @@
-package be.ecam.server
+package be.ecam.server.db
 
 import be.ecam.common.api.*
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.serializer
+import kotlin.collections.iterator
 import kotlin.test.Test
 import kotlin.test.fail
 
