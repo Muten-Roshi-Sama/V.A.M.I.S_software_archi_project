@@ -34,43 +34,69 @@ data class AdminCreateDTO(
     val password: String,
     val createdAt: String
 )
-class AdminService {
+class AdminService(private val personService: PersonService = PersonService()) {
 
-    // Get all admins as DTOs (for API)
-    fun getAll(): List<AdminDTO> = transaction {
-        Admin.all().map { it.toDto() }
-    }
+    /* Create a RoleService instance configured for Admin
+    */
+    private val ops = RoleService<AdminDTO, Admin>(
+        personService = personService,
+        findAll = { Admin.all() },
+        findById = { id -> Admin.findById(id) },
+        deleteById = { id -> Admin.findById(id)?.delete() != null },
+        createForPerson = { person -> Admin.createForPerson(person) },
+        toDto = { admin -> admin.toDto() },
+        dtoToPersonCreate = { dto ->
+            // AdminDTO -> PersonCreateDTO mapping (ensure password present)
+            PersonCreateDTO(
+                firstName = dto.firstName,
+                lastName = dto.lastName,
+                email = dto.email,
+                password = dto.password ?: throw IllegalArgumentException("password required for creation"),
+                createdAt = dto.createdAt
+            )
+        },
+        dtoEmail = { dto -> dto.email }
+    )
+    fun getAll(): List<AdminDTO> = ops.getAll()
+    fun getById(adminId: Int): AdminDTO? = ops.getById(adminId)
+    fun delete(adminId: Int): Boolean = ops.delete(adminId)
+    fun count(): Long = ops.count()
+    fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
 
-    // Create admin from DTO
+
+
+    /* Create admin from DTO, Inherited from PersonService.kt
+     */
     fun create(createDto: AdminCreateDTO): AdminDTO = transaction {
-        // REQUIRED Fields
-        val email_field = createDto.email
-        val password_field = createDto.password
-        requireValidEmail(email_field)
-        requireValidPassword(password_field, minLength = 6)
+        val emailField = createDto.email
+        val passwordField = createDto.password
 
-        // check if email doesn't already exits
-        if (existsByEmail(email_field)) {
-            throw IllegalArgumentException("Email '$email_field' is already registered")
+        // Validate inputs (PersonService.create would also validate; we can keep these checks here or rely on PersonService)
+        requireValidEmail(emailField)
+        requireValidPassword(passwordField, minLength = 6)
+
+        // Delegate existence check to PersonService (authoritative)
+        if (personService.existsByEmail(emailField)) {
+            throw IllegalArgumentException("Email '$emailField' is already registered")
         }
 
         try {
-            val person = Person.new {
-                firstName = createDto.firstName
-                lastName = createDto.lastName
-                email = email_field
-                password = password_field
-                createdAt = createDto.createdAt
-            }
+            val person = personService.create(
+                PersonCreateDTO(
+                    firstName = createDto.firstName,
+                    lastName = createDto.lastName,
+                    email = emailField,
+                    password = passwordField,
+                    createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
+                )
+            )
 
             val admin = Admin.createForPerson(person)
             admin.toDto()
         } catch (ex: ExposedSQLException) {
-            // Handle unique-constraint race (another process created the same email concurrently).
-            // The driver message varies; translate to a friendly message.
             val msg = ex.message ?: ""
-            if (msg.contains("UNIQUE") || msg.contains("unique") || msg.contains("constraint")) {
-                throw IllegalArgumentException("Email '$email_field' is already registered (unique constraint).")
+            if (msg.contains("UNIQUE", true) || msg.contains("constraint", true)) {
+                throw IllegalArgumentException("Email '$emailField' is already registered (unique constraint).")
             }
             throw ex
         }
@@ -90,30 +116,7 @@ class AdminService {
         create(createDto)
     }
 
-
-
-
-
-    // Get by ID
-    fun getById(id: Int): AdminDTO? = transaction {
-        Admin.findById(id)?.toDto()
-    }
-
-    // Delete admin (deletes Admin row; Person will cascade because of FK ON DELETE CASCADE)
-    fun delete(id: Int): Boolean = transaction {
-        Admin.findById(id)?.delete() != null
-    }
-
     // ======== Seeding ===========
-
-    // fast count helper
-    fun count(): Long = transaction { be.ecam.server.models.Admin.all().count() }
-
-    // fast existence check by email
-    fun existsByEmail(email: String): Boolean = transaction {
-        be.ecam.server.models.Person.find { be.ecam.server.models.PersonTable.email eq email }.empty().not()
-    }
-
 
     // idempotent seeder entrypoint (called from DatabaseFactory)
     fun seedFromResource(resourcePath: String = "data/admin.json"): SeedResult {

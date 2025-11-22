@@ -2,7 +2,6 @@ package be.ecam.server.models
 
 // DAO
 import be.ecam.server.db.DatabaseFactory
-import be.ecam.server.models.*
 
 // Services / DTOs
 import be.ecam.server.services.AdminService
@@ -18,7 +17,7 @@ import java.time.Instant
 import java.io.File
 
 
-class AdminCRUD {
+class AdminCRUDTest {
 
     private fun ensureDbReady() {
         // Delete any existing test SQLite DB so tests start with a clean schema.

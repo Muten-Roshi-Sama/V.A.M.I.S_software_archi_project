@@ -13,6 +13,17 @@ import org.jetbrains.exposed.dao.id.EntityID
 import be.ecam.common.api.AdminDTO
 
 
+
+interface PersonInfo {
+    val personId: Int?
+    val firstName: String
+    val lastName: String
+    val email: String
+    val createdAt: String
+}
+
+
+// Defines the DB table schema
 object PersonTable : IntIdTable(name = "persons") {
     val firstName = varchar("first_name", 120)
     val lastName = varchar("last_name", 120)
@@ -21,35 +32,27 @@ object PersonTable : IntIdTable(name = "persons") {
     val createdAt = varchar("createdAt", 255)
 }
 
-class Person(id: EntityID<Int>) : IntEntity(id) {
+// Implementation of object PersonTable
+class Person(id: EntityID<Int>) : IntEntity(id), PersonInfo {
     companion object : IntEntityClass<Person>(PersonTable)
+    //
+    override val personId: Int? get() = this.id.value
+    override var firstName by PersonTable.firstName
+    override var lastName by PersonTable.lastName
+    override var email by PersonTable.email
 
-    var firstName by PersonTable.firstName
-    var lastName by PersonTable.lastName
-    var email by PersonTable.email
     var password by PersonTable.password
-    var createdAt by PersonTable.createdAt
+    override var createdAt by PersonTable.createdAt
 
-    // ===========================================
 
-    val fullName: String
-        get() = "$firstName $lastName"
-
-    fun setPassword(plain: String, cost: Int = 12) {
-        password = plain
-    }
-
-    fun verifyPassword(plain: String): Boolean {
+    // ======== Methods ============
+    internal fun setPasswordHash(hash: String) { password = hash }
+    internal fun verifyPasswordPlain(plain: String): Boolean {
+        // replace with real hash verification (BCrypt.checkpw)
         return password == plain
     }
 
-    //fun toPersonDto(): PersonDTO = PersonDTO(
-    //    id = this.id.value,
-    //    firstName = this.firstName,
-    //    lastName = this.lastName,
-    //    email = this.email
-    //)
-
+    val fullName: String get() = "$firstName $lastName"
 }
 
 
