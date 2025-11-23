@@ -16,3 +16,11 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+# Server
+server/bin/
+server/data/
+
+# Shared
+shared/bin/
+shared/data/

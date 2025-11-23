@@ -619,7 +619,6 @@ private fun WeekRow(
     today: LocalDate,
     scheduledByDate: Map<LocalDate, List<String>>,
     onDateClick: (LocalDate) -> Unit
-
 ) {
     val start = anchorDate.startOfWeek()
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

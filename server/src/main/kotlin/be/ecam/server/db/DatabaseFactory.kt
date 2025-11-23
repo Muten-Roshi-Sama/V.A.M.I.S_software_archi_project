@@ -1,0 +1,108 @@
+package be.ecam.server.db
+
+import be.ecam.server.models.AdminTable
+import be.ecam.server.models.EvaluationTable
+import be.ecam.server.models.StudentTable   //Add
+import be.ecam.common.api.AdminDTO
+import be.ecam.server.models.Admin
+import be.ecam.server.services.AdminService
+import be.ecam.server.services.StudentService
+import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.selectAll           //Add
+import java.io.File
+
+object DatabaseFactory {
+
+    fun connect() {
+        val dbFolder = File("data")
+        if (!dbFolder.exists()) {
+            dbFolder.mkdirs()
+            println("Created data directory")
+        }
+        val dbPath = File(dbFolder, "sqlite.db").absolutePath
+        Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
+        println("Connected to SQLite database, path is : $dbPath")
+    }
+
+    fun initDb() {
+        createMissingTables()
+        initAdmins()
+        seedStudentsIfEmpty()
+    }
+
+    private fun createMissingTables() {
+        transaction {
+            try { SchemaUtils.create(AdminTable) }
+            catch (e: Exception) { println("AdminTable already exists.") }
+
+            try { SchemaUtils.create(StudentTable, EvaluationTable) }
+            catch (e: Exception) { println("StudentTable & EvaluationTable already exist.") }
+        }
+    }
+
+    private fun seedStudentsIfEmpty() {
+        val count = transaction {
+            StudentTable.selectAll().count()
+        }
+
+        if (count == 0L) {
+            println("No students found → seeding from students.json")
+            StudentService().seedFromJson()
+        } else {
+            println("Student table already contains $count student(s). Skipping seed.")
+        }
+    }
+
+    // Ton code initAdmins() (inchangé)
+    private fun initAdmins() {
+        val possiblePaths = listOf(
+            "server/src/main/resources/data/admin.json",
+            "src/main/resources/data/admin.json",
+            "data/admin.json"
+        )
+
+        val adminFile = possiblePaths.map { File(it) }.firstOrNull { it.exists() }
+
+        if (adminFile == null) {
+            val resourceStream = this::class.java.classLoader.getResourceAsStream("data/admin.json")
+            if (resourceStream != null) {
+                val jsonString = resourceStream.bufferedReader().use { it.readText() }
+                processAdminData(jsonString)
+                return
+            }
+            println("No mock admin data file found.")
+            return
+        }
+
+        println("Loading admin data from: ${adminFile.absolutePath}")
+        val jsonString = adminFile.readText()
+        processAdminData(jsonString)
+    }
+
+    private fun processAdminData(jsonString: String) {
+        transaction {
+            try { SchemaUtils.create(AdminTable); println("AdminTable created.") }
+            catch (e: Exception) { println("AdminTable already exists.") }
+        }
+
+        val service = AdminService()
+        val existing = service.getAll()
+
+        if (existing.isEmpty()) {
+            val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
+            adminDTOs.forEach { service.create(it) }
+            println("Inserted ${adminDTOs.size} mock admins from JSON.")
+
+            transaction {
+                println("=== Current Admins in DB ===")
+                Admin.all().forEach { println("ID=${it.id.value} | username=${it.username} | email=${it.email}") }
+                println("============================")
+            }
+        } else {
+            println("Admin table already contains ${existing.size} admins.")
+        }
+    }
+}

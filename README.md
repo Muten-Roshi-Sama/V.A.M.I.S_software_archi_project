@@ -159,3 +159,27 @@ Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-mu
 We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
 channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
 If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+# V.A.M.I.S (Virtual Academic Management and Information System)
+
+
+
+
+
+
+
+
+
+
+## Backend :
+
+📁 ARCHITECTURE OVERVIEW
+Our implementation follows a 3-tier architecture:
+
+- Data Layer - Database models & tables (Admin.kt)
+- Business Logic Layer - Services (AdminService.kt)
+- Shared Layer - DTOs for cross-platform communication (shared/Models.kt)
+
+
+
+
+

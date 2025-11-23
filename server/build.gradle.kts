@@ -24,4 +24,23 @@ dependencies {
     implementation(libs.ktor.network.tls.certificates)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+
+
+    // SQLite Database
+    implementation("org.jetbrains.exposed:exposed-core:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
+    implementation("org.xerial:sqlite-jdbc:3.50.3.0")
+
+
+
 }
+
+
+
+
+
+
+
+
+

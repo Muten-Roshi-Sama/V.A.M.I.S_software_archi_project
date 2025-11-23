@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Cours magistral INFO1",
+    "courseCode": "INFO1",
+    "teacherEmail": "prof.dupont@ecam.be",
+    "ects": 6
+  },
+  {
+    "name": "TP Kotlin Multiplatform",
+    "courseCode": "INFO1",
+    "teacherEmail": "prof.dupont@ecam.be",
+    "ects": 4
+  }
+]
