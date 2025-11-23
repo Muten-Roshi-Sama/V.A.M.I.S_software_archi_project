@@ -1,53 +1,40 @@
 package be.ecam.server.models
 
 // DAO
-import be.ecam.server.db.DatabaseFactory
+import be.ecam.server.models.PersonTable
+import be.ecam.server.models.AdminTable
 
 // Services / DTOs
 import be.ecam.server.services.AdminService
 import be.ecam.common.api.AdminDTO
+import be.ecam.server.services.PersonService
 
 // Kotlin / testing
-import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Table
+import kotlin.test.BeforeTest
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import java.time.Instant
-import java.io.File
 
+// Test database utils (for test files only)
+import be.ecam.server.testutils.TestDatabase
 
-class AdminCRUDTest {
+class AdminCRUDTest : TestDatabase() {
+    override val tables: Array<Table> = arrayOf(PersonTable, AdminTable)
 
-    private fun ensureDbReady() {
-        // Delete any existing test SQLite DB so tests start with a clean schema.
-        // This is safe for local/dev/CI test DBs; do NOT do this against production DBs.
-        val dbFile = File("data/sqlite.db")
-        if (dbFile.exists()) {
-            dbFile.delete()
-        }
+    private lateinit var adminService: AdminService
 
-        // Connect to DB (DatabaseFactory.connect creates data dir and jdbc url)
-        DatabaseFactory.connect()
-
-        // Create the tables (parents first). This avoids ALTER TABLE operations.
-        transaction {
-            SchemaUtils.create(
-                // create parent tables first
-                PersonTable,
-                // then role tables
-                AdminTable
-            )
-        }
+    @BeforeTest
+    override fun setupDatabase() {
+        super.setupDatabase()
+        adminService = AdminService()
     }
 
     @Test
     fun addAdmin_directDbFlow() {
-        ensureDbReady()
-
-        // Keep DB operations local to a single transaction for test determinism
         transaction {
-            // Create a Person and corresponding Admin directly via DAO
             val person = Person.new {
                 firstName = "Admin"
                 lastName = "User"
@@ -57,7 +44,6 @@ class AdminCRUDTest {
             }
             Admin.createForPerson(person)
 
-            // Assertions inside transaction to avoid visibility issues
             assertEquals(1L, Person.find { PersonTable.email eq "admin@example.com" }.count(), "Expected one person")
             assertEquals(1L, Admin.all().count(), "Expected one admin")
         }
@@ -65,8 +51,6 @@ class AdminCRUDTest {
 
     @Test
     fun createAdmin_missingPassword_throws() {
-        ensureDbReady()
-
         val svc = AdminService()
 
         val dto = AdminDTO(
@@ -74,11 +58,10 @@ class AdminCRUDTest {
             firstName = "NoPw",
             lastName = "User",
             email = "nopw@example.com",
-            password = null, // missing password
+            password = null,
             createdAt = Instant.now().toString()
         )
 
-        // Expect IllegalArgumentException because password is required by service
         assertFailsWith<IllegalArgumentException> {
             svc.createAdminFromDto(dto)
         }
@@ -86,20 +69,17 @@ class AdminCRUDTest {
 
     @Test
     fun createAdmin_missingEmail_throws() {
-        ensureDbReady()
-
         val svc = AdminService()
 
         val dto = AdminDTO(
             id = null,
             firstName = "NoEmail",
             lastName = "User",
-            email = "", // empty email
+            email = "",
             password = "somepass",
             createdAt = Instant.now().toString()
         )
 
-        // Expect IllegalArgumentException because email is required and validated
         assertFailsWith<IllegalArgumentException> {
             svc.createAdminFromDto(dto)
         }

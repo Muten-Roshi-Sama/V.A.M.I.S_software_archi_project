@@ -21,7 +21,7 @@ import java.sql.DriverManager
 
 
 class PersonServiceTest : TestDatabase() {
-    override val tables: Array<Table> = arrayOf(PersonTable, AdminTable)
+    override val tables: Array<Table> = arrayOf(PersonTable)
     private lateinit var personService: PersonService
     private lateinit var connection: Connection
 
