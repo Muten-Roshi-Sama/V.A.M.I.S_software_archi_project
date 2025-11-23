@@ -71,7 +71,7 @@ class AdminService(private val personService: PersonService = PersonService()) {
         val emailField = createDto.email
         val passwordField = createDto.password
 
-        // Validate inputs (PersonService.create would also validate; we can keep these checks here or rely on PersonService)
+        // Validate FIELDS (TODO: PersonService.create already validates.....
         requireValidEmail(emailField)
         requireValidPassword(passwordField, minLength = 6)
 

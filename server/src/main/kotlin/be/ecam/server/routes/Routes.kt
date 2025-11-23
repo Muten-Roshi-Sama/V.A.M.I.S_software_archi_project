@@ -44,179 +44,203 @@ fun Application.configureRoutes() {
         }
 
 
-        // ---------- API ----------
-        route("/api") {
-
-            // --- Hello ---
-            get("/hello") {
-                call.respond(HelloResponse("Hello from Ktor server"))
-            }
-
-            // --- Schedule ---
-            get("/schedule") {
-                val schedule = mutableMapOf<String, List<ScheduleItem>>()
-                schedule["2025-09-30"] = listOf(ScheduleItem("Team sync"), ScheduleItem("Release planning"))
-                schedule["2025-10-01"] = listOf(ScheduleItem("Code review"))
-
-                for (month in 1..12) {
-                    val first = LocalDate.of(2025, month, 1)
-                    schedule.putIfAbsent(
-                        first.toString(),
-                        listOf(
-                            ScheduleItem(
-                                "Kickoff ${
-                                    first.month.name.lowercase().replaceFirstChar { it.titlecase() }
-                                }"
-                            )
-                        )
-                    )
-                }
-
-                call.respond(schedule)
-            }
-
-            // --- Users ---
-            route("/users") {
-                get {
-                    // (later) Return all users
-                    call.respondText("List of all users")
-                }
-                get("/{id}") {
-                    // (later) Return single user details
-                    call.respondText("Details for user ${call.parameters["id"]}")
-                }
-            }
-        }
-
-
-        // ---- AUTHENTICATION & AUTHORIZATION -----
-        route("/auth") {
-            // Login
-//            post("/login") {
-//                // TODO: Implement login logic
-//                call.respondText("Login endpoint - TODO", status = HttpStatusCode.NotImplemented)
+//        // ---------- API ----------
+//        route("/api") {
+//
+//            // --- Hello ---
+//            get("/hello") {
+//                call.respond(HelloResponse("Hello from Ktor server"))
 //            }
 //
-//            // Logout
-//            post("/logout") {
-//                // TODO: Implement logout logic
-//                call.respondText("Logout endpoint - TODO", status = HttpStatusCode.NotImplemented)
-//            }
+//            // --- Schedule ---
+//            get("/schedule") {
+//                val schedule = mutableMapOf<String, List<ScheduleItem>>()
+//                schedule["2025-09-30"] = listOf(ScheduleItem("Team sync"), ScheduleItem("Release planning"))
+//                schedule["2025-10-01"] = listOf(ScheduleItem("Code review"))
 //
-//            // Verify token
-//            get("/verify") {
-//                // TODO: Implement token verification
-//                call.respondText("Verify endpoint - TODO", status = HttpStatusCode.NotImplemented)
-//            }
-//
-//            // Refresh token
-//            post("/refresh") {
-//                // TODO: Implement token refresh
-//                call.respondText("Refresh endpoint - TODO", status = HttpStatusCode.NotImplemented)
-//            }
-        }
-
-
-        // --------- CRUD ---------
-        route("/crud") {
-            // -------------------- ADMINS --------------------
-            route("/admins") {
-                // List all admins
-                get {
-                    val admins = be.ecam.server.services.AdminService().getAll()
-                    call.respond(admins)
-                }
-
-                // Get admin by ID
-                get("/{id}") {
-                    //                    val id = call.parameters["id"]?.toIntOrNull()
-                    //                    if (id == null) {
-                    //                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid ID"))
-                    //                        return@get
-                    //                    }
-                    //                    val admin = AdminService().getById(id)
-                    //                    if (admin != null) {
-                    //                        call.respond(admin)
-                    //                    } else {
-                    //                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin not found"))
-                    //                    }
-                }
-
-                // Create new admin
-                post {
-                    //                    val dto = call.receive<AdminDTO>()
-                    //                    val created = AdminService().create(dto)
-                    //                    call.respond(HttpStatusCode.Created, created)
-                }
-
-                // Update admin
-                put("/{id}") {
-                    //                    // TODO: Implement update logic
-                    //                    call.respondText("Update admin - TODO", status = HttpStatusCode.NotImplemented)
-                }
-
-                // Delete admin
-                delete("/{id}") {
-                    //                    val id = call.parameters["id"]?.toIntOrNull()
-                    //                    if (id == null) {
-                    //                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid ID"))
-                    //                        return@delete
-                    //                    }
-                    //                    val deleted = AdminService().delete(id)
-                    //                    if (deleted) {
-                    //                        call.respond(HttpStatusCode.OK, mapOf("message" to "Admin deleted"))
-                    //                    } else {
-                    //                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin not found"))
-                    //                    }
-                }
-
-                // Count admins
-                get("/count") {
-                    //                    val count = AdminService().getAll().size
-                    //                    call.respond(mapOf("count" to count))
-                }
-            }
-
-            //When the frontend calls this URL → the server returns the contents of the JSON file :
-            route("/students") {
-                get("/all/grades") {
-                    call.respond("ok")
-//                    val possiblePaths = listOf(
-//                        "server/src/main/resources/data/students.json",
-//                        "src/main/resources/data/students.json",
-//                        "data/students.json"
+//                for (month in 1..12) {
+//                    val first = LocalDate.of(2025, month, 1)
+//                    schedule.putIfAbsent(
+//                        first.toString(),
+//                        listOf(
+//                            ScheduleItem(
+//                                "Kickoff ${
+//                                    first.month.name.lowercase().replaceFirstChar { it.titlecase() }
+//                                }"
+//                            )
+//                        )
 //                    )
-//                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-//                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
-//
-//                    call.respondText(file.readText(), ContentType.Application.Json)
 //                }
-                }
-                route("/teachers") {
-
-                }
-
-            }
-
-
-            // -------- DATABASE MANAGEMENT (Admin Only) -----
-            route("/db") {
-                // Initialize database with seed data
-//            post("/init") {
-//                call.respondText("Initialize DB - TODO", status = HttpStatusCode.NotImplemented)
+//
+//                call.respond(schedule)
 //            }
 //
-//            // Clean/reset database
-//            post("/clean") {
-//                call.respondText("Clean DB - TODO", status = HttpStatusCode.NotImplemented)
+//            // --- Users ---
+//            route("/users") {
+//                get {
+//                    // (later) Return all users
+//                    call.respondText("List of all users")
+//                }
+//                get("/{id}") {
+//                    // (later) Return single user details
+//                    call.respondText("Details for user ${call.parameters["id"]}")
+//                }
+//            }
+//        }
+//
+//
+//        // ---- AUTHENTICATION & AUTHORIZATION -----
+//        route("/auth") {
+//            // Login
+////            post("/login") {
+////                // TODO: Implement login logic
+////                call.respondText("Login endpoint - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+////
+////            // Logout
+////            post("/logout") {
+////                // TODO: Implement logout logic
+////                call.respondText("Logout endpoint - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+////
+////            // Verify token
+////            get("/verify") {
+////                // TODO: Implement token verification
+////                call.respondText("Verify endpoint - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+////
+////            // Refresh token
+////            post("/refresh") {
+////                // TODO: Implement token refresh
+////                call.respondText("Refresh endpoint - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+//        }
+//
+//
+//        // --------- CRUD ---------
+//        route("/crud") {
+//
+//            route("/{table}"){  //Admins, Students, Teacher
+//                // within each, create logic for all the given tables. (usefull for future tables too (Course, Calendar, Grades,...)
+//                get("/"){} //getAtll
+//
+//                get("/"){} //filter, search,...
+//
+//                get("/by/{id}") {
+//
+//                }
+//                get("/count") {
+//
+//                }
+//                post("/"){}
+//
+//                update("/by/{id}"){}
+//                delete("/by/{id}"){}
+//
+//
+//
 //            }
 //
-//            // Database statistics
-//            get("/stats") {
-//                call.respondText("DB Stats - TODO", status = HttpStatusCode.NotImplemented)
+//
+//
+//            // -------------------- ADMINS --------------------
+//            route("/admins") {
+//                // List all admins
+//                get {
+//                    val admins = be.ecam.server.services.AdminService().getAll()
+//                    call.respond(admins)
+//                }
+//
+//                // Get admin by ID
+//                get("/{id}") {
+//                    //                    val id = call.parameters["id"]?.toIntOrNull()
+//                    //                    if (id == null) {
+//                    //                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid ID"))
+//                    //                        return@get
+//                    //                    }
+//                    //                    val admin = AdminService().getById(id)
+//                    //                    if (admin != null) {
+//                    //                        call.respond(admin)
+//                    //                    } else {
+//                    //                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin not found"))
+//                    //                    }
+//                }
+//
+//                // Create new admin
+//                post {
+//                    //                    val dto = call.receive<AdminDTO>()
+//                    //                    val created = AdminService().create(dto)
+//                    //                    call.respond(HttpStatusCode.Created, created)
+//                }
+//
+//                // Update admin
+//                put("/{id}") {
+//                    //                    // TODO: Implement update logic
+//                    //                    call.respondText("Update admin - TODO", status = HttpStatusCode.NotImplemented)
+//                }
+//
+//                // Delete admin
+//                delete("/{id}") {
+//                    //                    val id = call.parameters["id"]?.toIntOrNull()
+//                    //                    if (id == null) {
+//                    //                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid ID"))
+//                    //                        return@delete
+//                    //                    }
+//                    //                    val deleted = AdminService().delete(id)
+//                    //                    if (deleted) {
+//                    //                        call.respond(HttpStatusCode.OK, mapOf("message" to "Admin deleted"))
+//                    //                    } else {
+//                    //                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin not found"))
+//                    //                    }
+//                }
+//
+//                // Count admins
+//                get("/count") {
+//                    //                    val count = AdminService().getAll().size
+//                    //                    call.respond(mapOf("count" to count))
+//                }
 //            }
-            }
-        }
+//
+//            //When the frontend calls this URL → the server returns the contents of the JSON file :
+//            route("/students") {
+//                get("/all/grades") {
+//                    call.respond("ok")
+////                    val possiblePaths = listOf(
+////                        "server/src/main/resources/data/students.json",
+////                        "src/main/resources/data/students.json",
+////                        "data/students.json"
+////                    )
+////                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
+////                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
+////
+////                    call.respondText(file.readText(), ContentType.Application.Json)
+////                }
+//                }
+//                route("/teachers") {
+//
+//                }
+//
+//            }
+//
+//
+//            // -------- DATABASE MANAGEMENT (Admin Only) -----
+//            route("/db") {
+//                // Initialize database with seed data
+////            post("/init") {
+////                call.respondText("Initialize DB - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+////
+////            // Clean/reset database
+////            post("/clean") {
+////                call.respondText("Clean DB - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+////
+////            // Database statistics
+////            get("/stats") {
+////                call.respondText("DB Stats - TODO", status = HttpStatusCode.NotImplemented)
+////            }
+//            }
+//        }
     }
 
 }
