@@ -24,9 +24,11 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.network.tls.certificates)
+
+    // Test libs
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
-
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.9.4")
 
     // SQLite Database
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
@@ -39,7 +41,15 @@ dependencies {
 
 }
 
-
+//tasks.test {
+//    // Run tests on JUnit Platform (supports JUnit Jupiter and kotlin.test adapters)
+//    useJUnitPlatform()
+//
+//    testLogging {
+//        events("started", "passed", "skipped", "failed")
+//        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+//    }
+//}
 
 
 
