@@ -59,7 +59,9 @@ fun App(extraModules: List<Module> = emptyList()) {
                             is Screen.Home -> HomeScreen(
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
-                                onOpenStudents = { currentScreen = Screen.DataStudents }
+                                onOpenStudents = { currentScreen = Screen.DataStudents },
+                                // Je rajoute ici une page pour le calendar dans le menu
+                                onOpenCalendar = { currentScreen = Screen.Calendar }
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
