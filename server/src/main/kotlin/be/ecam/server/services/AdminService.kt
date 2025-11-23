@@ -28,11 +28,11 @@ import java.time.LocalDateTime
 // ----------------------------
 
 data class AdminCreateDTO(
-    val firstName: String,
-    val lastName: String,
+    val firstName: String? = null,
+    val lastName: String? = null,
     val email: String,
-    val password: String,
-    val createdAt: String
+    val password: String
+//    val createdAt: String
 )
 class AdminService(private val personService: PersonService = PersonService()) {
 
@@ -86,8 +86,8 @@ class AdminService(private val personService: PersonService = PersonService()) {
                     firstName = createDto.firstName,
                     lastName = createDto.lastName,
                     email = emailField,
-                    password = passwordField,
-                    createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
+                    password = passwordField
+//                    createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
                 )
             )
 
@@ -109,8 +109,8 @@ class AdminService(private val personService: PersonService = PersonService()) {
             firstName = dto.firstName,
             lastName = dto.lastName,
             email = dto.email,
-            password = dto.password ?: "", // fallback if password is null in seed
-            createdAt = dto.createdAt ?: LocalDateTime.now().toString()
+            password = dto.password ?: "" // fallback if password is null in seed
+//            createdAt = dto.createdAt ?: LocalDateTime.now().toString()
         )
         // Use existing create(createDto) which returns AdminDTO
         create(createDto)

@@ -11,13 +11,13 @@ import org.jetbrains.exposed.dao.id.EntityID
 
 //DTO
 import be.ecam.common.api.AdminDTO
-
-
+//
+import java.time.Instant
 
 interface PersonInfo {
     val personId: Int?
-    val firstName: String
-    val lastName: String
+    val firstName: String?
+    val lastName: String?
     val email: String
     val createdAt: String
 }
@@ -25,12 +25,11 @@ interface PersonInfo {
 
 // Defines the DB table schema
 object PersonTable : IntIdTable(name = "persons") {
-    val firstName = varchar("first_name", 120)
-    val lastName = varchar("last_name", 120)
+    val firstName = varchar("first_name", 120).nullable()
+    val lastName = varchar("last_name", 120).nullable()
     val email = varchar("email", 255).uniqueIndex()
     val password = varchar("password", 255)
-    val createdAt = varchar("createdAt", 255)
-}
+    val createdAt = varchar("created_at", 64).clientDefault { Instant.now().toString() }}
 
 // Implementation of object PersonTable
 class Person(id: EntityID<Int>) : IntEntity(id), PersonInfo {

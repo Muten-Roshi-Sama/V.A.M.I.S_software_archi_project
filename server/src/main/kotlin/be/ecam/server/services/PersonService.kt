@@ -12,8 +12,8 @@ import java.time.LocalDateTime
  * Internal DTO for person creation used by role services.
  */
 data class PersonCreateDTO(
-    val firstName: String,
-    val lastName: String,
+    val firstName: String? = null,
+    val lastName: String? = null,
     val email: String,
     val password: String,
     val createdAt: String? = null
@@ -65,12 +65,12 @@ class PersonService {
 
         try {
             val person = Person.new {
-                firstName = createDto.firstName
-                lastName = createDto.lastName
+                firstName = createDto.firstName ?: ""
+                lastName = createDto.lastName ?: ""
                 email = emailField
                 // TODO: hash password before storing; use hashPassword(passwordField)
                 password = passwordField
-                createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
+//                createdAt = createDto.createdAt ?: LocalDateTime.now().toString()    // let the clientDefault fill it.
             }
             person
         } catch (ex: ExposedSQLException) {

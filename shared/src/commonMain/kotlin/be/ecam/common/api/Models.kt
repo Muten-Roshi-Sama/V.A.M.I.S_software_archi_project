@@ -17,11 +17,11 @@ data class ScheduleItem(val title: String)
 data class AdminDTO(
     val id: Int? = null,
 //    val username: String,
-    val firstName: String,
-    val lastName: String,
+    val firstName: String? = null,
+    val lastName: String? = null,
     val email: String,
     val password: String? = null,    // NEVER send pswd to frontend, this is ONLY to retrieve password from frontend,
-    val createdAt: String
+    val createdAt: String? = null           // let the clientDefault fill it.
 )
 
 

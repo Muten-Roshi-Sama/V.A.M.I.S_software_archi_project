@@ -27,8 +27,8 @@ class Admin(id: EntityID<Int>) : IntEntity(id), PersonInfo {
 
     // Getters
     override val personId: Int? get() = person.id.value
-    override val firstName: String get() = person.firstName
-    override val lastName: String get() = person.lastName
+    override val firstName: String? get() = person.firstName
+    override val lastName: String? get() = person.lastName
     override val email: String get() = person.email
     override val createdAt: String get() = person.createdAt
 
