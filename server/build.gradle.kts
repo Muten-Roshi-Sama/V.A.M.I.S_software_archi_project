@@ -28,6 +28,8 @@ dependencies {
     // Test libs
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation("io.mockk:mockk:1.14.6") // or latest mockk
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 //    testImplementation("org.junit.jupiter:junit-jupiter:5.9.4")
 
     // SQLite Database

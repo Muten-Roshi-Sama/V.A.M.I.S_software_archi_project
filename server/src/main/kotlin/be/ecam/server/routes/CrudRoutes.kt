@@ -1,6 +1,11 @@
 package be.ecam.server.routes
 
-import be.ecam.server.routes.handlers.CrudRegistry
+
+// Crud
+import be.ecam.server.routes.handlers.CrudHandler
+//import be.ecam.server.routes.handlers.CrudRegistry
+
+// Ktor
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -11,10 +16,16 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
 
+class CrudRegistry(private val handlers: Map<String, CrudHandler>) {
+    fun getHandler(tableName: String?): CrudHandler? = tableName?.lowercase()?.let { handlers[it] }
+    fun allowedTables(): Set<String> = handlers.keys
+}
+
 fun Route.crudRoutes(registry: CrudRegistry) {
     route("/crud") {
         route("/{table}") {
-            // list & search
+
+            // SEARCH
             get {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }
@@ -27,6 +38,7 @@ fun Route.crudRoutes(registry: CrudRegistry) {
                 if (!q.isNullOrBlank()) handler.search(call) else handler.list(call)
             }
 
+            // BY_ID
             get("/by/{id}") {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }
@@ -37,6 +49,7 @@ fun Route.crudRoutes(registry: CrudRegistry) {
                 handler.getById(call)
             }
 
+            // COUNT
             get("/count") {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }
@@ -47,6 +60,7 @@ fun Route.crudRoutes(registry: CrudRegistry) {
                 handler.count(call)
             }
 
+            // CREATE
             post {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }
@@ -57,6 +71,7 @@ fun Route.crudRoutes(registry: CrudRegistry) {
                 handler.create(call)
             }
 
+            // UPDATE
             put("/by/{id}") {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }
@@ -67,6 +82,7 @@ fun Route.crudRoutes(registry: CrudRegistry) {
                 handler.update(call)
             }
 
+            // DELETE
             delete("/by/{id}") {
                 val table = call.parameters["table"]?.lowercase()
                 val handler = table?.let { registry.getHandler(it) }

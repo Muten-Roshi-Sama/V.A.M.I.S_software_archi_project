@@ -3,6 +3,18 @@ package be.ecam.server.routes
 // SHARED Functions
 import be.ecam.common.Greeting
 import be.ecam.common.api.*
+
+
+// Services
+import be.ecam.server.services.AdminService
+
+// Handlers
+import be.ecam.server.routes.handlers.CrudHandler
+import be.ecam.server.routes.handlers.AdminHandler
+
+// CrudRoutes.kt
+import be.ecam.server.routes.CrudRegistry
+
 // Ktor
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -27,22 +39,36 @@ import java.time.*
     // Delete	          (POST)   :   /crud/tracks/{track_id}
 
 
-
-
-
 fun Application.configureRoutes() {
+
+    // 1. Create services
+    val adminService = AdminService()          // single instance
+//   val studentService = StudentService()
+//    val teacherService = TeacherService()
+    // ...
+
+    // 2. Create Handlers (DI)
+    val adminHandler = AdminHandler(adminService)
+//    val studentHandler = StudentHandler(StudentService)
+//    val teacherHandler = TeacherHandler(TeacherService)
+    // ...
+
+    // 3. Build Registry
+    val registry = CrudRegistry(
+        mapOf(
+            "admins" to adminHandler,
+//            "students" to studentHandler,
+//            "teachers" to TeacherHandler(teacherService)
+            // ...
+        )
+    )
+
     routing {
         get("/") { call.respondText("Ktor: ${Greeting().greet()}") }
-        get("/health") { call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString())) }
 
-        // ---------- STATIC / ROOT : Health Check ----------
-        get("/") {
-            call.respondText("Ktor: ${Greeting().greet()}")
-        }
-        get("/health") {
-            call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString()))
-        }
-
+        crudRoutes(registry)
+//        healthRoutes(isDevFeatureEnabled=True)
+//        staticRoutes()
 
 //        // ---------- API ----------
 //        route("/api") {

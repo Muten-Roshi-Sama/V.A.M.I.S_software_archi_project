@@ -13,9 +13,7 @@ import io.ktor.http.*
  * Concrete Admin handler implementing CrudHandler using AdminService.
  * Inject the AdminService in the constructor (passed from `Routes.kt`).
  */
-class AdminHandler(
-    private val adminService: AdminService
-) : CrudHandler {
+class AdminHandler(private val adminService: AdminService) : CrudHandler {
 
     override suspend fun list(call: ApplicationCall) {
         val all: List<AdminDTO> = adminService.getAll()

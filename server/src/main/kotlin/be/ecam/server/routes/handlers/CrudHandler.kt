@@ -6,7 +6,13 @@ import io.ktor.server.application.ApplicationCall
 
 // Java
 
-//!: Goal : single generic /crud/{table} route that delegates to table-specific services,
+/* !: Goal : single generic /crud/{table} route that delegates to table-specific services,
+
+    - CrudHandler.kt : suspend methods for CRUD actions
+    - ex. AdminHandler.kt : implements CRUD methods, instantiates AdminService
+    - ./CrudRoutes.kt : central routing service, extracts relevant table and delegate to correspondant service.
+    - Routes.kt : application routing
+ */
 
 
 interface CrudHandler {
@@ -18,31 +24,6 @@ interface CrudHandler {
     suspend fun update(call: ApplicationCall)      // PUT /crud/{table}/by/{id}
     suspend fun delete(call: ApplicationCall)      // DELETE /crud/{table}/by/{id}
 }
-
-//class CrudRegistry(private val handlers: Map<String, CrudHandler>) {
-//    fun getHandler(tableName: String): CrudHandler? = handlers[tableName.lowercase()]
-//    fun allowedTables(): Set<String> = handlers.keys
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
