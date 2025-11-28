@@ -1,0 +1,30 @@
+[
+  {
+    "points": 14,
+    "comment": "Très bon travail",
+    "student_id": "25347",
+    "activities_id": "INFO1-CM",
+    "scale": 20
+  },
+  {
+    "points": 18,
+    "comment": "Excellent",
+    "student_id": "25347",
+    "activities_id": "INFO1-TP",
+    "scale": 20
+  },
+  {
+    "points": 9,
+    "comment": "labo: validé ; examen : échoué",
+    "student_id": "25189",
+    "activities_id": "INFO1-CM",
+    "scale": 20
+  },
+  {
+    "points": 12,
+    "comment": "Participation moyenne",
+    "student_id": "25189",
+    "activities_id": "INFO1-TP",
+    "scale": 20
+  }
+]

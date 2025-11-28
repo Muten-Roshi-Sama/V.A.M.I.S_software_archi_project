@@ -1,0 +1,5 @@
+[
+  { "option_code": "INFO", "name": "Informatique" },
+  { "option_code": "ELEC", "name": "Électricité" },
+  { "option_code": "EM", "name": "Mécanique" }
+]
