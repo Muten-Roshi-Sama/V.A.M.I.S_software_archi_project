@@ -64,8 +64,11 @@ fun Application.configureRoutes() {
     )
 
     routing {
-        get("/") { call.respondText("Ktor: ${Greeting().greet()}") }
 
+        // ---------- ROOT -------------
+        get("/") { call.respondText("Ktor Status: OK") }
+
+        // ---------- CRUD -------------
         crudRoutes(registry)
 //        healthRoutes(isDevFeatureEnabled=True)
 //        staticRoutes()

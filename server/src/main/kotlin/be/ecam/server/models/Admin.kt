@@ -19,6 +19,7 @@ object AdminTable : IntIdTable(name = "admins") {
 }
 
 class Admin(id: EntityID<Int>) : IntEntity(id), PersonInfo {
+
     companion object : IntEntityClass<Admin>(AdminTable) {
         fun createForPerson(person: Person): Admin = new { this.person = person }
     }

@@ -1,25 +1,27 @@
 package be.ecam.server
 
-
-// Kotlin / testing
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import java.time.Instant
-import java.io.File
+// Ktor
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.testing.*
+
+// Kotlin
 import kotlin.test.*
 
-class ApplicationTest {
+// Other
+import be.ecam.server.routes.configureRoutes
 
+
+class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            module()
+            configureRoutes()
         }
-//        val response = client.get("/")
-//        assertEquals(HttpStatusCode.OK, response.status)
-//        assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
+        val response = client.get("/")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals("Ktor Status: OK", response.bodyAsText())
     }
 }

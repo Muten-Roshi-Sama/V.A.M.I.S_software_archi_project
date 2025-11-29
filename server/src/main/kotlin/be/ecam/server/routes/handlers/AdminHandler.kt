@@ -52,6 +52,7 @@ class AdminHandler(private val adminService: AdminService) : CrudHandler {
         call.respond(HttpStatusCode.OK, mapOf("count" to c))
     }
 
+
     override suspend fun create(call: ApplicationCall) {
         try {
             val dto = call.receive<AdminCreateDTO>()

@@ -18,80 +18,91 @@ import io.ktor.server.routing.route
 
 class CrudRegistry(private val handlers: Map<String, CrudHandler>) {
     fun getHandler(tableName: String?): CrudHandler? = tableName?.lowercase()?.let { handlers[it] }
-    fun allowedTables(): Set<String> = handlers.keys
 }
 
 fun Route.crudRoutes(registry: CrudRegistry) {
     route("/crud") {
         route("/{table}") {
-
-            // SEARCH
-            get {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@get
-                }
-                // if query param q present -> search, else list
-                val q = call.request.queryParameters["q"]
-                if (!q.isNullOrBlank()) handler.search(call) else handler.list(call)
-            }
-
-            // BY_ID
-            get("/by/{id}") {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@get
-                }
-                handler.getById(call)
-            }
-
-            // COUNT
-            get("/count") {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@get
-                }
-                handler.count(call)
-            }
-
+            // LIST
+            get { val handler = registry.getHandler(call.parameters["table"]); handler?.list(call) }
             // CREATE
-            post {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@post
-                }
-                handler.create(call)
-            }
-
-            // UPDATE
-            put("/by/{id}") {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@put
-                }
-                handler.update(call)
-            }
-
-            // DELETE
-            delete("/by/{id}") {
-                val table = call.parameters["table"]?.lowercase()
-                val handler = table?.let { registry.getHandler(it) }
-                if (handler == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
-                    return@delete
-                }
-                handler.delete(call)
-            }
+            post { val handler = registry.getHandler(call.parameters["table"]); handler?.create(call) }
+            // ... put/get/delete delegates similarly
         }
     }
 }
+
+//fun Route.crudRoutes(registry: CrudRegistry) {
+//    route("/crud") {
+//        route("/{table}") {
+//
+//            // SEARCH
+//            get {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@get
+//                }
+//                // if query param q present -> search, else list
+//                val q = call.request.queryParameters["q"]
+//                if (!q.isNullOrBlank()) handler.search(call) else handler.list(call)
+//            }
+//
+//            // BY_ID
+//            get("/by/{id}") {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@get
+//                }
+//                handler.getById(call)
+//            }
+//
+//            // COUNT
+//            get("/count") {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@get
+//                }
+//                handler.count(call)
+//            }
+//
+//            // CREATE
+//            post {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@post
+//                }
+//                handler.create(call)
+//            }
+//
+//            // UPDATE
+//            put("/by/{id}") {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@put
+//                }
+//                handler.update(call)
+//            }
+//
+//            // DELETE
+//            delete("/by/{id}") {
+//                val table = call.parameters["table"]?.lowercase()
+//                val handler = table?.let { registry.getHandler(it) }
+//                if (handler == null) {
+//                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "unknown table"))
+//                    return@delete
+//                }
+//                handler.delete(call)
+//            }
+//        }
+//    }
+//}

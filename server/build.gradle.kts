@@ -15,6 +15,7 @@ application {
 }
 
 val exposedVersion = "0.61.0"
+val ktor_version = "3.3.3"
 
 dependencies {
     implementation(projects.shared)
@@ -41,6 +42,9 @@ dependencies {
     // datetime
     implementation("org.jetbrains.exposed:exposed-java-time:${exposedVersion}")
 
+    // JWT
+    implementation("io.ktor:ktor-server-auth:${ktor_version}")
+    implementation("io.ktor:ktor-server-auth-jwt:${ktor_version}")
 }
 
 //tasks.test {
