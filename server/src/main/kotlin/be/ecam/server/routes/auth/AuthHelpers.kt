@@ -19,10 +19,10 @@ class ForbiddenException : RuntimeException()
 
 /**
  * Default authenticator:
- * - checks existence via PersonService.existsByEmail
- * - fetches Person via findByEmail and compares plaintext password (per your constraint)
- * - determines role by checking AdminService.existsByEmail, then TeacherService/StudentService if available
- * - fallback: domain mapping (email domain -> role)
+ * - 1. checks PersonService.existsByEmail()
+ * - 2. checks password (TO.DO: hash password)
+ * - 3. find role by checking AdminService.existsByEmail, then TeacherService/StudentService if available
+ * - fallback: email domain (...@student.com)
  *
  * Returns Pair(userId, role) or null if invalid.
  */
@@ -48,8 +48,8 @@ fun userAuthenticator(
                 // Determine role by table lookup (preferred)
                 val roleFromTables: String? = when {
                     adminService?.existsByEmail(email) == true -> "admin"
-                    teacherService?.existsByEmail(email) == true -> "teacher"
-                    studentService?.existsByEmail(email) == true -> "student"
+//                    teacherService?.existsByEmail(email) == true -> "teacher"
+//                    studentService?.existsByEmail(email) == true -> "student"
                     else -> null
                 }
                 val role = roleFromTables ?: run {

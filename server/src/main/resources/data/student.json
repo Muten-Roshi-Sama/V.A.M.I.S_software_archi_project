@@ -1,77 +1,30 @@
 [
   {
-    "studentId": "S2025001",
-    "email": "alice.smith@example.com",
+    "studentId": 22546,
+    "email": "alice.smith@student.com",
     "password": "123456",
     "lastName": "Smith",
     "firstName": "Alice",
-    "gender": "Female",
     "studyYear": 2,
     "major": "Computer Science",
     "transcript": [
-      { "course": "CS101 - Introduction to Programming", "points": 16 },
+      { "courseCode": "CS101 - Introduction to Programming", "points": 16 },
       { "course": "MATH101 - Calculus I", "points": 14 },
       { "course": "ENG101 - Academic Writing", "points": 15 }
     ]
   },
   {
-    "studentId": "S2025002",
-    "email": "bob.johnson@example.com",
+    "studentId":  22120,
+    "email": "bob.johnson@student.com",
     "password": "123456",
     "lastName": "Johnson",
     "firstName": "Bob",
-    "gender": "Male",
     "studyYear": 3,
     "major": "Electrical Engineering",
     "transcript": [
       { "course": "EE201 - Circuit Theory", "points": 13 },
       { "course": "PHYS101 - Physics I", "points": 12 },
       { "course": "MATH201 - Linear Algebra", "points": 14 }
-    ]
-  },
-  {
-    "studentId": "S2025003",
-    "email": "charlie.nguyen@example.com",
-    "password": "123456",
-    "lastName": "Nguyen",
-    "firstName": "Charlie",
-    "gender": "Non-binary",
-    "studyYear": 1,
-    "major": "Mechanical Engineering",
-    "transcript": [
-      { "course": "ME101 - Engineering Graphics", "points": 15 },
-      { "course": "MATH101 - Calculus I", "points": 13 },
-      { "course": "CHEM101 - General Chemistry", "points": 12 }
-    ]
-  },
-  {
-    "studentId": "S2025004",
-    "email": "daniela.garcia@example.com",
-    "password": "123456",
-    "lastName": "Garcia",
-    "firstName": "Daniela",
-    "gender": "Female",
-    "studyYear": 4,
-    "major": "Mathematics",
-    "transcript": [
-      { "course": "MATH401 - Real Analysis", "points": 17 },
-      { "course": "MATH402 - Abstract Algebra", "points": 16 },
-      { "course": "STAT301 - Probability & Statistics", "points": 15 }
-    ]
-  },
-  {
-    "studentId": "S2025005",
-    "email": "ethan.brown@example.com",
-    "password": "123456",
-    "lastName": "Brown",
-    "firstName": "Ethan",
-    "gender": "Male",
-    "studyYear": 2,
-    "major": "Business Administration",
-    "transcript": [
-      { "course": "BUS201 - Principles of Management", "points": 14 },
-      { "course": "ECON101 - Microeconomics", "points": 13 },
-      { "course": "ACCT101 - Financial Accounting", "points": 12 }
     ]
   }
 ]

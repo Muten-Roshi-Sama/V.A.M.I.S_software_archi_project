@@ -49,11 +49,24 @@ fun Application.configureRoutes() {
     // Create services
     val personService = be.ecam.server.services.PersonService()
     val adminService = AdminService()
+    val teacherService = TeacherService()
+    val studentService = StudentService()
+
+
+    // Build authenticator and token factory
+    val authenticator = be.ecam.server.auth.userAuthenticator(personService, adminService, teacherService, studentService)
+    val tokenFactory: (Int, String) -> String = { userId, role ->
+        // Security.kt - create stateless token
+        be.ecam.server.auth.createToken(secret = "dev-secret", issuer = "ecam", audience = "ecam-audience", userId = userId, role = role)
+    }
 
 
 
-    val registry = CrudRegistry(mapOf("admins" to adminRoutes))
-configureRoutes(registry)
+//    val registry = CrudRegistry(mapOf("admins" to adminRoutes))
+//    configureRoutes(registry)
+
+
+
 }
 
 
