@@ -17,6 +17,7 @@ import be.ecam.companion.data.SettingsRepository
 import be.ecam.companion.di.appModule
 import be.ecam.companion.ui.CalendarScreen
 import be.ecam.companion.ui.SettingsScreen
+import be.ecam.companion.ui.LoginScreen
 import be.ecam.companion.viewmodel.HomeViewModel
 import companion.composeapp.generated.resources.Res
 import companion.composeapp.generated.resources.calendar
@@ -42,7 +43,7 @@ fun App(extraModules: List<Module> = emptyList()) {
     KoinApplication(application = { modules(appModule + extraModules) }) {
         val vm = koinInject<HomeViewModel>()
         MaterialTheme {
-            var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }//Variable that says: “Which screen is currently displayed?”
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }//Variable that says: “Which screen is currently displayed?”
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
 
@@ -56,6 +57,9 @@ fun App(extraModules: List<Module> = emptyList()) {
                 ) { padding ->
                     Box(modifier = Modifier.padding(padding)) {
                         when (currentScreen) {
+                            is Screen.Login -> LoginScreen(
+                                onLoginSuccess = { currentScreen = Screen.Home }
+                            )
                             is Screen.Home -> HomeScreen(
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
