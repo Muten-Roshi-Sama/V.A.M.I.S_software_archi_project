@@ -31,4 +31,7 @@ class KtorApiRepository(
     override suspend fun fetchAllStudentBulletins(): List<StudentBulletin> {
         return client.get("${baseUrl()}/crud/students/all/grades").body()
     }
+    // ← nouvelle implémentation pour récupérer les cours depuis l’API
+    override suspend fun fetchAllCourses(): List<Course> =
+        client.get("${baseUrl()}/crud/courses").body()
 }

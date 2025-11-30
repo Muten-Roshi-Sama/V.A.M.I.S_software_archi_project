@@ -27,12 +27,23 @@ import androidx.compose.material3.TextField
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import kotlinx.datetime.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import be.ecam.companion.data.Course
+import be.ecam.companion.data.ApiRepository
+import org.koin.compose.koinInject
+
+
+
 
 const val SLIDE_DURATION_MS = 100
 const val FADE_DURATION_MS = 100
@@ -307,19 +318,70 @@ fun CalendarScreen(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
+                            // États pour la sélection de cours (accessibles depuis tout le formulaire)
+                            var assignedCourse by remember { mutableStateOf<Course?>(null) }
+                            var expandedCourses by remember { mutableStateOf(false) }
+                            var courses by remember { mutableStateOf<List<Course>>(emptyList()) }
+                            var isLoadingCourses by remember { mutableStateOf(true) }
+                            var courseLoadError by remember { mutableStateOf<String?>(null) }
+
+                            // Récupération des cours via ApiRepository injecté par Koin
+                            val apiRepository: ApiRepository = koinInject()
+                            LaunchedEffect(Unit) {
+                                try {
+                                    isLoadingCourses = true
+                                    courses = apiRepository.fetchAllCourses()
+                                } catch (e: Exception) {
+                                    courseLoadError = e.message
+                                } finally {
+                                    isLoadingCourses = false
+                                }
+                            }
+
                             // 🧍 Assigné à + 📅 Date côte à côte
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                                // --- Champ Assigné à ---
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text("Assigné à", fontWeight = FontWeight.SemiBold)
-                                    TextField(
-                                        value = assignedTo,
-                                        onValueChange = { assignedTo = it },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        placeholder = { Text("") }
-                                    )
+
+                                    if (isLoadingCourses) {
+                                        Text("Chargement des cours...", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                                    } else if (courseLoadError != null) {
+                                        Text("Erreur : $courseLoadError", color = Color.Red)
+                                    } else {
+                                        Box {
+                                            TextField(
+                                                value = assignedCourse?.name ?: "Sélectionnez un cours",
+                                                onValueChange = {},
+                                                readOnly = true,
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
+                                                trailingIcon = {
+                                                    IconButton(onClick = { expandedCourses = !expandedCourses }) {
+                                                        Icon(Icons.Filled.ArrowDropDown, contentDescription = "Ouvrir la liste")
+                                                    }
+                                                }
+                                            )
+
+                                            DropdownMenu(
+                                                expanded = expandedCourses,
+                                                onDismissRequest = { expandedCourses = false },
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                courses.forEach { course ->
+                                                    DropdownMenuItem(
+                                                        text = { Text("${course.name} (${course.code})") },
+                                                        onClick = {
+                                                            assignedCourse = course
+                                                            expandedCourses = false
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
+
 
                                 // --- Champ Date avec calendrier intégré ---
                                 Column(modifier = Modifier.weight(1f)) {
@@ -505,8 +567,9 @@ fun CalendarScreen(
                                                 null
                                             }
 
-                                            if (parsedDate != null && assignedTo.isNotBlank() && notes.isNotBlank()) {
-                                                val text = "Assigné à: $assignedTo — Note: $notes"
+                                            // Use the selected course (assignedCourse) instead of free-text assignedTo
+                                            if (parsedDate != null && assignedCourse != null && notes.isNotBlank()) {
+                                                val text = "Assigné à: ${assignedCourse?.name ?: ""} — Note: $notes"
 
                                                 val updatedList = events[parsedDate]?.toMutableList() ?: mutableListOf()
                                                 updatedList.add(text)
@@ -517,7 +580,7 @@ fun CalendarScreen(
                                             }
 
                                             showAddEventPanel = false
-                                            assignedTo = ""
+                                            assignedCourse = null
                                             date = ""
                                             notes = ""
                                         }

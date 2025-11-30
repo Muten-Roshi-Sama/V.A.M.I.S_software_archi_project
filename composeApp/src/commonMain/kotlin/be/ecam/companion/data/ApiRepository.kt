@@ -12,6 +12,8 @@ interface ApiRepository {
     suspend fun fetchHello(): HelloResponse
     suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>
     suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
+    suspend fun fetchAllCourses(): List<Course>
+
 }
 
 @Serializable
@@ -33,4 +35,12 @@ data class StudentBulletin(
     val year: String,
     val option: String?,//may be null
     val evaluations: List<Evaluation> //from "Evaluation" class
+)
+
+// --- Data class pour JSON ---
+@Serializable
+data class Course(
+    val code: String,
+    val name: String,
+    val year: Int
 )

@@ -42,6 +42,21 @@ fun Application.configureRoutes() {
                 }
             }
 
+            // Expose /crud/courses (serve the courses.json file)
+            route("/courses") {
+                get {
+                    val possiblePaths = listOf(
+                        "server/src/main/resources/data/courses.json",
+                        "src/main/resources/data/courses.json",
+                        "data/courses.json"
+                    )
+                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
+                        ?: return@get call.respond(HttpStatusCode.NotFound, "courses.json untraceable")
+                    call.respondText(file.readText(), ContentType.Application.Json)
+                }
+            }
+
+
             //When the frontend calls this URL → the server returns the contents of the JSON file :
             route("/students") {
                 get("/all/grades") {
