@@ -75,7 +75,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                             )
                             is Screen.Settings -> SettingsScreen(
                                 repo = koinInject(),
-                                onSaved = { vm.load() }
+                                onSaved = { vm.load() },
+                                onLogout = { currentScreen = Screen.Login }
                             )
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
                             // AJOUT : nouvel écran

@@ -15,7 +15,11 @@ import be.ecam.companion.di.buildBaseUrl
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(repo: SettingsRepository, onSaved: (() -> Unit)? = null) {
+fun SettingsScreen(
+    repo: SettingsRepository,
+    onSaved: (() -> Unit)? = null,
+    onLogout: () -> Unit
+) {
     val scope = rememberCoroutineScope()
     var host by remember { mutableStateOf("") }
     var portText by remember { mutableStateOf("") }
@@ -31,6 +35,7 @@ fun SettingsScreen(repo: SettingsRepository, onSaved: (() -> Unit)? = null) {
     Column {
         Text("Server configuration")
         Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = host,
@@ -39,6 +44,7 @@ fun SettingsScreen(repo: SettingsRepository, onSaved: (() -> Unit)? = null) {
             singleLine = true
         )
         Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = portText,
@@ -46,46 +52,63 @@ fun SettingsScreen(repo: SettingsRepository, onSaved: (() -> Unit)? = null) {
             label = { Text("Port") },
             singleLine = true
         )
+
         if (error != null) {
             Spacer(Modifier.height(8.dp))
             Text(error!!)
         }
+
         Spacer(Modifier.height(12.dp))
-        Button(enabled = !saving, onClick = {
-            val port = portText.toIntOrNull()
-            if (host.isBlank() || port == null || port !in 1..65535) {
-                error = "Please enter a valid host and port (1-65535)."
-                return@Button
-            }
-            error = null
-            scope.launch {
-                saving = true
-                try {
-                    repo.setServerHost(host.trim())
-                    repo.setServerPort(port)
-                    saved = true
-                    onSaved?.invoke()
-                } finally {
-                    // show saved feedback briefly
-                    kotlinx.coroutines.delay(1200)
-                    saved = false
-                    saving = false
+        Button(
+            enabled = !saving,
+            onClick = {
+                val port = portText.toIntOrNull()
+                if (host.isBlank() || port == null || port !in 1..65535) {
+                    error = "Please enter a valid host and port (1-65535)."
+                    return@Button
+                }
+                error = null
+                scope.launch {
+                    saving = true
+                    try {
+                        repo.setServerHost(host.trim())
+                        repo.setServerPort(port)
+                        saved = true
+                        onSaved?.invoke()
+                    } finally {
+                        kotlinx.coroutines.delay(1200)
+                        saved = false
+                        saving = false
+                    }
                 }
             }
-        }) {
+        ) {
             Text("Save")
         }
+
         Spacer(Modifier.height(8.dp))
+
         val preview = run {
             val p = portText.toIntOrNull() ?: 0
             if (host.isNotBlank() && p in 1..65535) buildBaseUrl(host, p) else ""
         }
+
         if (preview.isNotBlank()) {
             Text("Base URL: $preview")
         }
+
         if (saved) {
             Spacer(Modifier.height(4.dp))
             Text("Saved. Reloading…")
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onLogout() }
+        ) {
+            Text("Log Out")
         }
     }
 }
