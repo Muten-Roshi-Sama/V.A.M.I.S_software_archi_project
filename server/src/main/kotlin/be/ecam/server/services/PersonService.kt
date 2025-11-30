@@ -20,17 +20,23 @@ data class PersonCreateDTO(
 )
 
 /**
- * Centralized Person lifecycle logic:
- * - validation
+ * Centralized Person (admin, student, teacher) creation:
+ * - validation (pswd length > 6, email should contain "@",...)
  * - existence checks
  * - creation (persistence)
  *
- * Role services should call this to create/find persons.
+ * All Role services should call this to create/find persons.
  */
 class PersonService {
 
+    // BOOL
     fun existsByEmail(email: String): Boolean = transaction {
         Person.find { PersonTable.email eq email }.empty().not()
+    }
+
+    // Returns PERSON
+    fun findByEmail(email: String): Person? = transaction {
+        Person.find { PersonTable.email eq email }.firstOrNull()
     }
 
     fun findById(id: Int): Person? = transaction {
@@ -45,12 +51,6 @@ class PersonService {
         Person.all().count()
     }
 
-    /**
-     * Create and persist a Person after validating inputs.
-     *
-     * NOTE: This code stores the password as provided. Replace the assignment
-     * with a hashed password using a Security util (e.g. BCrypt) when ready.
-     */
     fun create(createDto: PersonCreateDTO): Person = transaction {
         val emailField = createDto.email
         val passwordField = createDto.password
@@ -81,4 +81,5 @@ class PersonService {
             throw ex
         }
     }
+
 }

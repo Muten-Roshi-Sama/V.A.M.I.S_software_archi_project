@@ -62,35 +62,4 @@ class RoleService<TDto, TRole>(
         val role = createForPerson(person)
         toDto(role)
     }
-
-//    /**
-//     * Generic seed entrypoint wired to seedFromResourceIfMissing.
-//     *
-//     * - expects the resource JSON -> TDto decoding to be handled by seedFromResourceIfMissing.
-//     */
-//    fun seedFromResource(resourcePath: String = "data/role.json"): SeedResult {
-//        return seedFromResourceIfMissing<TDto>(
-//            name = "roles",
-//            resourcePath = resourcePath,
-//            exists = { dto -> existsByEmail(dtoEmail(dto)) },
-//            create = { dto -> createFromDto(dto) },
-//            legacyMapper = null // role-specific services can override by calling seedFromResourceIfMissing directly if they need a legacyMapper
-//        )
-//    }
-//
-//    /**
-//     * Alternate seed entrypoint allowing a legacyMapper (same signature as seedFromResourceIfMissing)
-//     */
-//    fun seedFromResourceWithMapper(
-//        resourcePath: String = "data/role.json",
-//        legacyMapper: (Map<String, Any?>) -> TDto
-//        ): SeedResult {
-//        return seedFromResourceIfMissing<TDto>(
-//            name = "roles",
-//            resourcePath = resourcePath,
-//            exists = { dto -> existsByEmail(dtoEmail(dto)) },
-//            create = { dto -> createFromDto(dto) },
-//            legacyMapper = legacyMapper
-//        )
-//    }
 }

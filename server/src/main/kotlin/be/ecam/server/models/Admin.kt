@@ -3,12 +3,12 @@ package be.ecam.server.models
 //Table
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
+import org.jetbrains.exposed.sql.Table
 
 //DAO
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.sql.Table
 
 //DTO
 import be.ecam.common.api.AdminDTO

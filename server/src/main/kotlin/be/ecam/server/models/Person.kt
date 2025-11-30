@@ -45,13 +45,14 @@ class Person(id: EntityID<Int>) : IntEntity(id), PersonInfo {
 
 
     // ======== Methods ============
-    internal fun setPasswordHash(hash: String) { password = hash }
+    // TODO: implement hashing
+//    internal fun setPasswordHash(hash: String) { password = hash }
     internal fun verifyPasswordPlain(plain: String): Boolean {
         // replace with real hash verification (BCrypt.checkpw)
         return password == plain
     }
 
-    val fullName: String get() = "$firstName $lastName"
+//    val fullName: String get() = "$firstName $lastName"
 }
 
 
