@@ -49,11 +49,8 @@ fun Application.configureRoutes() {
                     call.respond(admins)
                 }
             }
-
-            // BRANCHEMENT DE LA NOUVELLE ROUTE
-            println("📌 Avant appel à studentBulletinRoutes()")
             studentBulletinRoutes()
-            println("📌 Après appel à studentBulletinRoutes()")
+            teacherDataRoute()
 
             route("/teachers") { }
         }

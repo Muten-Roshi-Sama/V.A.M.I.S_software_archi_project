@@ -32,7 +32,8 @@ import be.ecam.companion.ui.Screen
 import be.ecam.companion.ui.HomeScreen
 import be.ecam.companion.ui.CalendarScreen
 import be.ecam.companion.ui.SettingsScreen
-import be.ecam.companion.ui.DataStudentsScreen   //Add
+import be.ecam.companion.ui.DataStudentsScreen
+import be.ecam.companion.ui.DataTeacherScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +58,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                             is Screen.Home -> HomeScreen(
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
-                                onOpenStudents = { currentScreen = Screen.DataStudents }
+                                onOpenStudents = { currentScreen = Screen.DataStudents },
+                                onOpenTeachers = { currentScreen = Screen.Teachers }
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
@@ -68,16 +70,12 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onSaved = { vm.load() }
                             )
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
-                            // AJOUT : nouvel écran
                             is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
+                            is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
                         }
                     }
                 }
             }
-
-            // Le code commenté que tu avais (BottomBar, etc.) reste intact
-            // var selectedScreen by remember { mutableStateOf(BottomItem.HOME) }
-            // ... tout ton code commenté reste là, je ne touche à rien
         }
     }
 }

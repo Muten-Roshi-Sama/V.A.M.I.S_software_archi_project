@@ -51,14 +51,6 @@
     "course_code": "TFE5"
   },
   {
-    "activity_name": "Artificial Intelligence - Theory",
-    "activity_code": "AI4-THEORY",
-    "ects": 5,
-    "description": "Introduction to machine learning and neural networks",
-    "coordinator": "prof.benali@ecam.be",
-    "course_code": "AI4"
-  },
-  {
     "activity_name": "Power Electronics",
     "activity_code": "ELEC4-LEC",
     "ects": 6,

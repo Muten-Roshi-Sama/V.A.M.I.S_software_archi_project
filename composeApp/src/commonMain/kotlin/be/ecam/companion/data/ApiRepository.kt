@@ -10,4 +10,6 @@ interface ApiRepository {
     suspend fun fetchHello(): HelloResponse
     suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>
     suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
+    suspend fun fetchAllTeachers(): List<be.ecam.common.api.Teacher>
+    suspend fun fetchTeacher(email: String): be.ecam.common.api.Teacher
 }

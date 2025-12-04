@@ -7,6 +7,8 @@ import be.ecam.common.api.StudentBulletin   // ← LE BON IMPORT !
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import be.ecam.common.api.Teacher
+import io.ktor.http.*
 
 class KtorApiRepository(
     private val client: HttpClient,
@@ -29,5 +31,13 @@ class KtorApiRepository(
 
     override suspend fun fetchAllStudentBulletins(): List<StudentBulletin> {
         return client.get("${baseUrl()}/crud/students/all/grades").body()
+    }
+    override suspend fun fetchAllTeachers(): List<Teacher> {
+        return client.get("${baseUrl()}/crud/teachers").body()
+    }
+
+    override suspend fun fetchTeacher(email: String): Teacher {
+        val encoded = java.net.URLEncoder.encode(email, "UTF-8")
+        return client.get("${baseUrl()}/crud/teachers/$encoded").body()
     }
 }
