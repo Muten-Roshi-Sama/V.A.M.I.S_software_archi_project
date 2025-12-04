@@ -6,16 +6,23 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.io.File
-import java.time.*
+import java.time.LocalDate
+import be.ecam.server.routes.studentBulletinRoutes
 
 fun Application.configureRoutes() {
     routing {
-        get("/") { call.respondText("Ktor: ${Greeting().greet()}") }
-        get("/health") { call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString())) }
+        get("/") {
+            call.respondText("Ktor: ${Greeting().greet()}")
+        }
+
+        get("/health") {
+            call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString()))
+        }
 
         route("/api") {
-            get("/hello") { call.respond(HelloResponse("Hello from Ktor server")) }
+            get("/hello") {
+                call.respond(HelloResponse("Hello from Ktor server"))
+            }
             get("/schedule") {
                 val schedule = mutableMapOf<String, List<ScheduleItem>>()
                 schedule["2025-09-30"] = listOf(ScheduleItem("Team sync"), ScheduleItem("Release planning"))
@@ -26,6 +33,7 @@ fun Application.configureRoutes() {
                 }
                 call.respond(schedule)
             }
+
             route("/users") {
                 get { call.respondText("List of all users") }
                 get("/{id}") { call.respondText("Details for user ${call.parameters["id"]}") }
@@ -42,20 +50,10 @@ fun Application.configureRoutes() {
                 }
             }
 
-            //When the frontend calls this URL → the server returns the contents of the JSON file :
-            route("/students") {
-                get("/all/grades") {
-                    val possiblePaths = listOf(
-                        "server/src/main/resources/data/students.json",
-                        "src/main/resources/data/students.json",
-                        "data/students.json"
-                    )
-                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
-
-                    call.respondText(file.readText(), ContentType.Application.Json)
-                }
-            }
+            // BRANCHEMENT DE LA NOUVELLE ROUTE
+            println("📌 Avant appel à studentBulletinRoutes()")
+            studentBulletinRoutes()
+            println("📌 Après appel à studentBulletinRoutes()")
 
             route("/teachers") { }
         }

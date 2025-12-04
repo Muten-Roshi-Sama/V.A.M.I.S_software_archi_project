@@ -3,19 +3,18 @@ package be.ecam.companion.data
 import be.ecam.common.api.AdminDTO
 import be.ecam.common.api.HelloResponse
 import be.ecam.common.api.ScheduleItem
+import be.ecam.common.api.StudentBulletin   // ← LE BON IMPORT !
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
-//This class implements the ApiRepository contract :
 class KtorApiRepository(
-    private val client: HttpClient, //the tool for making HTTP requests
-    private val baseUrlProvider: () -> String, //function that returns the server URL
+    private val client: HttpClient,
+    private val baseUrlProvider: () -> String,
 ) : ApiRepository {
 
-    private fun baseUrl() = baseUrlProvider() //function to retrieve the URL
+    private fun baseUrl() = baseUrlProvider()
 
-    //retrieves and returns information from the server//
     override suspend fun fetchAdmins(): List<AdminDTO> {
         return client.get("${baseUrl()}/crud/admins").body()
     }
