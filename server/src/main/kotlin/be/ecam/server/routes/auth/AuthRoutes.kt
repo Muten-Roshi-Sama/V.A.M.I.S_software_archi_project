@@ -1,3 +1,4 @@
+
 package be.ecam.server.routes.auth
 
 import io.ktor.server.routing.*
@@ -7,9 +8,13 @@ import io.ktor.server.request.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import kotlinx.serialization.Serializable
 
 // DTOs for login
+@Serializable
 data class LoginRequest(val email: String, val password: String)
+
+@Serializable
 data class LoginResponse(val accessToken: String, val tokenType: String = "Bearer")
 
 /**
@@ -58,7 +63,6 @@ class AuthRoutes(
         }
     }
 }
-
 
 
 

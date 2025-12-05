@@ -17,6 +17,7 @@ import be.ecam.server.db.seedFromResourceIfMissing
 // util
 import be.ecam.server.util.requireValidEmail
 import be.ecam.server.util.requireValidPassword
+import kotlinx.serialization.Serializable
 
 
 //Exposed
@@ -27,6 +28,7 @@ import java.time.LocalDateTime
 
 // ----------------------------
 
+@Serializable
 data class AdminCreateDTO(
     val firstName: String? = null,
     val lastName: String? = null,

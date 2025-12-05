@@ -23,6 +23,8 @@ class AdminRoutes(private val adminService: AdminService) : InterfaceRoutes {
             withRoles("admin") {
                 // LIST all
                 get {
+                    val all = adminService.getAll()
+                    call.respond(HttpStatusCode.OK, all)
                     // TODO: implement pagination and filter search directly inside Person
 //                    val q = call.request.queryParameters["q"]
 //                    val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 0

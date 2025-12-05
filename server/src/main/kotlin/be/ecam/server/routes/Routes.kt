@@ -19,6 +19,11 @@ import be.ecam.server.services.TeacherService
 
 // Handlers
 import be.ecam.server.routes.handlers.AdminRoutes
+import be.ecam.server.routes.auth.AuthRoutes
+
+// Auth helpers
+import be.ecam.server.auth.userAuthenticator
+import be.ecam.server.auth.createToken
 
 // Routes Interface
 import be.ecam.server.routes.InterfaceRoutes
@@ -32,81 +37,90 @@ import be.ecam.server.routes.CrudRegistry
     - auth/RoutesExtension.kt (with withRoles): protects routes based on role
 
 
-
-
  ================================================== **/
 //
-fun Application.configureRoutes(registry: CrudRegistry) {
+
+/** for Test
+ *
+ */
+fun Application.configureRoutes(
+    registry: CrudRegistry,
+    authRoutes: AuthRoutes? = null
+    ) {
     routing {
+        // Root health check
         get("/") { call.respondText("Ktor Status: OK") }
+
+        // Health routes
+        healthRoutes(
+            isDevFeatureEnabled = true,
+            devResetHandler = {
+                // Optional: trigger DB reset in dev
+                be.ecam.server.db.DatabaseFactory.resetDb()
+            }
+        )
+
+        // Auth routes (login, /me)
+        authRoutes?.register(this)
+
+        // CRUD resources
         registry.registerAllUnder(this, "/crud")
     }
 }
 
-/** Production entry: create concrete services & registry then delegate. */
+/**
+ * for Production:
+ * create services, build registry, wire routes.
+ * */
 fun Application.configureRoutes() {
 
-    // Create services
-    val personService = be.ecam.server.services.PersonService()
+    // 1. Create services
+    val personService = PersonService()
     val adminService = AdminService()
     val teacherService = TeacherService()
     val studentService = StudentService()
 
 
-    // Build authenticator and token factory
-    val authenticator = be.ecam.server.auth.userAuthenticator(personService, adminService, teacherService, studentService)
+    // 2. Build authenticator and token factory
+    val authenticator = userAuthenticator(
+        personService = personService,
+        adminService = adminService,
+        teacherService = teacherService,
+        studentService = studentService
+    )
     val tokenFactory: (Int, String) -> String = { userId, role ->
-        // Security.kt - create stateless token
-        be.ecam.server.auth.createToken(secret = "dev-secret", issuer = "ecam", audience = "ecam-audience", userId = userId, role = role)
+        createToken(
+            secret = "dev-secret",
+            issuer = "ecam",
+            audience = "ecam-audience",
+            userId = userId,
+            role = role
+        )
     }
 
+    // 3. Create AuthRoutes
+    val authRoutes = AuthRoutes(authenticator, tokenFactory)
 
+    // 4. Create resource handlers
+    val adminRoutes = AdminRoutes(adminService)
+    // val studentRoutes = StudentRoutes(studentService)
+    // val teacherRoutes = TeacherRoutes(teacherService)
 
-//    val registry = CrudRegistry(mapOf("admins" to adminRoutes))
-//    configureRoutes(registry)
+    // 5. Build registry
+    val registry = CrudRegistry(
+        mapOf(
+            "admins" to adminRoutes
+            // "students" to studentRoutes,
+            // "teachers" to teacherRoutes
+        )
+    )
 
-
+    // 6. Wire everything
+    configureRoutes(registry, authRoutes)
 
 }
 
 
 
 
-
-
-//fun Application.configureRoutes() {
-//
-//    // 1. Create services
-//    val adminService = AdminService()          // single instance
-////   val studentService = StudentService()
-////    val teacherService = TeacherService()
-//    // ...
-//
-//    // 2. Create Handlers (DI)
-//    val adminHandler = AdminHandler(adminService)
-////    val studentHandler = StudentHandler(StudentService)
-////    val teacherHandler = TeacherHandler(TeacherService)
-//    // ...
-//
-//    // 3. Build Registry
-//    val registry = CrudRegistry(
-//        mapOf(
-//            "admins" to adminHandler,
-////            "students" to studentHandler,
-////            "teachers" to TeacherHandler(teacherService)
-//            // ...
-//        )
-//    )
-//
-//    routing {
-//
-//        // ---------- ROOT -------------
-//        get("/") { call.respondText("Ktor Status: OK") }
-//
-//        // ---------- CRUD -------------
-//        crudRoutes(registry)
-//
-//    }
-//
-//}
 
