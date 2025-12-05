@@ -1,44 +1,124 @@
 package be.ecam.companion.data
 
-import be.ecam.common.api.HelloResponse
-import be.ecam.common.api.ScheduleItem
+// import DTO's
+import be.ecam.common.api.*
+
+// Ktor
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.get
+import io.ktor.client.request.*
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-// import DTO's
-import be.ecam.common.api.AdminDTO
 
-//This class implements the ApiRepository contract :
+
 class KtorApiRepository(
     private val client: HttpClient,
     private val baseUrlProvider: () -> String,
     ) : ApiRepository {
     private fun baseUrl() = baseUrlProvider()
 
-    // -------- CRUD ----------
+    // Token storage (in-memory, replace with platform-specific secure storage later)
+    private var accessToken: String? = null
 
-    //retrieves and returns information from the server//
-    override suspend fun fetchAdmins(): List<AdminDTO> {
-        return client.get("${baseUrl()}/crud/admins").body()
+    // -------- Auth ----------
+
+    override suspend fun login(email: String, password: String): LoginResponse {
+        val response: LoginResponse = client.post("${baseUrl()}/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequest(email, password))
+        }.body()
+        accessToken = response.accessToken
+        return response
     }
 
+    override suspend fun logout() {
+        accessToken = null
+    }
 
+    override suspend fun getMe(): UserInfo {
+        return client.get("${baseUrl()}/auth/me") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
 
+    override fun isAuthenticated(): Boolean = accessToken != null
 
+    // -------- Admin CRUD ----------
 
-    // ========== version prof ===========
+    override suspend fun fetchAdmins(): List<AdminDTO> {
+        return client.get("${baseUrl()}/crud/admins") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
+
+    override suspend fun fetchAdminById(id: Int): AdminDTO {
+        return client.get("${baseUrl()}/crud/admins/by/$id") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
+
+    override suspend fun fetchAdminCount(): Long {
+        val response: CountResponse = client.get("${baseUrl()}/crud/admins/count") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+        return response.count
+    }
+
+    override suspend fun createAdmin(admin: AdminDTO): AdminDTO {
+        return client.post("${baseUrl()}/crud/admins") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(admin)
+        }.body()
+    }
+
+    override suspend fun updateAdmin(id: Int, admin: AdminDTO): AdminDTO {
+        return client.put("${baseUrl()}/crud/admins/by/$id") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(admin)
+        }.body()
+    }
+
+    override suspend fun deleteAdmin(id: Int): Boolean {
+        return try {
+            client.delete("${baseUrl()}/crud/admins/by/$id") {
+                bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // -------- Legacy endpoints ----------
+
     override suspend fun fetchHello(): HelloResponse {
-        println("baseUrl" + baseUrl())
         return client.get("${baseUrl()}/api/hello").body()
     }
 
-    override suspend fun fetchSchedule(): Map<String, List<ScheduleItem>> {
-        // The server returns a raw map of ISO date -> items
-        return client.get("${baseUrl()}/api/schedule").body()
-    }
-
-    override suspend fun fetchAllStudentBulletins(): List<StudentBulletin> {
-        return client.get("${baseUrl()}/crud/students/all/grades").body()
-    }
+//    override suspend fun fetchSchedule(): Map<String, List<ScheduleItem>> {
+//        return client.get("${baseUrl()}/api/schedule").body()
+//    }
+//
+//    override suspend fun fetchAllStudentBulletins(): List<StudentBulletin> {
+//        return client.get("${baseUrl()}/crud/students/all/grades").body()
+//    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

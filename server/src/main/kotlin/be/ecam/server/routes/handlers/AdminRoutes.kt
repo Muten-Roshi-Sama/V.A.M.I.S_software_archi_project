@@ -2,7 +2,10 @@ package be.ecam.server.routes.handlers
 
 import be.ecam.server.services.AdminService
 import be.ecam.server.services.AdminCreateDTO
+import be.ecam.server.services.AdminUpdateDTO
 import be.ecam.common.api.AdminDTO
+
+// Ktor
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
@@ -75,7 +78,19 @@ class AdminRoutes(private val adminService: AdminService) : InterfaceRoutes {
 
                 // UPDATE
                 put("/by/{id}") {
-                    call.respond(HttpStatusCode.NotImplemented, mapOf("error" to "update not implemented"))
+                    val id = call.parameters["id"]?.toIntOrNull()
+                    if (id == null) return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "invalid id"))
+
+                    try {
+                        val dto = call.receive<AdminUpdateDTO>()
+                        val updated = adminService.update(id, dto)
+                        call.respond(HttpStatusCode.OK, updated)
+                    } catch (ex: IllegalArgumentException) {
+                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to (ex.message ?: "invalid input")))
+                    } catch (ex: Exception) {
+                        // Generic fallback (log if you have logger)
+                        call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (ex.message ?: "internal error")))
+                    }
                 }
 
                 // DELETE

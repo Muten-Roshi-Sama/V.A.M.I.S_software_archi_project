@@ -3,16 +3,29 @@ package be.ecam.common.api
 import kotlinx.serialization.Serializable
 
 
-// ========================================
 
 
-@Serializable
-data class HelloResponse(val message: String)
+// ========== Auth DTOs ==========
 
 @Serializable
-data class ScheduleItem(val title: String)
+data class LoginRequest(val email: String, val password: String)
+
+@Serializable
+data class LoginResponse(val accessToken: String, val tokenType: String = "Bearer")
+
+@Serializable
+data class UserInfo(val id: Int, val role: String)
+
+// ========== Response wrappers ==========
+@Serializable
+data class CountResponse(val count: Long)
 
 
+
+
+
+
+// ============== Tables DTO ===========
 @Serializable
 data class AdminDTO(
     val id: Int? = null,
@@ -45,4 +58,15 @@ data class TeacherDTO(
     val createdAt: String? = null           // let the clientDefault fill it.
 )
 
+
+
+
+
+
+// ========================================
+@Serializable
+data class HelloResponse(val message: String)
+
+@Serializable
+data class ScheduleItem(val title: String)
 

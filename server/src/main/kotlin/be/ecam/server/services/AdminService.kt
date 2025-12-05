@@ -36,6 +36,15 @@ data class AdminCreateDTO(
     val password: String
 //    val createdAt: String
 )
+@Serializable
+data class AdminUpdateDTO(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
+    val password: String? = null
+)
+
+
 class AdminService(private val personService: PersonService = PersonService()) {
 
     /* Create a RoleService instance configured for Admin
@@ -103,6 +112,36 @@ class AdminService(private val personService: PersonService = PersonService()) {
             throw ex
         }
     }
+
+    fun update(adminId: Int, dto: AdminUpdateDTO): AdminDTO = transaction {
+        val admin = Admin.findById(adminId) ?: throw IllegalArgumentException("not found")
+        val person = admin.person
+
+        // Email: delegate uniqueness check via PersonService (uses findByEmail)
+        dto.email?.let { newEmail ->
+            if (newEmail != person.email) {
+                requireValidEmail(newEmail)
+                val existing = personService.findByEmail(newEmail)
+                if (existing != null && existing.id.value != person.id.value) {
+                    throw IllegalArgumentException("Email '$newEmail' is already registered")
+                }
+                person.email = newEmail
+            }
+        }
+
+        // Names
+        dto.firstName?.let { person.firstName = it }
+        dto.lastName?.let { person.lastName = it }
+
+        // Password
+        dto.password?.let { pw ->
+            requireValidPassword(pw, minLength = 6)
+            person.password = pw // TODO: hash
+        }
+
+        admin.toDto()
+    }
+
 
     // convert incoming AdminDTO (frontend) to AdminCreateDTO then call create()
     fun createAdminFromDto(dto: AdminDTO) {

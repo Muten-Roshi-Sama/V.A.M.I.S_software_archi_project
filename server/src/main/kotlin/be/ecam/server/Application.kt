@@ -48,6 +48,7 @@ fun Application.module() {
     configureStaticRoutes() // serves WASM + favicon
     configureRoutes()       // API routes
 
+
 }
 
 // ===========================================================================

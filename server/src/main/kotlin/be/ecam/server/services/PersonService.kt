@@ -4,6 +4,7 @@ import be.ecam.server.models.Person
 import be.ecam.server.models.PersonTable
 import be.ecam.server.util.requireValidEmail
 import be.ecam.server.util.requireValidPassword
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.time.LocalDateTime
@@ -11,6 +12,7 @@ import java.time.LocalDateTime
 /**
  * Internal DTO for person creation used by role services.
  */
+@Serializable
 data class PersonCreateDTO(
     val firstName: String? = null,
     val lastName: String? = null,
@@ -18,7 +20,13 @@ data class PersonCreateDTO(
     val password: String,
     val createdAt: String? = null
 )
-
+@Serializable
+data class PersonUpdateDTO(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
+    val password: String? = null
+)
 /**
  * Centralized Person (admin, student, teacher) creation:
  * - validation (pswd length > 6, email should contain "@",...)
@@ -81,5 +89,32 @@ class PersonService {
             throw ex
         }
     }
+
+    fun update(personId: Int, dto: PersonUpdateDTO): Person = transaction {
+        val person = Person.findById(personId) ?: throw IllegalArgumentException("person not found")
+        // Email
+        dto.email?.let { newEmail ->
+            if (newEmail != person.email) {
+                requireValidEmail(newEmail)
+                val existing = findByEmail(newEmail)
+                if (existing != null && existing.id.value != person.id.value) {
+                    throw IllegalArgumentException("Email '$newEmail' is already registered")
+                }
+                person.email = newEmail
+            }
+        }
+        // Names
+        dto.firstName?.let { person.firstName = it }
+        dto.lastName?.let { person.lastName = it }
+
+        // Password (optional update)
+        dto.password?.let { pw ->
+            requireValidPassword(pw, minLength = 6)
+            person.password = pw // TODO: use hashing
+        }
+
+        person
+    }
+
 
 }
