@@ -5,6 +5,8 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.http.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 
 // DTOs for login
 data class LoginRequest(val email: String, val password: String)

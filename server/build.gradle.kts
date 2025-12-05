@@ -26,6 +26,15 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.network.tls.certificates)
 
+    // Ktor Server Plugins
+    implementation("io.ktor:ktor-server-call-logging:${ktor_version}")
+    implementation("io.ktor:ktor-server-default-headers:${ktor_version}")
+    implementation("io.ktor:ktor-server-status-pages:${ktor_version}")
+    implementation("io.ktor:ktor-server-auth:${ktor_version}")
+    implementation("io.ktor:ktor-server-auth-jwt:${ktor_version}")
+    implementation("com.auth0:java-jwt:4.4.0") // JWT library
+
+
     // Test libs
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
