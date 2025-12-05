@@ -10,7 +10,7 @@ import org.koin.compose.koinInject
 import be.ecam.companion.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit, onOpenTeachers: () -> Unit) {
+fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit, onOpenTeachers: () -> Unit, onOpenBible: () -> Unit) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
 
@@ -37,6 +37,11 @@ fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit, onOpenTeach
         Button(onClick = onOpenTeachers) { Text("Voir les enseignants") }
 
         Spacer(Modifier.height(12.dp))
+        Button(onClick = onOpenBible) {
+            Text("📚 Bible des Programmes")
+        }
+        Spacer(Modifier.height(12.dp))
+
         Text(vm.helloMessage)
     }
 }

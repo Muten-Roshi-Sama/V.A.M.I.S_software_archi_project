@@ -51,6 +51,7 @@ fun Application.configureRoutes() {
             }
             studentBulletinRoutes()
             teacherDataRoute()
+            bibleDataRoute()
 
             route("/teachers") { }
         }

@@ -7,9 +7,14 @@ import be.ecam.server.models.TeacherTable
 import be.ecam.server.models.ModulesTable
 import be.ecam.common.api.AdminDTO
 import be.ecam.server.models.Admin
+import be.ecam.server.models.OptionTable
+import be.ecam.server.models.CourseTable
+import be.ecam.server.models.AnnualStudyPlanTable
+import be.ecam.server.models.PlanCourseTable
 import be.ecam.server.services.AdminService
 import be.ecam.server.services.StudentService
 import be.ecam.server.services.TeacherService
+import be.ecam.server.services.BibleService
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -36,6 +41,9 @@ object DatabaseFactory {
         seedStudentsIfEmpty()
         seedTeachersIfEmpty()
         seedModulesIfEmpty()
+        seedOptionsIfEmpty()
+        seedCoursesIfEmpty()
+        seedStudyPlansIfEmpty()
     }
 
     private fun createMissingTables() {
@@ -48,6 +56,9 @@ object DatabaseFactory {
 
             try { SchemaUtils.create(TeacherTable, ModulesTable) }
             catch (e: Exception) { println("TeacherTable & ModulesTable already exist.") }
+
+            try { SchemaUtils.create(OptionTable, CourseTable, AnnualStudyPlanTable, PlanCourseTable) }
+            catch (e: Exception) { println("Bible tables already exist.") }
         }
     }
 
@@ -64,7 +75,6 @@ object DatabaseFactory {
         }
     }
 
-    // Ton code initAdmins() (inchangé)
     private fun initAdmins() {
         val possiblePaths = listOf(
             "server/src/main/resources/data/admin.json",
@@ -130,6 +140,33 @@ object DatabaseFactory {
             TeacherService().seedModulesFromJson()
         } else {
             println("Modules table already contains $count module(s). Skipping seed.")
+        }
+    }
+    private fun seedOptionsIfEmpty() {
+        val count = transaction { OptionTable.selectAll().count() }
+        if (count == 0L) {
+            println("No options found → seeding from options.json")
+            BibleService().seedOptions()
+        } else {
+            println("Options table already contains $count option(s). Skipping seed.")
+        }
+    }
+    private fun seedCoursesIfEmpty() {
+        val count = transaction { CourseTable.selectAll().count() }
+        if (count == 0L) {
+            println("No courses found → seeding from courses.json")
+            BibleService().seedCourses()
+        } else {
+            println("Courses table already contains $count course(s). Skipping seed.")
+        }
+    }
+    private fun seedStudyPlansIfEmpty() {
+        val count = transaction { AnnualStudyPlanTable.selectAll().count() }
+        if (count == 0L) {
+            println("No study plans found → seeding from annual_study_plans.json")
+            BibleService().seedAnnualStudyPlans()
+        } else {
+            println("Study plans table already contains $count plan(s). Skipping seed.")
         }
     }
 }

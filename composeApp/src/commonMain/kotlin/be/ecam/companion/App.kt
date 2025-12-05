@@ -34,6 +34,7 @@ import be.ecam.companion.ui.CalendarScreen
 import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.DataStudentsScreen
 import be.ecam.companion.ui.DataTeacherScreen
+import be.ecam.companion.ui.DataBibleScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +60,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
                                 onOpenStudents = { currentScreen = Screen.DataStudents },
-                                onOpenTeachers = { currentScreen = Screen.Teachers }
+                                onOpenTeachers = { currentScreen = Screen.Teachers },
+                                onOpenBible = { currentScreen = Screen.Bible }
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
@@ -72,6 +74,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
                             is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
                             is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
+                            is Screen.Bible -> DataBibleScreen(onBack = { currentScreen = Screen.Home })
                         }
                     }
                 }

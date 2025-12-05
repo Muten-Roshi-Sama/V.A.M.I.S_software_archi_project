@@ -7,4 +7,5 @@ sealed class Screen(val key: String) {
     object ListAdmins : Screen("admins")
     object DataStudents : Screen("dataStudents")
     object Teachers : Screen("teachers")
+    object Bible : Screen("bible")
 }
