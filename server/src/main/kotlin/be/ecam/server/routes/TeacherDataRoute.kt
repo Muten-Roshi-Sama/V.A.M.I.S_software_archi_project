@@ -32,7 +32,7 @@ fun Route.teacherDataRoute() {
                 call.respond(teacher)
             }
         }
-        
+
         // GET /crud/teachers/search?name=Dupont
         get("/search") {
             val nameQuery = call.request.queryParameters["name"]

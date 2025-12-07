@@ -5,11 +5,13 @@ import be.ecam.server.models.ModulesTable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 import be.ecam.common.api.Teacher
 import be.ecam.common.api.Module
 
+//DTOs used only to read JSON at startup (seed)
 @Serializable
 data class TeacherSeedDTO(
     val teacher_id: Int,
@@ -32,7 +34,8 @@ data class ModuleSeedDTO(
 
 class TeacherService {
     private val json = Json { ignoreUnknownKeys = true }
-
+    //Seed function called once when the server starts up
+    //It reads students.json and fills the database
     fun seedFromJson() {
         val possiblePaths = listOf(
             "server/src/main/resources/data/teachers.json",
@@ -103,14 +106,16 @@ class TeacherService {
         }
     }
 
+    //// ========== CRUD : READ from BD ==========
     fun getAllTeachers(): List<Teacher> {
         return transaction {
+            // SELECT * FROM teachers
             TeacherTable.selectAll().map { tRow ->
                 val email = tRow[TeacherTable.email]
                 val first = tRow[TeacherTable.firstName]
                 val last = tRow[TeacherTable.lastName]
 
-                // ✅ CORRECTION : Syntaxe correcte pour Exposed
+                //retrieval modules
                 val modules = ModulesTable
                     .selectAll()
                     .where { ModulesTable.coordinator eq email }
@@ -133,15 +138,14 @@ class TeacherService {
         }
     }
 
+    //Getting one student by his email
     fun getTeacherByEmail(emailParam: String): Teacher? {
         return transaction {
-            // ✅ CORRECTION : Syntaxe correcte pour Exposed
             val tRow = TeacherTable
                 .selectAll()
                 .where { TeacherTable.email eq emailParam }
                 .firstOrNull() ?: return@transaction null
 
-            // ✅ CORRECTION : Syntaxe correcte pour Exposed
             val modules = ModulesTable
                 .selectAll()
                 .where { ModulesTable.coordinator eq emailParam }
@@ -163,6 +167,7 @@ class TeacherService {
         }
     }
 
+    //Filter
     fun findTeachersByName(q: String): List<Teacher> {
         val needle = q.trim().lowercase()
         if (needle.isEmpty()) return emptyList()
@@ -170,6 +175,146 @@ class TeacherService {
         return getAllTeachers().filter { t ->
             t.first_name.lowercase().contains(needle) ||
                     t.last_name.lowercase().contains(needle)
+        }
+    }
+
+    //// ========== CREATE (change in the database) ==========
+    fun createTeacher(teacher: TeacherSeedDTO) {
+        transaction {
+            // Vérifie si le teacher existe déjà
+            val existing = TeacherTable
+                .selectAll()
+                .where {
+                    (TeacherTable.email eq teacher.email) or
+                            (TeacherTable.teacherId eq teacher.teacher_id)
+                }
+                .count()
+
+            if (existing > 0L) {
+                throw IllegalArgumentException("Teacher with this email or teacherId already exists")
+            }
+
+            //insert into teachers
+            TeacherTable.insert { row ->
+                row[teacherId] = teacher.teacher_id
+                row[email] = teacher.email
+                row[firstName] = teacher.first_name
+                row[lastName] = teacher.last_name
+                row[password] = teacher.password
+                row[createdAt] = teacher.created_at
+            }
+
+            println("Teacher created: ${teacher.email}")
+        }
+    }
+
+    //Adding a module
+    fun addModule(module: ModuleSeedDTO) {
+        transaction {
+            val teacherExists = TeacherTable
+                .selectAll()
+                .where { TeacherTable.email eq module.coordinator }
+                .count()
+            if (teacherExists == 0L) {
+                throw IllegalArgumentException("Teacher (coordinator) not found: ${module.coordinator}")
+            }
+            val moduleExists = ModulesTable
+                .selectAll()
+                .where { ModulesTable.activityCode eq module.activity_code }
+                .count()
+
+            if (moduleExists > 0L) {
+                throw IllegalArgumentException("Module with this activity_code already exists: ${module.activity_code}")
+            }
+
+            //insert into modules
+            ModulesTable.insert { row ->
+                row[activityName] = module.activity_name
+                row[activityCode] = module.activity_code
+                row[ects] = module.ects
+                row[description] = module.description
+                row[coordinator] = module.coordinator
+                row[courseCode] = module.course_code
+            }
+
+            println("Module added: ${module.activity_code} for ${module.coordinator}")
+        }
+    }
+
+    // ========== UPDATE change in the database ==========
+
+    fun updateTeacher(emailParam: String, newData: TeacherSeedDTO) {
+        transaction {
+            // UPDATE teachers SET ... WHERE email = ?
+            val updated = TeacherTable.update({ TeacherTable.email eq emailParam }) { row ->
+                row[firstName] = newData.first_name
+                row[lastName] = newData.last_name
+                row[password] = newData.password
+            }
+
+            if (updated == 0) {
+                throw IllegalArgumentException("Teacher not found: $emailParam")
+            }
+
+            println("Teacher updated: $emailParam")
+        }
+    }
+
+    fun updateModule(activityCode: String, newData: ModuleSeedDTO) {
+        transaction {
+            val updated = ModulesTable.update({ ModulesTable.activityCode eq activityCode }) { row ->
+                row[activityName] = newData.activity_name
+                row[ects] = newData.ects
+                row[description] = newData.description
+                row[coordinator] = newData.coordinator
+                row[courseCode] = newData.course_code
+            }
+
+            if (updated == 0) {
+                throw IllegalArgumentException("Module not found: $activityCode")
+            }
+
+            println("Module updated: $activityCode")
+        }
+    }
+
+    // ========== DELETE ==========
+
+    //Delete the teacher with his modules
+    fun deleteTeacher(emailParam: String) {
+        transaction {
+            val teacherExists = TeacherTable
+                .selectAll()
+                .where { TeacherTable.email eq emailParam }
+                .count()
+
+            if (teacherExists == 0L) {
+                throw IllegalArgumentException("Teacher not found: $emailParam")
+            }
+
+            val deletedModules = ModulesTable.deleteWhere {
+                ModulesTable.coordinator eq emailParam
+            }
+
+            val deletedTeacher = TeacherTable.deleteWhere {
+                TeacherTable.email eq emailParam
+            }
+
+            println("Teacher deleted: $emailParam ($deletedModules modules removed)")
+        }
+    }
+
+    fun deleteModule(activityCode: String) {
+        transaction {
+            val deleted = ModulesTable.deleteWhere {
+                ModulesTable.activityCode eq activityCode
+            }
+
+            if (deleted == 0) {
+                throw IllegalArgumentException("Module not found: $activityCode")
+            }
+
+            println("Module deleted: $activityCode")
         }
     }
 }
