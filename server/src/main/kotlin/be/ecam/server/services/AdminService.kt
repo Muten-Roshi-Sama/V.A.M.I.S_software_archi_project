@@ -72,9 +72,9 @@ class AdminService(private val personService: PersonService = PersonService()) {
     fun getById(adminId: Int): AdminDTO? = ops.getById(adminId)
     fun delete(adminId: Int): Boolean = ops.delete(adminId)
     fun count(): Long = ops.count()
-    fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
+    // fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
 
-
+    
 
     /* Create admin from DTO, Inherited from PersonService.kt
      */
@@ -98,7 +98,7 @@ class AdminService(private val personService: PersonService = PersonService()) {
                     lastName = createDto.lastName,
                     email = emailField,
                     password = passwordField
-//                    createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
+        // createdAt = createDto.createdAt ?: LocalDateTime.now().toString()
                 )
             )
 
@@ -142,6 +142,11 @@ class AdminService(private val personService: PersonService = PersonService()) {
         admin.toDto()
     }
 
+    fun existsByEmail(email: String): Boolean = transaction {
+        // Check if person exists AND has an Admin role record
+        val person = personService.findByEmail(email) ?: return@transaction false
+        Admin.find { AdminTable.person eq person.id }.firstOrNull() != null
+    }
 
     // convert incoming AdminDTO (frontend) to AdminCreateDTO then call create()
     fun createAdminFromDto(dto: AdminDTO) {
@@ -151,7 +156,7 @@ class AdminService(private val personService: PersonService = PersonService()) {
             lastName = dto.lastName,
             email = dto.email,
             password = dto.password ?: "" // fallback if password is null in seed
-//            createdAt = dto.createdAt ?: LocalDateTime.now().toString()
+            // createdAt = dto.createdAt ?: LocalDateTime.now().toString()
         )
         // Use existing create(createDto) which returns AdminDTO
         create(createDto)

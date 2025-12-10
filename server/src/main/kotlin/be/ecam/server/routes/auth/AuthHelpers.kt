@@ -48,8 +48,9 @@ fun userAuthenticator(
                 // Determine role by table lookup (preferred)
                 val roleFromTables: String? = when {
                     adminService?.existsByEmail(email) == true -> "admin"
-//                    teacherService?.existsByEmail(email) == true -> "teacher"
-//                    studentService?.existsByEmail(email) == true -> "student"
+                    studentService?.existsByEmail(email) == true -> "student"
+                    // teacherService?.existsByEmail(email) == true -> "teacher"
+                    
                     else -> null
                 }
                 val role = roleFromTables ?: run {

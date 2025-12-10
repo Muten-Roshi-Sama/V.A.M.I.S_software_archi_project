@@ -73,7 +73,7 @@ class StudentService(private val personService: PersonService = PersonService())
     fun getById(studentId: Int): StudentDTO? = ops.getById(studentId)
     fun delete(studentId: Int): Boolean = ops.delete(studentId)
     fun count(): Long = ops.count()
-    fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
+    // fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
 
     /* Create student from DTO */
     fun create(createDto: StudentCreateDTO): StudentDTO = transaction {
@@ -145,6 +145,12 @@ class StudentService(private val personService: PersonService = PersonService())
         student.toDto()
     }
 
+    fun existsByEmail(email: String): Boolean = transaction {
+        // Check if person exists AND has a Student role record
+        val person = personService.findByEmail(email) ?: return@transaction false
+        Student.find { StudentTable.person eq person.id }.firstOrNull() != null
+    }
+
     // convert incoming StudentDTO (frontend) to StudentCreateDTO then call create()
     fun createStudentFromDto(dto: StudentDTO) {
         val createDto = StudentCreateDTO(
@@ -198,3 +204,6 @@ class StudentService(private val personService: PersonService = PersonService())
         )
     }
 }
+
+
+
