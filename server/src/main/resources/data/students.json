@@ -1,20 +1,20 @@
 [
   {
+    "studentId": "12345",
+    "email": "alice@student.com",
     "firstName": "Alice",
     "lastName": "Student",
-    "email": "alice@student.com",
     "password": "pass123",
-    "studentId": "12345",
     "studyYear": "BA2",
     "optionCode": null,
     "createdAt": "2024-01-01T10:00:00Z"
   },
   {
+    "studentId": "12346",
+    "email": "bob@student.com",
     "firstName": "Bob",
     "lastName": "Learner",
-    "email": "bob@student.com",
     "password": "pass123",
-    "studentId": "12346",
     "studyYear": "MA1",
     "optionCode": "INFO",
     "createdAt": "2024-01-02T10:00:00Z"

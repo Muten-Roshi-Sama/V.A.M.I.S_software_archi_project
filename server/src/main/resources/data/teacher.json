@@ -1,18 +1,27 @@
+
 [
   {
-    "teacherId": 1001,
-    "email": "prof.dupont@teacher.be",
-    "password": "123456",
+    "teacherId": "1001",
+    "email": "dupont@teacher.be",
+    "password": "pass123",
     "firstName": "Jean",
     "lastName": "Dupont",
-    "courses": [
-      {
-        "courseName": "Cours magistral INFO1",
-        "courseCode": "INFO1",
-        "module": "",
-        "evaluationOpen": false
-      }
-    ]
+    "createdAt": "2024-01-02T10:00:00Z"
+  },
+  {
+    "teacherId": "1002",
+    "email": "alice.martin@teacher.be",
+    "password": "pass123",
+    "firstName": "Alice",
+    "lastName": "Martin",
+    "createdAt": "2024-01-02T10:00:00Z"
+  },
+  {
+    "teacherId": "1003",
+    "email": "marc.robin@teacher.be",
+    "password": "pass123",
+    "firstName": "Marc",
+    "lastName": "Robin",
+    "createdAt": "2024-01-02T10:00:00Z"
   }
-
 ]

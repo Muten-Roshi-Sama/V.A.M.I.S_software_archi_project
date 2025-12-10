@@ -1,5 +1,23 @@
 [
-  { "code": "INFO1", "name": "Introduction to Programming", "year": 1 },
-  { "code": "MATH2", "name": "Mathematics", "year": 2 },
-  { "code": "PHYS1", "name": "Physics", "year": 1 }
+  {
+    "code": "C101A",
+    "name": "Linear Algebra - Lecture A",
+    "description": "Vectors, matrices, eigenvalues",
+    "semester": "Q1",
+    "coordinator": "dupont@teacher.be"
+  },
+  {
+    "code": "C102A",
+    "name": "Calculus I - Lecture A",
+    "description": "Limits, derivatives, integrals",
+    "semester": "Q1",
+    "coordinator": "alice.martin@teacher.be"
+  },
+  {
+    "code": "C201A",
+    "name": "Data Structures - Lecture",
+    "description": "Trees, graphs, hash tables",
+    "semester": "Q2",
+    "coordinator": "marc.robin@teacher.be"
+  }
 ]
