@@ -9,6 +9,8 @@ import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import kotlinx.serialization.Serializable
+//
+import be.ecam.common.api.UserInfo
 
 // DTOs for login
 @Serializable
@@ -57,7 +59,7 @@ class AuthRoutes(
                     }
                     val id = principal.payload.getClaim("id").asInt()
                     val role = principal.payload.getClaim("role").asString()
-                    call.respond(HttpStatusCode.OK, mapOf("id" to id, "role" to role))
+                    call.respond(HttpStatusCode.OK, be.ecam.common.api.UserInfo(id = id, role = role))
                 }
             }
         }

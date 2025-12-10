@@ -39,12 +39,15 @@ data class AdminDTO(
 @Serializable
 data class StudentDTO(
     val id: Int? = null,
-    val studentId: Int? = null,
+    val studentId: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
     val email: String,
     val password: String? = null,    // NEVER send pswd to frontend, this is ONLY to retrieve password from frontend,
-    val createdAt: String? = null           // let the clientDefault fill it.
+    val createdAt: String? = null,  // let the clientDefault fill it.
+    //
+    val studyYear: String? = null,
+    val optionCode: String? = null,
 )
 
 @Serializable

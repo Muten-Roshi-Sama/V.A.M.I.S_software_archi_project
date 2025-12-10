@@ -41,7 +41,9 @@ fun Application.module() {
 
     // 3. Setup DB
     DatabaseFactory.connect()
-//    DatabaseFactory.resetDb()
+    DatabaseFactory.resetDb()
+    // DatabaseFactory.initDb()
+
 
 
     // 4. Register Routes

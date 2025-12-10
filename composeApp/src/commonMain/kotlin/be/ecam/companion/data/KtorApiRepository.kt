@@ -21,8 +21,9 @@ class KtorApiRepository(
     // Token storage (in-memory, replace with platform-specific secure storage later)
     private var accessToken: String? = null
 
-    // -------- Auth ----------
-
+    // ========================
+    //           Auth 
+    // ========================
     override suspend fun login(email: String, password: String): LoginResponse {
         val response: LoginResponse = client.post("${baseUrl()}/auth/login") {
             contentType(ContentType.Application.Json)
@@ -44,8 +45,11 @@ class KtorApiRepository(
 
     override fun isAuthenticated(): Boolean = accessToken != null
 
-    // -------- Admin CRUD ----------
 
+
+    // ============================
+    //           Admin CRUD 
+    // ============================
     override suspend fun fetchAdmins(): List<AdminDTO> {
         return client.get("${baseUrl()}/crud/admins") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
@@ -91,6 +95,60 @@ class KtorApiRepository(
             false
         }
     }
+
+    // ============================
+    //           Student CRUD 
+    // ============================
+    override suspend fun fetchStudents(): List<StudentDTO> {
+        return client.get("${baseUrl()}/crud/students") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
+    
+    override suspend fun fetchStudentById(id: Int): StudentDTO {
+        return client.get("${baseUrl()}/crud/students/by/$id") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
+    
+    override suspend fun fetchStudentCount(): Long {
+        val response: CountResponse = client.get("${baseUrl()}/crud/students/count") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+        return response.count
+    }
+    
+    override suspend fun createStudent(student: StudentDTO): StudentDTO {
+        return client.post("${baseUrl()}/crud/students") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(student)
+        }.body()
+    }
+    
+    override suspend fun updateStudent(id: Int, student: StudentDTO): StudentDTO {
+        return client.put("${baseUrl()}/crud/students/by/$id") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(student)
+        }.body()
+    }
+    
+    override suspend fun deleteStudent(id: Int): Boolean {
+        return try {
+            client.delete("${baseUrl()}/crud/students/by/$id") {
+                bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
+
+
+
 
     // -------- Legacy endpoints ----------
 

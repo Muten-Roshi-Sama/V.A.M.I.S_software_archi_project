@@ -3,7 +3,7 @@ package be.ecam.server.db
 // DAO Schema
 import be.ecam.server.models.PersonTable
 import be.ecam.server.models.AdminTable
-import be.ecam.server.models.EvaluationTable
+// import be.ecam.server.models.EvaluationTable
 import be.ecam.server.models.StudentTable   //Add
 //import be.ecam.server.models.CourseTable
 //import be.ecam.server.models.TeacherTable
@@ -52,36 +52,10 @@ object DatabaseFactory {
         // Get DB file path
         val dbPath = File(dbFolder, "sqlite.db").absolutePath
 
-//        Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
+        //Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
         Database.connect("jdbc:sqlite:$dbPath?foreign_keys=true", driver = "org.sqlite.JDBC")
         println("Connected to SQLite database, path is : $dbPath")
     }
-
-    /**
-         * Enable SQLite PRAGMA foreign_keys = ON using a plain JDBC Statement inside an Exposed transaction.
-         * Using TransactionManager.current().connection and a JDBC execute avoids Exposed's "Query does not return results"
-         * exception when executing PRAGMA statements that don't return a result set.
-     */
-//        fun enableForeignKeys() {
-//                try {
-//                        transaction {
-//                                val conn = TransactionManager.current().connection
-//                                try {
-//                                        conn.createStatement().use { stmt: Statement ->
-//                                                stmt.execute("PRAGMA foreign_keys = ON;")
-//                                            }
-//                                        println("✅ SQLite PRAGMA foreign_keys = ON applied.")
-//                                    } catch (e: Exception) {
-//                                        println("⚠️ Failed to apply PRAGMA foreign_keys: ${e.message}")
-//                                    }
-//                            }
-//                    } catch (e: Exception) {
-//                        // If transactions are not available for some reason, still log the problem.
-//                        println("⚠️ enableForeignKeys() failed: ${e.message}")
-//                    }
-//            }
-//
-
 
     fun resetDb(){
         cleanDb()
@@ -90,11 +64,8 @@ object DatabaseFactory {
 
 
     fun initDb() {
-        println("Database reset requested.")
-//        createMissingTables()
-//        initAdmins()
-//        seedStudentsIfEmpty()
-//        initTeachers()
+        println("Database INIT requested.")
+
         createAllTables()
 
 
@@ -103,7 +74,7 @@ object DatabaseFactory {
 
         // register seed tasks (order matters if there are FK deps)
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
-        // SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
+        SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
 
 
 
@@ -138,15 +109,17 @@ object DatabaseFactory {
                 // Drop the tables you want to reset. Adjust the list to match your project's Table objects.
                 SchemaUtils.drop(
                     // drop dependents first
-//                    GradesTable,
-//                    EnrollmentTable,
-//                    OfferingTable,
-//                    EvaluationTable,
+
+                    // GradesTable,
+                    // EnrollmentTable,
+                    // OfferingTable,
+                    // EvaluationTable,
+
                     // role / entity tables
-//                    StudentTable,
-//                    TeacherTable,
+                    StudentTable,
+                    // TeacherTable,
                     AdminTable,
-//                    CourseTable,
+                    // CourseTable,
                     PersonTable
                 )
                 println("✅ All listed tables dropped.")
@@ -167,17 +140,19 @@ object DatabaseFactory {
             try {
                 SchemaUtils.create(
                     PersonTable,
-//                    CourseTable,
+                    // CourseTable,
+
                     // role tables
                     AdminTable,
-//                    TeacherTable,
-//                    StudentTable,
-//                    // domain/dependent tables
-//                    EvaluationTable,
-//                    OfferingTable,
-//                    EnrollmentTable,
-//                    GradesTable
-                )
+                    // TeacherTable,
+                    StudentTable,
+
+                    // // domain/dependent tables
+                    // EvaluationTable,
+                    // OfferingTable,
+                    // EnrollmentTable,
+                    // GradesTable
+            )
                 println("✅ Created/ensured all listed tables.")
             } catch (e: Exception) {
                 println("⚠️ Error while creating tables: ${e.message}")
@@ -189,127 +164,9 @@ object DatabaseFactory {
 
 
 
-
-
-
-
-
-
-//    private fun createMissingTables() {
-//        transaction {
-//            try {
-////                SchemaUtils.create(AdminTable)
-//                SchemaUtils.createMissingTablesAndColumns(
-////                    PersonTable,
-//                    AdminTable,
-////                    TeacherTable,
-////                    StudentTable,
-////                    CourseTable,        // if you have it
-////                    EvaluationTable,
-////                    OfferingTable,     // if present
-////                    EnrollmentTable,
-////                    GradesTable
-//                )
-//
-//
-//
-//            } catch (e: Exception) { println("error while createMissingTables : ${e.message}") }
-//
-//            try { SchemaUtils.create(StudentTable, EvaluationTable) }
-//            catch (e: Exception) { println("StudentTable & EvaluationTable already exist.") }
-//        }
-//    }
-
-//    private fun seedStudentsIfEmpty() {
-//        val count = transaction {
-//            StudentTable.selectAll().count()
-//        }
-//// ===========================================================================
-//
-//        if (count == 0L) {
-//            println("No students found → seeding from students.json")
-//            StudentService().seedFromJson()
-//        } else {
-//            println("Student table already contains $count student(s). Skipping seed.")
-//        }
-//    }
-
-    // Ton code initAdmins() (inchangé)
-//    private fun initAdmins() {
-//        // Try multiple possible paths for the JSON file
-//        val possiblePaths = listOf(
-//            "server/src/main/resources/data/admin.json",
-//            "src/main/resources/data/admin.json",
-//            "data/admin.json"
-//        )
-//
-//        val adminFile = possiblePaths
-//            .map { File(it) }
-//            .firstOrNull { it.exists() }
-//
-//        if (adminFile == null) {
-//            // Try loading from classpath as fallback
-//            val resourceStream = this::class.java.classLoader.getResourceAsStream("data/admin.json")
-//            if (resourceStream != null) {
-//                val jsonString = resourceStream.bufferedReader().use { it.readText() }
-//                processAdminData(jsonString)
-//                return
-//            }
-//            println("⚠️ No mock data file found. Tried paths:")
-//            possiblePaths.forEach { println("   - $it") }
-//            println("   - classpath: data/admin.json")
-//            return
-//        }
-//
-//        println("Loading admin data from: ${adminFile.absolutePath}")
-//        val jsonString = adminFile.readText()
-//        processAdminData(jsonString)
-//    }
-
-//    private fun processAdminData(jsonString: String) {
-//        transaction {
-//            // Use create() instead of createMissingTablesAndColumns()
-//            // This will only work on first run; on subsequent runs it will throw an exception we'll catch
-//            try {
-//                SchemaUtils.create(AdminTable)
-//                println("✅ AdminTable created.")
-//            } catch (e: Exception) {
-//                // Table already exists, which is fine
-//                println("ℹ️ AdminTable already exists.")
-//            }
-//        }
-//
-//        // Use service for business logic
-//        val service = AdminService()
-//        val existing = service.getAll()
-//
-//        if (existing.isEmpty()) {
-//            val adminDTOs = Json.decodeFromString<List<AdminDTO>>(jsonString)
-//            adminDTOs.forEach { service.create(it) }
-//            println("Inserted ${adminDTOs.size} mock admins from JSON.")
-//
-//            adminDTOs.forEach { dto ->
-//                service.create(dto)  // ← Service handles DTO → DAO conversion
-//            }
-//
-//            println("✅ Inserted ${adminDTOs.size} mock admins from JSON.")
-//
-//            // ✅ DEBUG: Print all admins in DB
-//            transaction {
-//                println("=== Current Admins in DB ===")
-//                Admin.all().forEach { println("ID=${it.id.value} | username=${it.username} | email=${it.email}") }
-//                for (admin in Admin.all()) {
-//                    println("ID=${admin.id.value} | username=${admin.username} | email=${admin.email}")
-//                }
-//                println("============================")
-//            }
-//        } else {
-//            println("Admin table already contains ${existing.size} admins.")
-//            println("ℹ️ Admin table already contains ${existing.size} admins.")
-//        }
-//    }
-
-
-
-
 }
+
+
+
+
+// END

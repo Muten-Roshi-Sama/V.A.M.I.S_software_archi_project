@@ -24,6 +24,22 @@ interface ApiRepository {
     suspend fun updateAdmin(id: Int, admin: AdminDTO): AdminDTO
     suspend fun deleteAdmin(id: Int): Boolean
 
+    // -------- Student CRUD ----------
+    suspend fun fetchStudents(): List<StudentDTO>
+    suspend fun fetchStudentById(id: Int): StudentDTO
+    suspend fun fetchStudentCount(): Long
+    suspend fun createStudent(student: StudentDTO): StudentDTO
+    suspend fun updateStudent(id: Int, student: StudentDTO): StudentDTO
+    suspend fun deleteStudent(id: Int): Boolean
+
+    // -------- Teacher CRUD ----------
+
+
+
+
+
+
+
     // -------- Legacy endpoints ----------
     suspend fun fetchHello(): HelloResponse
 //    suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>

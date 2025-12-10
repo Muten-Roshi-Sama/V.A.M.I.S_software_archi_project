@@ -10,13 +10,15 @@ import be.ecam.companion.data.ApiRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+
+
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(onLoginSuccess: (String) -> Unit) {  // <-- Changed signature
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
 
-    var email by remember { mutableStateOf("admin1@admin.com") }  // Pre-filled for testing
-    var password by remember { mutableStateOf("pass123") }  // Pre-filled for testing
+    var email by remember { mutableStateOf("admin1@admin.com") }
+    var password by remember { mutableStateOf("pass123") }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -60,9 +62,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     isLoading = true
                     error = null
                     try {
-                        val response = repository.login(email.trim(), password)
-                        println("✅ LOGIN SUCCESS: token=${response.accessToken}")
-                        onLoginSuccess()
+                        val loginResponse = repository.login(email.trim(), password)
+                        println("✅ LOGIN SUCCESS: token=${loginResponse.accessToken}")
+                        
+                        // Fetch user role
+                        val userInfo = repository.getMe()
+                        println("✅ USER ROLE: ${userInfo.role}")
+                        
+                        onLoginSuccess(userInfo.role)  // <-- Pass role to parent
                     } catch (e: Exception) {
                         error = e.message ?: "Login failed"
                         println("❌ LOGIN ERROR: ${e.stackTraceToString()}")
