@@ -23,6 +23,8 @@ interface ApiRepository {
     suspend fun createAdmin(admin: AdminDTO): AdminDTO
     suspend fun updateAdmin(id: Int, admin: AdminDTO): AdminDTO
     suspend fun deleteAdmin(id: Int): Boolean
+    // Others
+    suspend fun fetchMyAdminProfile(): AdminDTO
 
     // -------- Student CRUD ----------
     suspend fun fetchStudents(): List<StudentDTO>
@@ -31,6 +33,8 @@ interface ApiRepository {
     suspend fun createStudent(student: StudentDTO): StudentDTO
     suspend fun updateStudent(id: Int, student: StudentDTO): StudentDTO
     suspend fun deleteStudent(id: Int): Boolean
+    // Others
+    suspend fun fetchMyStudentProfile(): StudentDTO
 
     // -------- Teacher CRUD ----------
 

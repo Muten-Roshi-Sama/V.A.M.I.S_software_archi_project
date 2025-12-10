@@ -29,8 +29,8 @@ fun AdminDashboard(
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val info = repository.getMe()
-                userInfo = "Logged in as: ${info.role} (ID: ${info.id})"
+                val admin = repository.fetchMyAdminProfile()
+                userInfo = "Welcome, ${admin.firstName} ${admin.lastName} (ID: ${admin.id})"
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {

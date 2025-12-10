@@ -86,25 +86,25 @@ class StudentRoutes(private val service: StudentService) : InterfaceRoutes {
             // ========== STUDENT SELF-SERVICE ENDPOINTS ==========
             withRoles("student", "admin") {
                 
-                // GET /crud/students/me - Get own profile
+                // GET /crud/student/me - Get own profile
                 get("/me") {
                     val principal = call.principal<JWTPrincipal>()
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
-                    
+
                     val userId = principal.payload.getClaim("id").asInt()
                     val role = principal.payload.getClaim("role").asString()
-                    
-                    // Students can only see themselves, admins handled above
-                    if (role == "student") {
-                        val student = service.getById(userId)
-                            ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Student not found"))
-                        call.respond(HttpStatusCode.OK, student)
-                    } else {
-                        call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Access denied"))
+
+                    if (role != "student") {
+                        return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not a student"))
                     }
+
+                    val student = service.getByPersonId(userId)
+                        ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Student profile not found"))
+
+                    call.respond(HttpStatusCode.OK, student)  // StudentDTO includes studentId
                 }
 
-                // PUT /crud/students/me - Update own profile (limited fields)
+                // PUT /crud/student/me - Update own profile (limited fields)
                 put("/me") {
                     val principal = call.principal<JWTPrincipal>()
                         ?: return@put call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))

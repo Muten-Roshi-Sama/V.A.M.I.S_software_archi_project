@@ -11,6 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.*
 
 // Routes
 import be.ecam.server.routes.InterfaceRoutes
@@ -29,25 +31,25 @@ class AdminRoutes(private val adminService: AdminService) : InterfaceRoutes {
                     val all = adminService.getAll()
                     call.respond(HttpStatusCode.OK, all)
                     // TODO: implement pagination and filter search directly inside Person
-//                    val q = call.request.queryParameters["q"]
-//                    val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 0
-//                    val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 50
-//
-//                    // Prefer service-level search/pagination; fallback is okay for small data/tests
-//                    val list: List<AdminDTO> = try {
-//                        adminService.search(q, page, size)
-//                    } catch (e: NoSuchMethodError) {
-//                        val all = adminService.getAll()
-//                        val filtered = if (!q.isNullOrBlank()) {
-//                            all.filter { dto ->
-//                                listOfNotNull(dto.email?.lowercase(), dto.firstName?.lowercase(), dto.lastName?.lowercase())
-//                                    .any { it.contains(q.lowercase()) }
-//                            }
-//                        } else all
-//                        val from = page * size
-//                        if (from >= filtered.size) emptyList() else filtered.subList(from, (from + size).coerceAtMost(filtered.size))
-//                    }
-//                    call.respond(HttpStatusCode.OK, list)
+                    // val q = call.request.queryParameters["q"]
+                    // val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 0
+                    // val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 50
+
+                    // // Prefer service-level search/pagination; fallback is okay for small data/tests
+                    // val list: List<AdminDTO> = try {
+                    //     adminService.search(q, page, size)
+                    // } catch (e: NoSuchMethodError) {
+                    //     val all = adminService.getAll()
+                    //     val filtered = if (!q.isNullOrBlank()) {
+                    //         all.filter { dto ->
+                    //             listOfNotNull(dto.email?.lowercase(), dto.firstName?.lowercase(), dto.lastName?.lowercase())
+                    //                 .any { it.contains(q.lowercase()) }
+                    //         }
+                    //     } else all
+                    //     val from = page * size
+                    //     if (from >= filtered.size) emptyList() else filtered.subList(from, (from + size).coerceAtMost(filtered.size))
+                    // }
+                    // call.respond(HttpStatusCode.OK, list)
                 }
 
                 // Get by Id
@@ -62,6 +64,24 @@ class AdminRoutes(private val adminService: AdminService) : InterfaceRoutes {
                 get("/count") {
                     val c = adminService.count()
                     call.respond(HttpStatusCode.OK, mapOf("count" to c))
+                }
+
+                // GET /crud/admins/me - Get authenticated admin's own profile
+                get("/me") {
+                    val principal = call.principal<io.ktor.server.auth.jwt.JWTPrincipal>()
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
+                    
+                    val userId = principal.payload.getClaim("id").asInt()
+                    val role = principal.payload.getClaim("role").asString()
+                    
+                    if (role != "admin") {
+                        return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not an admin"))
+                    }
+                    
+                    val admin = adminService.getById(userId)
+                        ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin profile not found"))
+                    
+                    call.respond(HttpStatusCode.OK, admin)
                 }
 
                 // CREATE

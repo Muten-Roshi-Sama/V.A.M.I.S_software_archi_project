@@ -4,6 +4,7 @@ package be.ecam.server.services
 import be.ecam.server.models.Person
 import be.ecam.server.models.Student
 import be.ecam.server.models.StudentTable
+import be.ecam.server.models.PersonTable
 
 //DTO
 import be.ecam.common.api.StudentDTO
@@ -21,6 +22,7 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.dao.id.EntityID
 
 // ----------------------------
 
@@ -75,7 +77,9 @@ class StudentService(private val personService: PersonService = PersonService())
     fun count(): Long = ops.count()
     // fun existsByEmail(email: String): Boolean = ops.existsByEmail(email)
 
-    /* Create student from DTO */
+    // ================
+    //   OVERRIDES 
+    // ================
     fun create(createDto: StudentCreateDTO): StudentDTO = transaction {
         val emailField = createDto.email
         val passwordField = createDto.password
@@ -151,13 +155,23 @@ class StudentService(private val personService: PersonService = PersonService())
         Student.find { StudentTable.person eq person.id }.firstOrNull() != null
     }
 
+    fun getByPersonId(personId: Int): StudentDTO? = transaction {
+        Student.find { StudentTable.person eq EntityID(personId, PersonTable) }
+            .firstOrNull()
+            ?.toDto()
+    }
+
     // convert incoming StudentDTO (frontend) to StudentCreateDTO then call create()
     fun createStudentFromDto(dto: StudentDTO) {
         val createDto = StudentCreateDTO(
             firstName = dto.firstName,
             lastName = dto.lastName,
             email = dto.email,
-            password = dto.password ?: ""
+            password = dto.password ?: "",
+            //
+            studentId = dto.studentId,
+            studyYear = dto.studyYear,
+            optionCode = dto.optionCode
         )
         create(createDto)
     }
@@ -193,12 +207,16 @@ class StudentService(private val personService: PersonService = PersonService())
 
                 StudentDTO(
                     id = null,
-                    studentId = null,
                     firstName = firstName,
                     lastName = lastName,
                     email = email,
                     password = password,
-                    createdAt = createdAt
+                    createdAt = createdAt,
+                    //
+                    studentId = studentId,
+                    studyYear = studyYear,
+                    optionCode = optionCode
+
                 )
             }
         )

@@ -32,17 +32,14 @@ class KtorApiRepository(
         accessToken = response.accessToken
         return response
     }
-
     override suspend fun logout() {
         accessToken = null
     }
-
     override suspend fun getMe(): UserInfo {
         return client.get("${baseUrl()}/auth/me") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
     }
-
     override fun isAuthenticated(): Boolean = accessToken != null
 
 
@@ -55,20 +52,17 @@ class KtorApiRepository(
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
     }
-
     override suspend fun fetchAdminById(id: Int): AdminDTO {
         return client.get("${baseUrl()}/crud/admins/by/$id") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
     }
-
     override suspend fun fetchAdminCount(): Long {
         val response: CountResponse = client.get("${baseUrl()}/crud/admins/count") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
         return response.count
     }
-
     override suspend fun createAdmin(admin: AdminDTO): AdminDTO {
         return client.post("${baseUrl()}/crud/admins") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
@@ -76,7 +70,6 @@ class KtorApiRepository(
             setBody(admin)
         }.body()
     }
-
     override suspend fun updateAdmin(id: Int, admin: AdminDTO): AdminDTO {
         return client.put("${baseUrl()}/crud/admins/by/$id") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
@@ -84,7 +77,6 @@ class KtorApiRepository(
             setBody(admin)
         }.body()
     }
-
     override suspend fun deleteAdmin(id: Int): Boolean {
         return try {
             client.delete("${baseUrl()}/crud/admins/by/$id") {
@@ -95,6 +87,12 @@ class KtorApiRepository(
             false
         }
     }
+    // Others
+    override suspend fun fetchMyAdminProfile(): AdminDTO {
+        return client.get("${baseUrl()}/crud/admins/me") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
 
     // ============================
     //           Student CRUD 
@@ -104,20 +102,17 @@ class KtorApiRepository(
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
     }
-    
     override suspend fun fetchStudentById(id: Int): StudentDTO {
         return client.get("${baseUrl()}/crud/students/by/$id") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
     }
-    
     override suspend fun fetchStudentCount(): Long {
         val response: CountResponse = client.get("${baseUrl()}/crud/students/count") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
         }.body()
         return response.count
     }
-    
     override suspend fun createStudent(student: StudentDTO): StudentDTO {
         return client.post("${baseUrl()}/crud/students") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
@@ -125,7 +120,6 @@ class KtorApiRepository(
             setBody(student)
         }.body()
     }
-    
     override suspend fun updateStudent(id: Int, student: StudentDTO): StudentDTO {
         return client.put("${baseUrl()}/crud/students/by/$id") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
@@ -133,7 +127,6 @@ class KtorApiRepository(
             setBody(student)
         }.body()
     }
-    
     override suspend fun deleteStudent(id: Int): Boolean {
         return try {
             client.delete("${baseUrl()}/crud/students/by/$id") {
@@ -144,7 +137,12 @@ class KtorApiRepository(
             false
         }
     }
-
+    // Others
+    override suspend fun fetchMyStudentProfile(): StudentDTO {
+        return client.get("${baseUrl()}/crud/students/me") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }.body()
+    }
 
 
 

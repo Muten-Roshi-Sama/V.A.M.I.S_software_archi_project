@@ -25,8 +25,8 @@ fun StudentDashboard(onLogout: () -> Unit) {
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val info = repository.getMe()
-                userInfo = "Welcome, Student (ID: ${info.id})"
+                val student = repository.fetchMyStudentProfile()
+                userInfo = "Welcome, ${student.firstName} ${student.lastName} (ID: ${student.studentId})"
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {
