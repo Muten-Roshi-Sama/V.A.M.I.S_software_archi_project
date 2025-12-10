@@ -68,17 +68,12 @@ class AdminRoutes(private val adminService: AdminService) : InterfaceRoutes {
 
                 // GET /crud/admins/me - Get authenticated admin's own profile
                 get("/me") {
-                    val principal = call.principal<io.ktor.server.auth.jwt.JWTPrincipal>()
-                        ?: return@get call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
-                    
+                    val principal = call.principal<JWTPrincipal>() ?: return@get call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
                     val userId = principal.payload.getClaim("id").asInt()
                     val role = principal.payload.getClaim("role").asString()
+                    if (role != "admin") return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not an admin"))
                     
-                    if (role != "admin") {
-                        return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not an admin"))
-                    }
-                    
-                    val admin = adminService.getById(userId)
+                    val admin = adminService.getByPersonId(userId)
                         ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Admin profile not found"))
                     
                     call.respond(HttpStatusCode.OK, admin)
