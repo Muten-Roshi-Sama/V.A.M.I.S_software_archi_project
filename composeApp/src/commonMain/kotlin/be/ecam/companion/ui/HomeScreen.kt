@@ -25,6 +25,7 @@ import org.koin.compose.koinInject
 import be.ecam.companion.viewmodel.HomeViewModel
 import androidx.compose.ui.graphics.vector.ImageVector
 
+// Test
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
