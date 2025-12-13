@@ -5,24 +5,25 @@ import be.ecam.server.models.PersonTable
 import be.ecam.server.models.AdminTable
 // import be.ecam.server.models.EvaluationTable
 import be.ecam.server.models.StudentTable   //Add
+import be.ecam.server.models.TeacherTable
 //import be.ecam.server.models.CourseTable
-//import be.ecam.server.models.TeacherTable
 //import be.ecam.server.db.StudentTable
 
 // DAO Class
 import be.ecam.server.models.Admin
+import be.ecam.server.models.Teacher
 //import be.ecam.server.models.Course
-//import be.ecam.server.models.Teacher
 //import be.ecam.server.models.Student
 
 // DAO Services
 import be.ecam.server.services.AdminService
 import be.ecam.server.services.StudentService
+import be.ecam.server.services.TeacherService
 
 // Shared DTO
 import be.ecam.common.api.AdminDTO
+import be.ecam.common.api.TeacherDTO
 //import be.ecam.common.api.CourseDTO
-//import be.ecam.common.api.TeacherDTO
 //import be.ecam.common.api.DTO
 //import be.ecam.common.api.CourseDTO
 
@@ -75,7 +76,7 @@ object DatabaseFactory {
         // register seed tasks (order matters if there are FK deps)
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
         SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
-        SeedManager.register("teachers") { StudentService().seedFromResource("data/teachers.json") }
+        SeedManager.register("teachers") { TeacherService().seedFromResource("data/teacher.json") }
 
 
 
