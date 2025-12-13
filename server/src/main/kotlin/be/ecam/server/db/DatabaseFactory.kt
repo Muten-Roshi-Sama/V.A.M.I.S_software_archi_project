@@ -75,6 +75,7 @@ object DatabaseFactory {
         // register seed tasks (order matters if there are FK deps)
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
         SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
+        SeedManager.register("teachers") { StudentService().seedFromResource("data/teachers.json") }
 
 
 
@@ -117,7 +118,7 @@ object DatabaseFactory {
 
                     // role / entity tables
                     StudentTable,
-                    // TeacherTable,
+                    TeacherTable,
                     AdminTable,
                     // CourseTable,
                     PersonTable
@@ -144,7 +145,7 @@ object DatabaseFactory {
 
                     // role tables
                     AdminTable,
-                    // TeacherTable,
+                    TeacherTable,
                     StudentTable,
 
                     // // domain/dependent tables
