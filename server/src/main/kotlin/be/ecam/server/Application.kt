@@ -41,8 +41,8 @@ fun Application.module() {
 
     // 3. Setup DB
     DatabaseFactory.connect()
-    DatabaseFactory.resetDb()
-    // DatabaseFactory.initDb()
+    // DatabaseFactory.resetDb()  // Use this only when you need to reset the DB schema
+    DatabaseFactory.initDb()
 
 
 

@@ -6,6 +6,7 @@ import be.ecam.common.api.*
 // Ktor
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -25,12 +26,17 @@ class KtorApiRepository(
     //           Auth 
     // ========================
     override suspend fun login(email: String, password: String): LoginResponse {
-        val response: LoginResponse = client.post("${baseUrl()}/auth/login") {
-            contentType(ContentType.Application.Json)
-            setBody(LoginRequest(email, password))
-        }.body()
-        accessToken = response.accessToken
-        return response
+        try {
+            val response: LoginResponse = client.post("${baseUrl()}/auth/login") {
+                contentType(ContentType.Application.Json)
+                setBody(LoginRequest(email, password))
+            }.body()
+            accessToken = response.accessToken
+            return response
+        } catch (e: ClientRequestException) {
+            // Handle 4xx errors (e.g., 401 Unauthorized)
+            throw IllegalArgumentException("Invalid credentials")
+        }
     }
     override suspend fun logout() {
         accessToken = null

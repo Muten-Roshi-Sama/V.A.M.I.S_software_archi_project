@@ -9,7 +9,7 @@ import be.ecam.common.api.TeacherDTO
 
 object TeacherTable : IntIdTable(name = "teachers") {
     val person = reference("person_id", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val teacherId = varchar("teacher_id", 20).nullable().uniqueIndex()
+    val teacherId = integer("teacher_id").nullable().uniqueIndex()
 }
 
 class Teacher(id: EntityID<Int>) : IntEntity(id), PersonInfo {

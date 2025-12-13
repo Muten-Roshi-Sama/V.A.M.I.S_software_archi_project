@@ -17,7 +17,7 @@ data class TeacherCreateDTO(
     val lastName: String? = null,
     val email: String,
     val password: String,
-    val teacherId: String? = null,
+    val teacherId: Int? = null,
     val createdAt: String? = null
 )
 
@@ -27,7 +27,7 @@ data class TeacherUpdateDTO(
     val lastName: String? = null,
     val email: String? = null,
     val password: String? = null,
-    val teacherId: String? = null
+    val teacherId: Int? = null
 )
 
 class TeacherService(private val personService: PersonService = PersonService()) {
@@ -150,6 +150,15 @@ class TeacherService(private val personService: PersonService = PersonService())
                     }
                     return null
                 }
+                fun getInt(vararg keys: String): Int? {
+                    for (k in keys) {
+                        val v = map[k] ?: map[k.lowercase()]
+                        if (v is Int) return v
+                        if (v is Number) return v.toInt()
+                        if (v is String) return v.toIntOrNull()
+                    }
+                    return null
+                }
                 TeacherDTO(
                     id = null,
                     firstName = getString("firstName") ?: "",
@@ -157,7 +166,7 @@ class TeacherService(private val personService: PersonService = PersonService())
                     email = getString("email") ?: "",
                     password = getString("password"),
                     createdAt = getString("createdAt") ?: "",
-                    teacherId = getString("teacherId", "teacher_id")
+                    teacherId = getInt("teacherId", "teacher_id")
                 )
             }
         )
