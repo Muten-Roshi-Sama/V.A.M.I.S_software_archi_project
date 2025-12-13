@@ -49,7 +49,7 @@ fun userAuthenticator(
                 val roleFromTables: String? = when {
                     adminService?.existsByEmail(email) == true -> "admin"
                     studentService?.existsByEmail(email) == true -> "student"
-                    // teacherService?.existsByEmail(email) == true -> "teacher"
+                    teacherService?.existsByEmail(email) == true -> "teacher"
                     
                     else -> null
                 }

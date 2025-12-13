@@ -3,17 +3,15 @@ package be.ecam.server.db
 // DAO Schema
 import be.ecam.server.models.PersonTable
 import be.ecam.server.models.AdminTable
-// import be.ecam.server.models.EvaluationTable
-import be.ecam.server.models.StudentTable   //Add
+import be.ecam.server.models.StudentTable
+import be.ecam.server.models.TeacherTable
 //import be.ecam.server.models.CourseTable
-//import be.ecam.server.models.TeacherTable
-//import be.ecam.server.db.StudentTable
 
 // DAO Class
 import be.ecam.server.models.Admin
+import be.ecam.server.models.Teacher
+import be.ecam.server.models.Student
 //import be.ecam.server.models.Course
-//import be.ecam.server.models.Teacher
-//import be.ecam.server.models.Student
 
 // DAO Services
 import be.ecam.server.services.AdminService
@@ -21,9 +19,8 @@ import be.ecam.server.services.StudentService
 
 // Shared DTO
 import be.ecam.common.api.AdminDTO
-//import be.ecam.common.api.CourseDTO
-//import be.ecam.common.api.TeacherDTO
-//import be.ecam.common.api.DTO
+import be.ecam.common.api.TeacherDTO
+import be.ecam.common.api.StudentDTO
 //import be.ecam.common.api.CourseDTO
 
 
