@@ -6,6 +6,7 @@ package be.ecam.server.services
 import be.ecam.server.models.Person
 import be.ecam.server.models.Admin
 import be.ecam.server.models.AdminTable
+import be.ecam.server.models.PersonTable
 
 //DTO
 import be.ecam.common.api.AdminDTO
@@ -25,6 +26,8 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.time.LocalDateTime
+import org.jetbrains.exposed.dao.id.EntityID
+
 
 // ----------------------------
 
@@ -146,6 +149,12 @@ class AdminService(private val personService: PersonService = PersonService()) {
         // Check if person exists AND has an Admin role record
         val person = personService.findByEmail(email) ?: return@transaction false
         Admin.find { AdminTable.person eq person.id }.firstOrNull() != null
+    }
+
+    fun getByPersonId(personId: Int): AdminDTO? = transaction {
+        Admin.find { AdminTable.person eq EntityID(personId, PersonTable) }
+            .firstOrNull()
+            ?.toDto()
     }
 
     // convert incoming AdminDTO (frontend) to AdminCreateDTO then call create()
