@@ -15,6 +15,7 @@ import be.ecam.companion.ui.admin.ListAdmins
 import be.ecam.companion.ui.student.StudentDashboard
 import be.ecam.companion.ui.student.ListStudents
 import be.ecam.companion.ui.teacher.TeacherDashboard
+import be.ecam.companion.ui.admin.ListTeachers
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,16 +33,19 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 "admin" -> Screen.AdminDashboard
                                 "student" -> Screen.StudentDashboard
                                 "teacher" -> Screen.TeacherDashboard
-                                else -> Screen.AdminDashboard // fallback
+                                else -> Screen.StudentDashboard // fallback
                             }
                         }
                     )
                 }
                 
+
+                // User Dashboards
                 is Screen.AdminDashboard -> {
                     AdminDashboard(
                         onNavigateToAdmins = { currentScreen = Screen.AdminList },
                         onNavigateToStudents = { currentScreen = Screen.StudentList },
+                        onNavigateToTeachers = { currentScreen = Screen.TeacherList },
                         onLogout = { currentScreen = Screen.Login }
                     )
                 }
@@ -58,6 +62,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
                 
+
+                // ADMIN CRUD
                 is Screen.AdminList -> {
                     ListAdmins(
                         onBack = { currentScreen = Screen.AdminDashboard }
@@ -69,6 +75,17 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onBack = { currentScreen = Screen.AdminDashboard }
                     )
                 }
+                is Screen.TeacherList -> {
+                    ListTeachers(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+
+
+
+
+
             }
         }
     }
@@ -76,9 +93,14 @@ fun App(extraModules: List<Module> = emptyList()) {
 
 private sealed class Screen {
     object Login : Screen()
+
+    // User Dashboards
     object AdminDashboard : Screen()
     object StudentDashboard : Screen()
     object TeacherDashboard : Screen()
+
+    // Admin CRUD
     object AdminList : Screen()
     object StudentList : Screen()
+    object TeacherList : Screen()
 }

@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Class
-import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,8 +26,8 @@ fun TeacherDashboard(onLogout: () -> Unit) {
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                val info = repository.getMe()
-                userInfo = "Welcome, Teacher (ID: ${info.id})"
+                val teacher = repository.fetchMyTeacherProfile()
+                userInfo = "Welcome, ${teacher.firstName} ${teacher.lastName} (ID: ${teacher.teacherId})"
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {
@@ -77,10 +78,10 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                 
                 Spacer(Modifier.height(16.dp))
 
-                // My Classes Card (placeholder)
+                // My Classes Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* TODO: Navigate to classes */ }
+                    onClick = { /* TODO: Navigate to my classes */ }
                 ) {
                     Row(
                         modifier = Modifier
@@ -102,7 +103,7 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                     }
                 }
 
-                // Grade Students Card (placeholder)
+                // Grade Students Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { /* TODO: Navigate to grading */ }
@@ -115,7 +116,7 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            Icons.Filled.Assignment,
+                            Icons.Filled.Grade,
                             contentDescription = "Grading",
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.secondary
@@ -123,6 +124,31 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                         Column {
                             Text("Grade Students", style = MaterialTheme.typography.titleLarge)
                             Text("Manage student evaluations", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+
+                // Calendar Card (placeholder for future implementation)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { /* TODO: Navigate to calendar */ }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.CalendarToday,
+                            contentDescription = "Calendar",
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.tertiary
+                        )
+                        Column {
+                            Text("My Calendar", style = MaterialTheme.typography.titleLarge)
+                            Text("View course schedule and events", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }

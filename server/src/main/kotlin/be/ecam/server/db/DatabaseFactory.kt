@@ -16,6 +16,7 @@ import be.ecam.server.models.Student
 // DAO Services
 import be.ecam.server.services.AdminService
 import be.ecam.server.services.StudentService
+import be.ecam.server.services.TeacherService
 
 // Shared DTO
 import be.ecam.common.api.AdminDTO
@@ -72,7 +73,7 @@ object DatabaseFactory {
         // register seed tasks (order matters if there are FK deps)
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
         SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
-        SeedManager.register("teachers") { StudentService().seedFromResource("data/teachers.json") }
+        SeedManager.register("teachers") { TeacherService().seedFromResource("data/teachers.json") }
 
 
 

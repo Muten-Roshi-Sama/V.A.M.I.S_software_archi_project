@@ -37,9 +37,16 @@ interface ApiRepository {
     suspend fun fetchMyStudentProfile(): StudentDTO
 
     // -------- Teacher CRUD ----------
+    suspend fun fetchTeachers(): List<TeacherDTO>
+    suspend fun fetchTeacherById(id: Int): TeacherDTO
+    suspend fun fetchTeacherCount(): Long
+    suspend fun createTeacher(teacher: TeacherDTO): TeacherDTO
+    suspend fun updateTeacher(id: Int, teacher: TeacherDTO): TeacherDTO
+    suspend fun deleteTeacher(id: Int): Boolean
+    suspend fun fetchMyTeacherProfile(): TeacherDTO
 
-
-
+    // --------- Course CRUD ----------
+    // TO BE IMPLEMENTED LATER
 
 
 
