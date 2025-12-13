@@ -31,7 +31,9 @@ fun HomeScreen(
     onOpenAdmins: () -> Unit,
     onOpenStudents: () -> Unit,
     onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onOpenTeachers: () -> Unit,
+    onOpenBible: () -> Unit
 ) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
@@ -101,6 +103,18 @@ fun HomeScreen(
 
             Button(onClick = onOpenStudents) {
                 Text("See all student reports")
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            Button(onClick = onOpenTeachers) {
+                Text("Voir les enseignants")
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            Button(onClick = onOpenBible) {
+                Text("\ud83d\udcd2 Bible des Programmes")
             }
 
             Spacer(Modifier.height(20.dp))

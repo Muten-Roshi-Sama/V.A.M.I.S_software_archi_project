@@ -6,16 +6,25 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.time.LocalDate
 import java.io.File
-import java.time.*
+import be.ecam.server.routes.studentBulletinRoutes
+import kotlin.text.Charsets
 
 fun Application.configureRoutes() {
     routing {
-        get("/") { call.respondText("Ktor: ${Greeting().greet()}") }
-        get("/health") { call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString())) }
+        get("/") {
+            call.respondText("Ktor: ${Greeting().greet()}")
+        }
+
+        get("/health") {
+            call.respond(mapOf("status" to "OK", "timestamp" to LocalDate.now().toString()))
+        }
 
         route("/api") {
-            get("/hello") { call.respond(HelloResponse("Hello from Ktor server")) }
+            get("/hello") {
+                call.respond(HelloResponse("Hello from Ktor server"))
+            }
             get("/schedule") {
                 val schedule = mutableMapOf<String, List<ScheduleItem>>()
                 schedule["2025-09-30"] = listOf(ScheduleItem("Team sync"), ScheduleItem("Release planning"))
@@ -26,6 +35,7 @@ fun Application.configureRoutes() {
                 }
                 call.respond(schedule)
             }
+
             route("/users") {
                 get { call.respondText("List of all users") }
                 get("/{id}") { call.respondText("Details for user ${call.parameters["id"]}") }
@@ -52,7 +62,7 @@ fun Application.configureRoutes() {
                     )
                     val file = possiblePaths.map(::File).firstOrNull { it.exists() }
                         ?: return@get call.respond(HttpStatusCode.NotFound, "courses.json untraceable")
-                    call.respondText(file.readText(), ContentType.Application.Json)
+                    call.respondText(file.readText(Charsets.UTF_8), ContentType.Application.Json)
                 }
             }
 
@@ -68,9 +78,12 @@ fun Application.configureRoutes() {
                     val file = possiblePaths.map(::File).firstOrNull { it.exists() }
                         ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
 
-                    call.respondText(file.readText(), ContentType.Application.Json)
+                    call.respondText(file.readText(Charsets.UTF_8), ContentType.Application.Json)
                 }
             }
+            studentBulletinRoutes()
+            teacherDataRoute()
+            bibleDataRoute()
 
             route("/teachers") { }
         }

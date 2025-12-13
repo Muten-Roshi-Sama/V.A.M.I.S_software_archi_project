@@ -35,7 +35,9 @@ import be.ecam.companion.ui.Screen
 import be.ecam.companion.ui.HomeScreen
 import be.ecam.companion.ui.CalendarScreen
 import be.ecam.companion.ui.SettingsScreen
-import be.ecam.companion.ui.DataStudentsScreen   //Add
+import be.ecam.companion.ui.DataStudentsScreen
+import be.ecam.companion.ui.DataTeacherScreen
+import be.ecam.companion.ui.DataBibleScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,9 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 // Je rajoute ici une page pour le calendar dans le menu
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 // Je rajoute ici une apage qui va vers les settings
-                                onOpenSettings = { currentScreen = Screen.Settings }
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenTeachers = { currentScreen = Screen.Teachers },
+                                onOpenBible = { currentScreen = Screen.Bible }
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
@@ -79,16 +83,13 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onLogout = { currentScreen = Screen.Login }
                             )
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
-                            // AJOUT : nouvel écran
                             is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
+                            is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
+                            is Screen.Bible -> DataBibleScreen(onBack = { currentScreen = Screen.Home })
                         }
                     }
                 }
             }
-
-            // Le code commenté que tu avais (BottomBar, etc.) reste intact
-            // var selectedScreen by remember { mutableStateOf(BottomItem.HOME) }
-            // ... tout ton code commenté reste là, je ne touche à rien
         }
     }
 }

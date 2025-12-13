@@ -1,0 +1,48 @@
+[
+  {
+    "year": "BA1",
+    "course_list": ["INFO1", "PHYS1", "MATH1", "CHEMISTRY1","ELEC1", "MECA1", "TECH1", "PROJECT1", "METHODO1"],
+    "total_ects": 60
+  },
+  {
+    "year": "BA2",
+    "course_list": ["INFO2", "PHYS2", "MATH2", "CHEMISTRY2","ELEC2", "MECA2", "MESURES2", "PROJECT2", "TECH2"],
+    "total_ects": 60
+  },
+  {
+    "year": "BA3",
+    "course_list": ["INFO3", "PROJECT3", "COMPTA3", "INTERNSHIP3", "ELEC3", "CONTROL3", "MICRO3", "PCB3", "SOFTWARE3", "SIGNALS3", "NETWORK3"],
+    "total_ects": 60,
+    "option_code": "INFO"
+  },
+  {
+    "year": "BA3",
+    "course_list": ["HVAC3", "PROJECT3", "COMPTA3", "INTERNSHIP3", "ELEC3", "REG3", "ELECTROTECH3", "INSTRU3", "SIGNALS3", "NETWORK3"],
+    "total_ects": 60,
+    "option_code": "EM"
+  },
+  {
+    "year": "MA1",
+    "course_list": ["INFO4", "AI4", "NETWORK4", "GESTION4", "GPU4", "HARDWARE4", "SYSTEM4", "WEB4", "MOBILE4", "DATA4", "PROJECT4"],
+    "total_ects": 60,
+    "option_code": "INFO"
+  },
+  {
+    "year": "MA2",
+    "course_list": ["INFO5", "AI5", "NETWORK5", "GESTION5", "GPU5", "HARDWARE5", "SYSTEM5", "WEB5", "MOBILE5", "DATA5", "INTERNSHIP5"],
+    "total_ects": 60,
+    "option_code": "INFO"
+  },
+  {
+    "year": "MA1",
+    "course_list": ["DRIVES4", "CNC4", "MATERIALS4", "GESTION4", "CONTROL4", "AUTO4", "ELEC4", "MECA4", "MAINT4", "PROJECT4"],
+    "total_ects": 60,
+    "option_code": "EM"
+  },
+  {
+    "year": "MA2",
+    "course_list": ["ECO5", "LANG5", "GESTION5", "TFE5", "MECA5", "PROJECT5", "ELEC5", "FINANCE55", "INTERNSHIP5"],
+    "total_ects": 60,
+    "option_code": "EM"
+  }
+]

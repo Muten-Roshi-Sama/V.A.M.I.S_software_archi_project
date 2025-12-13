@@ -24,3 +24,7 @@ server/data/
 # Shared
 shared/bin/
 shared/data/
+
+# JVM / native crash logs
+hs_err_pid*.log
+replay_pid*.log
