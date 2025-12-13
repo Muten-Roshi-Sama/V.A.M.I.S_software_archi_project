@@ -67,20 +67,7 @@ fun Application.configureRoutes() {
             }
 
 
-            //When the frontend calls this URL → the server returns the contents of the JSON file :
-            route("/students") {
-                get("/all/grades") {
-                    val possiblePaths = listOf(
-                        "server/src/main/resources/data/students.json",
-                        "src/main/resources/data/students.json",
-                        "data/students.json"
-                    )
-                    val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-                        ?: return@get call.respond(HttpStatusCode.NotFound, "students.json untraceable")
-
-                    call.respondText(file.readText(Charsets.UTF_8), ContentType.Application.Json)
-                }
-            }
+            //When the frontend calls this URL → the server returns student bulletins with grades from the database
             studentBulletinRoutes()
             teacherDataRoute()
             bibleDataRoute()
