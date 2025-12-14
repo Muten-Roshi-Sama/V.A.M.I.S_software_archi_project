@@ -1,32 +1,29 @@
 [
   {
-    "student_id": "25347",
-    "first_name": "Alice",
-    "last_name": "Dubois",
-    "email": "alice@student.school.com",
-    "password": "alice123",
-    "created_at": "2025-09-01T10:00:00Z",
-    "study_year": "BA1",
-    "option_code": null
+    "studentEmail": "alice@student.school.com",
+    "firstName": "Alice",
+    "lastName": "Dubois",
+    "matricule": "25347",
+    "year": "BA1",
+    "option": null,
+    "evaluations": []
   },
   {
-    "student_id": "25189",
-    "first_name": "Bob",
-    "last_name": "Leroy",
-    "email": "bob@student.school.com",
-    "password": "bob123",
-    "created_at": "2025-09-01T10:00:00Z",
-    "study_year": "BA1",
-    "option_code": null
+    "studentEmail": "bob@student.school.com",
+    "firstName": "Bob",
+    "lastName": "Leroy",
+    "matricule": "25189",
+    "year": "BA1",
+    "option": null,
+    "evaluations": []
   },
   {
-    "student_id": "20123",
-    "first_name": "Charlie",
-    "last_name": "Martin",
-    "email": "charlie@student.school.com",
-    "password": "charlie123",
-    "created_at": "2020-09-01T10:00:00Z",
-    "study_year": "BA3",
-    "option_code": "INFO"
+    "studentEmail": "charlie@student.school.com",
+    "firstName": "Charlie",
+    "lastName": "Martin",
+    "matricule": "20123",
+    "year": "BA3",
+    "option": "INFO",
+    "evaluations": []
   }
 ]
