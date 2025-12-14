@@ -15,14 +15,22 @@ import be.ecam.common.api.ProgramWithDetails
 import be.ecam.companion.data.ApiRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+
 
 @Composable
-fun DataBibleScreen(onBack: () -> Unit) {
+fun DataBibleScreen(
+                    onBack: () -> Unit,
+                    onOpenCalendar: () -> Unit,
+                    onOpenSettings: () -> Unit) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     val repo = koinInject<ApiRepository>()
     var programs by remember { mutableStateOf<List<ProgramWithDetails>?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
+
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -35,27 +43,42 @@ fun DataBibleScreen(onBack: () -> Unit) {
             }
         }
     }
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings
+    ){
 
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
-        Row {
-            TextButton(onClick = onBack) {
-                Text("Retour")
+
+        Column(Modifier.fillMaxSize().padding(16.dp)) {
+            IconButton(
+                onClick = { scope.launch { drawerState.open() } },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu")
             }
-        }
-        Text("Bible des Programmes d'Études", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(16.dp))
+            Row {
+                TextButton(onClick = onBack) {
+                    Text("Retour")
+                }
+            }
+            Text("Bible des Programmes d'Études", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(16.dp))
 
-        when {
-            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            error != null -> Text(error!!, color = MaterialTheme.colorScheme.error)
-            programs.isNullOrEmpty() -> Text("Aucun programme trouvé")
-            else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(programs!!) { program ->
-                    ProgramCard(program)
+            when {
+                isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                error != null -> Text(error!!, color = MaterialTheme.colorScheme.error)
+                programs.isNullOrEmpty() -> Text("Aucun programme trouvé")
+                else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    items(programs!!) { program ->
+                        ProgramCard(program)
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable

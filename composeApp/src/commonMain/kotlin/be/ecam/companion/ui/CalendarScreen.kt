@@ -41,8 +41,10 @@ import kotlin.time.ExperimentalTime
 import be.ecam.companion.data.Course
 import be.ecam.companion.data.ApiRepository
 import org.koin.compose.koinInject
-
-
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.DrawerValue
+import kotlinx.coroutines.launch
 
 
 const val SLIDE_DURATION_MS = 100
@@ -60,8 +62,12 @@ fun CalendarScreen(
     initialMode: CalendarMode? = null,
     initialAnchorDate: LocalDate? = null,
     initialDialogDate: LocalDate? = null,
-    scheduledByDate: Map<LocalDate, List<String>> = emptyMap()
+    scheduledByDate: Map<LocalDate, List<String>> = emptyMap(),
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit
 ) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     var today by remember {
         mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     }
@@ -82,574 +88,587 @@ fun CalendarScreen(
     var date by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
 
-    Row(modifier = modifier.fillMaxSize().padding(8.dp)) {
-        // 🗓️ Partie gauche : calendrier
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings
+    ){
+        IconButton(
+            onClick = { scope.launch { drawerState.open() } }
         ) {
-            // --- En-tête : titre + profil ---
-            Row(
+            Icon(Icons.Filled.Menu, contentDescription = "Menu")
+        }
+
+        Row(modifier = modifier.fillMaxSize().padding(8.dp)) {
+            // 🗓️ Partie gauche : calendrier
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .weight(1f)
+                    .fillMaxHeight()
             ) {
+                // --- En-tête : titre + profil ---
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                // Partie droite : profil + nom/prénom
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Image de profil
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(Color.Gray, shape = CircleShape)
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Column(verticalArrangement = Arrangement.Center) {
-                        Text(
-                            text = "NOM",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
+                    // Partie droite : profil + nom/prénom
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Image de profil
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Color.Gray, shape = CircleShape)
                         )
-                        Text(
-                            text = "Prénom",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-            }
 
-            // --- En-tête (mois, navigation) ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.CalendarMonth, contentDescription = null)
-                    Text(
-                        text = "${
-                            anchorDate.month.name.lowercase().replaceFirstChar { it.titlecase() }
-                        } ${anchorDate.year}",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Today",
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .clickable { slideDirection = 0; anchorDate = today },
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Icon(
-                        Icons.Filled.ChevronLeft,
-                        contentDescription = "Previous",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable { slideDirection = 1; anchorDate = mode.prev(anchorDate) }
-                    )
-                    Icon(
-                        Icons.Filled.ChevronRight,
-                        contentDescription = "Next",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable { slideDirection = -1; anchorDate = mode.next(anchorDate) }
-                    )
-                }
-            }
+                        Spacer(modifier = Modifier.width(8.dp))
 
-
-            Spacer(Modifier.height(8.dp))
-
-            // --- Boutons Week / Month ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FilterChip(
-                    selected = mode == CalendarMode.Week,
-                    onClick = { slideDirection = 0; mode = CalendarMode.Week },
-                    label = { Text("Week") }
-                )
-                FilterChip(
-                    selected = mode == CalendarMode.Month,
-                    onClick = { slideDirection = 0; mode = CalendarMode.Month },
-                    label = { Text("Month") }
-                )
-            }
-
-            Spacer(Modifier.height(8.dp))
-
-            // --- Jours de la semaine ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-                for (d in days) {
-                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        Text(
-                            d,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(4.dp))
-
-            var dialogDate by remember { mutableStateOf(initialDialogDate) }
-
-            // --- Zone du calendrier ---
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .pointerInput(mode, anchorDate) {
-                        var triggered = false
-                        var totalDx = 0f
-                        val threshold = 60f
-                        detectHorizontalDragGestures(
-                            onHorizontalDrag = { _, dragAmount ->
-                                if (triggered) return@detectHorizontalDragGestures
-                                totalDx += dragAmount
-                                if (totalDx <= -threshold) {
-                                    slideDirection = -1
-                                    anchorDate = mode.next(anchorDate)
-                                    triggered = true
-                                } else if (totalDx >= threshold) {
-                                    slideDirection = 1
-                                    anchorDate = mode.prev(anchorDate)
-                                    triggered = true
-                                }
-                            },
-                            onDragEnd = { triggered = false; totalDx = 0f },
-                            onDragCancel = { triggered = false; totalDx = 0f }
-                        )
-                    }
-            ) {
-                AnimatedContent(
-                    targetState = Pair(mode, anchorDate),
-                    transitionSpec = {
-                        val dir = slideDirection
-                        if (dir < 0) {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(SLIDE_DURATION_MS)
-                            ) + fadeIn(animationSpec = tween(SLIDE_DURATION_MS)) togetherWith
-                                    slideOutOfContainer(
-                                        AnimatedContentTransitionScope.SlideDirection.Left,
-                                        animationSpec = tween(SLIDE_DURATION_MS)
-                                    ) + fadeOut(animationSpec = tween(SLIDE_DURATION_MS))
-                        } else if (dir > 0) {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(SLIDE_DURATION_MS)
-                            ) + fadeIn(animationSpec = tween(SLIDE_DURATION_MS)) togetherWith
-                                    slideOutOfContainer(
-                                        AnimatedContentTransitionScope.SlideDirection.Right,
-                                        animationSpec = tween(SLIDE_DURATION_MS)
-                                    ) + fadeOut(animationSpec = tween(SLIDE_DURATION_MS))
-                        } else {
-                            fadeIn(animationSpec = tween(FADE_DURATION_MS)) togetherWith fadeOut(
-                                animationSpec = tween(FADE_DURATION_MS)
+                        Column(verticalArrangement = Arrangement.Center) {
+                            Text(
+                                text = "NOM",
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Prénom",
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
-                    }, label = "calendarPager"
-                ) { (calendarMode, aDate) ->
-                    when (calendarMode) {
-                        CalendarMode.Month -> MonthGrid(
-                            anchorDate = aDate,
-                            today = today,
-                            scheduledByDate = events,
-                            onDateClick = { dateClicked -> dialogDate = dateClicked }
-                        )
+                    }
+                }
 
-                        CalendarMode.Week -> WeekRow(
-                            anchorDate = aDate,
-                            today = today,
-                            scheduledByDate = events,
-                            onDateClick = { dateClicked -> dialogDate = dateClicked }
+                // --- En-tête (mois, navigation) ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Filled.CalendarMonth, contentDescription = null)
+                        Text(
+                            text = "${
+                                anchorDate.month.name.lowercase().replaceFirstChar { it.titlecase() }
+                            } ${anchorDate.year}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Today",
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .clickable { slideDirection = 0; anchorDate = today },
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Icon(
+                            Icons.Filled.ChevronLeft,
+                            contentDescription = "Previous",
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clickable { slideDirection = 1; anchorDate = mode.prev(anchorDate) }
+                        )
+                        Icon(
+                            Icons.Filled.ChevronRight,
+                            contentDescription = "Next",
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clickable { slideDirection = -1; anchorDate = mode.next(anchorDate) }
                         )
                     }
                 }
-            }
 
-            Spacer(Modifier.height(12.dp))
 
-            // Bouton "Ajouter un évènement" + Formulaire à sa droite
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, top = 8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top
-            ) {
-                // 🟦 Bouton principal
-                Button(
-                    onClick = { showAddEventPanel = !showAddEventPanel }
+                Spacer(Modifier.height(8.dp))
+
+                // --- Boutons Week / Month ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Ajouter un évènement")
+                    FilterChip(
+                        selected = mode == CalendarMode.Week,
+                        onClick = { slideDirection = 0; mode = CalendarMode.Week },
+                        label = { Text("Week") }
+                    )
+                    FilterChip(
+                        selected = mode == CalendarMode.Month,
+                        onClick = { slideDirection = 0; mode = CalendarMode.Month },
+                        label = { Text("Month") }
+                    )
                 }
 
-                // 🧩 Formulaire animé à droite du bouton
-                AnimatedVisibility(
-                    visible = showAddEventPanel,
-                    enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
-                    exit = slideOutHorizontally(animationSpec = tween(200)) + fadeOut()
+                Spacer(Modifier.height(8.dp))
+
+                // --- Jours de la semaine ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp)
-                            .background(
-                                MaterialTheme.colorScheme.surfaceVariant,
-                                shape = MaterialTheme.shapes.medium
+                    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                    for (d in days) {
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            Text(
+                                d,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
-                            .padding(16.dp)
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            // États pour la sélection de cours (accessibles depuis tout le formulaire)
-                            var assignedCourse by remember { mutableStateOf<Course?>(null) }
-                            var expandedCourses by remember { mutableStateOf(false) }
-                            var courses by remember { mutableStateOf<List<Course>>(emptyList()) }
-                            var isLoadingCourses by remember { mutableStateOf(true) }
-                            var courseLoadError by remember { mutableStateOf<String?>(null) }
+                        }
+                    }
+                }
 
-                            // Récupération des cours via ApiRepository injecté par Koin
-                            val apiRepository: ApiRepository = koinInject()
-                            LaunchedEffect(Unit) {
-                                try {
-                                    isLoadingCourses = true
-                                    courses = apiRepository.fetchAllCourses()
-                                } catch (e: Exception) {
-                                    courseLoadError = e.message
-                                } finally {
-                                    isLoadingCourses = false
-                                }
+                Spacer(Modifier.height(4.dp))
+
+                var dialogDate by remember { mutableStateOf(initialDialogDate) }
+
+                // --- Zone du calendrier ---
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pointerInput(mode, anchorDate) {
+                            var triggered = false
+                            var totalDx = 0f
+                            val threshold = 60f
+                            detectHorizontalDragGestures(
+                                onHorizontalDrag = { _, dragAmount ->
+                                    if (triggered) return@detectHorizontalDragGestures
+                                    totalDx += dragAmount
+                                    if (totalDx <= -threshold) {
+                                        slideDirection = -1
+                                        anchorDate = mode.next(anchorDate)
+                                        triggered = true
+                                    } else if (totalDx >= threshold) {
+                                        slideDirection = 1
+                                        anchorDate = mode.prev(anchorDate)
+                                        triggered = true
+                                    }
+                                },
+                                onDragEnd = { triggered = false; totalDx = 0f },
+                                onDragCancel = { triggered = false; totalDx = 0f }
+                            )
+                        }
+                ) {
+                    AnimatedContent(
+                        targetState = Pair(mode, anchorDate),
+                        transitionSpec = {
+                            val dir = slideDirection
+                            if (dir < 0) {
+                                slideIntoContainer(
+                                    AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(SLIDE_DURATION_MS)
+                                ) + fadeIn(animationSpec = tween(SLIDE_DURATION_MS)) togetherWith
+                                        slideOutOfContainer(
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
+                                            animationSpec = tween(SLIDE_DURATION_MS)
+                                        ) + fadeOut(animationSpec = tween(SLIDE_DURATION_MS))
+                            } else if (dir > 0) {
+                                slideIntoContainer(
+                                    AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(SLIDE_DURATION_MS)
+                                ) + fadeIn(animationSpec = tween(SLIDE_DURATION_MS)) togetherWith
+                                        slideOutOfContainer(
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
+                                            animationSpec = tween(SLIDE_DURATION_MS)
+                                        ) + fadeOut(animationSpec = tween(SLIDE_DURATION_MS))
+                            } else {
+                                fadeIn(animationSpec = tween(FADE_DURATION_MS)) togetherWith fadeOut(
+                                    animationSpec = tween(FADE_DURATION_MS)
+                                )
                             }
+                        }, label = "calendarPager"
+                    ) { (calendarMode, aDate) ->
+                        when (calendarMode) {
+                            CalendarMode.Month -> MonthGrid(
+                                anchorDate = aDate,
+                                today = today,
+                                scheduledByDate = events,
+                                onDateClick = { dateClicked -> dialogDate = dateClicked }
+                            )
 
-                            // 🧍 Assigné à + 📅 Date côte à côte
-                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            CalendarMode.Week -> WeekRow(
+                                anchorDate = aDate,
+                                today = today,
+                                scheduledByDate = events,
+                                onDateClick = { dateClicked -> dialogDate = dateClicked }
+                            )
+                        }
+                    }
+                }
 
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text("Assigné à", fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(12.dp))
 
-                                    if (isLoadingCourses) {
-                                        Text("Chargement des cours...", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-                                    } else if (courseLoadError != null) {
-                                        Text("Erreur : $courseLoadError", color = Color.Red)
-                                    } else {
-                                        Box {
-                                            TextField(
-                                                value = assignedCourse?.name ?: "Sélectionnez un cours",
-                                                onValueChange = {},
-                                                readOnly = true,
-                                                modifier = Modifier
-                                                    .fillMaxWidth(),
-                                                trailingIcon = {
-                                                    IconButton(onClick = { expandedCourses = !expandedCourses }) {
-                                                        Icon(Icons.Filled.ArrowDropDown, contentDescription = "Ouvrir la liste")
-                                                    }
-                                                }
-                                            )
+                // Bouton "Ajouter un évènement" + Formulaire à sa droite
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, top = 8.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    // 🟦 Bouton principal
+                    Button(
+                        onClick = { showAddEventPanel = !showAddEventPanel }
+                    ) {
+                        Text("Ajouter un évènement")
+                    }
 
-                                            DropdownMenu(
-                                                expanded = expandedCourses,
-                                                onDismissRequest = { expandedCourses = false },
-                                                modifier = Modifier.fillMaxWidth()
-                                            ) {
-                                                courses.forEach { course ->
-                                                    DropdownMenuItem(
-                                                        text = { Text("${course.name} (${course.code})") },
-                                                        onClick = {
-                                                            assignedCourse = course
-                                                            expandedCourses = false
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        }
+                    // 🧩 Formulaire animé à droite du bouton
+                    AnimatedVisibility(
+                        visible = showAddEventPanel,
+                        enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
+                        exit = slideOutHorizontally(animationSpec = tween(200)) + fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    shape = MaterialTheme.shapes.medium
+                                )
+                                .padding(16.dp)
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                // États pour la sélection de cours (accessibles depuis tout le formulaire)
+                                var assignedCourse by remember { mutableStateOf<Course?>(null) }
+                                var expandedCourses by remember { mutableStateOf(false) }
+                                var courses by remember { mutableStateOf<List<Course>>(emptyList()) }
+                                var isLoadingCourses by remember { mutableStateOf(true) }
+                                var courseLoadError by remember { mutableStateOf<String?>(null) }
+
+                                // Récupération des cours via ApiRepository injecté par Koin
+                                val apiRepository: ApiRepository = koinInject()
+                                LaunchedEffect(Unit) {
+                                    try {
+                                        isLoadingCourses = true
+                                        courses = apiRepository.fetchAllCourses()
+                                    } catch (e: Exception) {
+                                        courseLoadError = e.message
+                                    } finally {
+                                        isLoadingCourses = false
                                     }
                                 }
 
+                                // 🧍 Assigné à + 📅 Date côte à côte
+                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                                // --- Champ Date avec calendrier intégré ---
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text("Date", fontWeight = FontWeight.SemiBold)
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text("Assigné à", fontWeight = FontWeight.SemiBold)
 
-                                    var showCalendar by remember { mutableStateOf(false) }
-                                    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-
-                                    // 📅 État du mois/année actuellement affichés
-                                    var currentMonth by remember {
-                                        mutableStateOf(
-                                            Clock.System.now()
-                                                .toLocalDateTime(TimeZone.currentSystemDefault()).date.month
-                                        )
-                                    }
-                                    var currentYear by remember {
-                                        mutableStateOf(
-                                            Clock.System.now()
-                                                .toLocalDateTime(TimeZone.currentSystemDefault()).date.year
-                                        )
-                                    }
-
-                                    val dateText = selectedDate?.let {
-                                        val year = it.year.toString().padStart(4, '0')
-                                        val month = it.month.number.toString().padStart(2, '0')
-                                        val day = it.day.toString().padStart(2, '0')
-                                        "$year-$month-$day"
-                                    } ?: "Choisir une date"
-
-                                    // 🟦 Champ cliquable (style TextField)
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                MaterialTheme.colorScheme.surface,
-                                                shape = MaterialTheme.shapes.extraSmall
-                                            )
-                                            .border(
-                                                1.dp,
-                                                MaterialTheme.colorScheme.outline,
-                                                MaterialTheme.shapes.extraSmall
-                                            )
-                                            .clickable { showCalendar = !showCalendar }
-                                            .padding(12.dp),
-                                        contentAlignment = Alignment.CenterStart
-                                    ) {
-                                        Text(
-                                            text = dateText,
-                                            color = if (selectedDate == null)
-                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                                            else
-                                                MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.End // aligne tout à droite
-                                    ) {
-                                    }
-
-
-                                    Spacer(Modifier.height(4.dp))
-
-                                    // 🗓️ Calendrier complet
-                                    AnimatedVisibility(showCalendar) {
-                                        val firstOfMonth = LocalDate(currentYear, currentMonth, 1)
-                                        val lastOfMonth = firstOfMonth
-                                            .plus(1, DateTimeUnit.MONTH)
-                                            .minus(1, DateTimeUnit.DAY)
-                                        val daysInMonth = lastOfMonth.day
-
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    MaterialTheme.colorScheme.surfaceVariant,
-                                                    shape = MaterialTheme.shapes.small
-                                                )
-                                                .padding(8.dp)
-                                        ) {
-                                            // --- En-tête mois / année avec flèches ---
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Button(onClick = {
-                                                    if (currentMonth == Month.JANUARY) {
-                                                        currentMonth = Month.DECEMBER
-                                                        currentYear -= 1
-                                                    } else {
-                                                        currentMonth = Month(currentMonth.number - 1)
+                                        if (isLoadingCourses) {
+                                            Text("Chargement des cours...", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                                        } else if (courseLoadError != null) {
+                                            Text("Erreur : $courseLoadError", color = Color.Red)
+                                        } else {
+                                            Box {
+                                                TextField(
+                                                    value = assignedCourse?.name ?: "Sélectionnez un cours",
+                                                    onValueChange = {},
+                                                    readOnly = true,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth(),
+                                                    trailingIcon = {
+                                                        IconButton(onClick = { expandedCourses = !expandedCourses }) {
+                                                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Ouvrir la liste")
+                                                        }
                                                     }
-                                                }) {
-                                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Month")
-                                                }
-
-                                                Text(
-                                                    text = "${
-                                                        currentMonth.name.lowercase()
-                                                            .replaceFirstChar { it.uppercase() }
-                                                    } $currentYear",
-                                                    style = MaterialTheme.typography.titleMedium,
-                                                    modifier = Modifier.align(Alignment.CenterVertically)
                                                 )
 
-                                                Button(onClick = {
-                                                    if (currentMonth == Month.DECEMBER) {
-                                                        currentMonth = Month.JANUARY
-                                                        currentYear += 1
-                                                    } else {
-                                                        currentMonth = Month(currentMonth.number + 1)
-                                                    }
-                                                }) {
-                                                    Icon(
-                                                        Icons.AutoMirrored.Filled.ArrowForward,
-                                                        contentDescription = "Mois suivant"
-                                                    )
-                                                }
-                                            }
-
-                                            Spacer(Modifier.height(4.dp))
-
-                                            // --- Grille des jours ---
-                                            val columns = 7
-                                            for (weekStart in 1..daysInMonth step columns) {
-                                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                                    for (day in weekStart until (weekStart + columns).coerceAtMost(
-                                                        daysInMonth + 1
-                                                    )) {
-                                                        val thisDay = LocalDate(currentYear, currentMonth, day)
-                                                        Text(
-                                                            text = day.toString(),
-                                                            modifier = Modifier
-                                                                .padding(4.dp)
-                                                                .clickable {
-                                                                    selectedDate = thisDay
-                                                                    date = thisDay.toString()
-                                                                    showCalendar = false
-                                                                }
-                                                                .background(
-                                                                    if (selectedDate == thisDay)
-                                                                        MaterialTheme.colorScheme.primary
-                                                                    else Color.Transparent,
-                                                                    shape = CircleShape
-                                                                )
-                                                                .padding(8.dp),
-                                                            color = if (selectedDate == thisDay)
-                                                                Color.White
-                                                            else
-                                                                MaterialTheme.colorScheme.onSurface
+                                                DropdownMenu(
+                                                    expanded = expandedCourses,
+                                                    onDismissRequest = { expandedCourses = false },
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    courses.forEach { course ->
+                                                        DropdownMenuItem(
+                                                            text = { Text("${course.name} (${course.code})") },
+                                                            onClick = {
+                                                                assignedCourse = course
+                                                                expandedCourses = false
+                                                            }
                                                         )
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            }
 
-                            // 📝 Notes + bouton confirmer
-                            Column {
-                                Text("Notes :", fontWeight = FontWeight.SemiBold)
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.Bottom
-                                ) {
-                                    TextField(
-                                        value = notes,
-                                        onValueChange = { notes = it },
-                                        modifier = Modifier.weight(1f),
-                                        placeholder = { Text("Ajouter une note...") },
-                                        maxLines = 3
-                                    )
-                                    Button(
-                                        onClick = {
-                                            val parsedDate = try {
-                                                LocalDate.parse(date)
-                                            } catch (e: Exception) {
-                                                null
-                                            }
 
-                                            // Use the selected course (assignedCourse) instead of free-text assignedTo
-                                            if (parsedDate != null && assignedCourse != null && notes.isNotBlank()) {
-                                                val text = "Assigné à: ${assignedCourse?.name ?: ""} — Note: $notes"
+                                    // --- Champ Date avec calendrier intégré ---
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text("Date", fontWeight = FontWeight.SemiBold)
 
-                                                val updatedList = events[parsedDate]?.toMutableList() ?: mutableListOf()
-                                                updatedList.add(text)
+                                        var showCalendar by remember { mutableStateOf(false) }
+                                        var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
-                                                events = events.toMutableMap().apply {
-                                                    put(parsedDate, updatedList)
+                                        // 📅 État du mois/année actuellement affichés
+                                        var currentMonth by remember {
+                                            mutableStateOf(
+                                                Clock.System.now()
+                                                    .toLocalDateTime(TimeZone.currentSystemDefault()).date.month
+                                            )
+                                        }
+                                        var currentYear by remember {
+                                            mutableStateOf(
+                                                Clock.System.now()
+                                                    .toLocalDateTime(TimeZone.currentSystemDefault()).date.year
+                                            )
+                                        }
+
+                                        val dateText = selectedDate?.let {
+                                            val year = it.year.toString().padStart(4, '0')
+                                            val month = it.month.number.toString().padStart(2, '0')
+                                            val day = it.day.toString().padStart(2, '0')
+                                            "$year-$month-$day"
+                                        } ?: "Choisir une date"
+
+                                        // 🟦 Champ cliquable (style TextField)
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(
+                                                    MaterialTheme.colorScheme.surface,
+                                                    shape = MaterialTheme.shapes.extraSmall
+                                                )
+                                                .border(
+                                                    1.dp,
+                                                    MaterialTheme.colorScheme.outline,
+                                                    MaterialTheme.shapes.extraSmall
+                                                )
+                                                .clickable { showCalendar = !showCalendar }
+                                                .padding(12.dp),
+                                            contentAlignment = Alignment.CenterStart
+                                        ) {
+                                            Text(
+                                                text = dateText,
+                                                color = if (selectedDate == null)
+                                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                                else
+                                                    MaterialTheme.colorScheme.onSurface
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.End // aligne tout à droite
+                                        ) {
+                                        }
+
+
+                                        Spacer(Modifier.height(4.dp))
+
+                                        // 🗓️ Calendrier complet
+                                        AnimatedVisibility(showCalendar) {
+                                            val firstOfMonth = LocalDate(currentYear, currentMonth, 1)
+                                            val lastOfMonth = firstOfMonth
+                                                .plus(1, DateTimeUnit.MONTH)
+                                                .minus(1, DateTimeUnit.DAY)
+                                            val daysInMonth = lastOfMonth.day
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(
+                                                        MaterialTheme.colorScheme.surfaceVariant,
+                                                        shape = MaterialTheme.shapes.small
+                                                    )
+                                                    .padding(8.dp)
+                                            ) {
+                                                // --- En-tête mois / année avec flèches ---
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Button(onClick = {
+                                                        if (currentMonth == Month.JANUARY) {
+                                                            currentMonth = Month.DECEMBER
+                                                            currentYear -= 1
+                                                        } else {
+                                                            currentMonth = Month(currentMonth.number - 1)
+                                                        }
+                                                    }) {
+                                                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Month")
+                                                    }
+
+                                                    Text(
+                                                        text = "${
+                                                            currentMonth.name.lowercase()
+                                                                .replaceFirstChar { it.uppercase() }
+                                                        } $currentYear",
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                                    )
+
+                                                    Button(onClick = {
+                                                        if (currentMonth == Month.DECEMBER) {
+                                                            currentMonth = Month.JANUARY
+                                                            currentYear += 1
+                                                        } else {
+                                                            currentMonth = Month(currentMonth.number + 1)
+                                                        }
+                                                    }) {
+                                                        Icon(
+                                                            Icons.AutoMirrored.Filled.ArrowForward,
+                                                            contentDescription = "Mois suivant"
+                                                        )
+                                                    }
+                                                }
+
+                                                Spacer(Modifier.height(4.dp))
+
+                                                // --- Grille des jours ---
+                                                val columns = 7
+                                                for (weekStart in 1..daysInMonth step columns) {
+                                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                                        for (day in weekStart until (weekStart + columns).coerceAtMost(
+                                                            daysInMonth + 1
+                                                        )) {
+                                                            val thisDay = LocalDate(currentYear, currentMonth, day)
+                                                            Text(
+                                                                text = day.toString(),
+                                                                modifier = Modifier
+                                                                    .padding(4.dp)
+                                                                    .clickable {
+                                                                        selectedDate = thisDay
+                                                                        date = thisDay.toString()
+                                                                        showCalendar = false
+                                                                    }
+                                                                    .background(
+                                                                        if (selectedDate == thisDay)
+                                                                            MaterialTheme.colorScheme.primary
+                                                                        else Color.Transparent,
+                                                                        shape = CircleShape
+                                                                    )
+                                                                    .padding(8.dp),
+                                                                color = if (selectedDate == thisDay)
+                                                                    Color.White
+                                                                else
+                                                                    MaterialTheme.colorScheme.onSurface
+                                                            )
+                                                        }
+                                                    }
                                                 }
                                             }
-
-                                            showAddEventPanel = false
-                                            assignedCourse = null
-                                            date = ""
-                                            notes = ""
                                         }
+                                    }
+                                }
+
+                                // 📝 Notes + bouton confirmer
+                                Column {
+                                    Text("Notes :", fontWeight = FontWeight.SemiBold)
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.Bottom
                                     ) {
-                                        Text("Confirmer")
+                                        TextField(
+                                            value = notes,
+                                            onValueChange = { notes = it },
+                                            modifier = Modifier.weight(1f),
+                                            placeholder = { Text("Ajouter une note...") },
+                                            maxLines = 3
+                                        )
+                                        Button(
+                                            onClick = {
+                                                val parsedDate = try {
+                                                    LocalDate.parse(date)
+                                                } catch (e: Exception) {
+                                                    null
+                                                }
+
+                                                // Use the selected course (assignedCourse) instead of free-text assignedTo
+                                                if (parsedDate != null && assignedCourse != null && notes.isNotBlank()) {
+                                                    val text = "Assigné à: ${assignedCourse?.name ?: ""} — Note: $notes"
+
+                                                    val updatedList = events[parsedDate]?.toMutableList() ?: mutableListOf()
+                                                    updatedList.add(text)
+
+                                                    events = events.toMutableMap().apply {
+                                                        put(parsedDate, updatedList)
+                                                    }
+                                                }
+
+                                                showAddEventPanel = false
+                                                assignedCourse = null
+                                                date = ""
+                                                notes = ""
+                                            }
+                                        ) {
+                                            Text("Confirmer")
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
 
 
-            Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
-            // --- Liste des événements du jour sélectionné ---
-            if (dialogDate != null) {
-                val items = events[dialogDate] ?: emptyList()
-                Column(modifier = Modifier.fillMaxWidth()) {
+                // --- Liste des événements du jour sélectionné ---
+                if (dialogDate != null) {
+                    val items = events[dialogDate] ?: emptyList()
+                    Column(modifier = Modifier.fillMaxWidth()) {
 
-                    val header = "${dialogDate!!.year}-${
-                        dialogDate!!.month.number.toString().padStart(2, '0')
-                    }-${dialogDate!!.day.toString().padStart(2, '0')}"
+                        val header = "${dialogDate!!.year}-${
+                            dialogDate!!.month.number.toString().padStart(2, '0')
+                        }-${dialogDate!!.day.toString().padStart(2, '0')}"
 
-                    Text(
-                        text = "Items on $header",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    if (items.isEmpty()) {
                         Text(
-                            "No items",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            text = "Items on $header",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold
                         )
-                    } else {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items.forEach { t ->
 
-                                // On découpe "Assigné à: X — Note: Y"
-                                val parts = t.split(" — ")
-                                val assigned = parts.getOrNull(0)?.removePrefix("Assigné à: ") ?: ""
-                                val note = parts.getOrNull(1)?.removePrefix("Note: ") ?: ""
+                        Spacer(Modifier.height(8.dp))
 
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            MaterialTheme.colorScheme.surfaceVariant,
-                                            shape = MaterialTheme.shapes.small
-                                        )
-                                        .padding(12.dp)
-                                ) {
-                                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (items.isEmpty()) {
+                            Text(
+                                "No items",
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        } else {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                items.forEach { t ->
 
-                                        Text(
-                                            text = "Assigné à :",
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(assigned)
+                                    // On découpe "Assigné à: X — Note: Y"
+                                    val parts = t.split(" — ")
+                                    val assigned = parts.getOrNull(0)?.removePrefix("Assigné à: ") ?: ""
+                                    val note = parts.getOrNull(1)?.removePrefix("Note: ") ?: ""
 
-                                        Text(
-                                            text = "Note :",
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(note)
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                MaterialTheme.colorScheme.surfaceVariant,
+                                                shape = MaterialTheme.shapes.small
+                                            )
+                                            .padding(12.dp)
+                                    ) {
+                                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+                                            Text(
+                                                text = "Assigné à :",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(assigned)
+
+                                            Text(
+                                                text = "Note :",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(note)
+                                        }
                                     }
                                 }
                             }
@@ -659,6 +678,7 @@ fun CalendarScreen(
             }
         }
     }
+
 }
 
 // --- Autres fonctions inchangées ---
@@ -780,5 +800,9 @@ private fun LocalDate.startOfWeek(): LocalDate {
 @Preview
 @Composable
 private fun Preview_Calendar_Month() {
-    CalendarScreen(initialMode = CalendarMode.Month, initialAnchorDate = LocalDate(2025, 9, 15))
+    CalendarScreen(
+        initialMode = CalendarMode.Month,
+        initialAnchorDate = LocalDate(2025, 9, 15),
+        onOpenCalendar = {},
+        onOpenSettings = {})
 }

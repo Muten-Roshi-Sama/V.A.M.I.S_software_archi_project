@@ -75,17 +75,33 @@ fun App(extraModules: List<Module> = emptyList()) {
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
-                                scheduledByDate = vm.scheduledByDate
+                                scheduledByDate = vm.scheduledByDate,
+                                onOpenCalendar = { currentScreen = Screen.ListAdmins },
+                                onOpenSettings = { currentScreen = Screen.Settings }
                             )
                             is Screen.Settings -> SettingsScreen(
                                 repo = koinInject(),
                                 onSaved = { vm.load() },
-                                onLogout = { currentScreen = Screen.Login }
+                                onLogout = { currentScreen = Screen.Login },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings }
                             )
-                            is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
-                            is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
-                            is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
-                            is Screen.Bible -> DataBibleScreen(onBack = { currentScreen = Screen.Home })
+                            is Screen.ListAdmins -> ListAdmins(
+                                onBack = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.ListAdmins },
+                                onOpenSettings = { currentScreen = Screen.Settings })
+                            is Screen.DataStudents -> DataStudentsScreen(
+                                onBack = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings })
+                            is Screen.Teachers -> DataTeacherScreen(
+                                onBack = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings })
+                            is Screen.Bible -> DataBibleScreen(
+                                onBack = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings })
                         }
                     }
                 }
