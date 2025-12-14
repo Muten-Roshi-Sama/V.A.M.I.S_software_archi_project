@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun HomeScreen(
     onOpenAdmins: () -> Unit,
     onOpenStudents: () -> Unit,
+    onOpenHome: () -> Unit,
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTeachers: () -> Unit,
@@ -57,6 +59,11 @@ fun HomeScreen(
             ) {
                 Text("Menu", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(24.dp))
+
+                DrawerItem("Home", Icons.Filled.Home) {
+                    scope.launch { drawerState.close() }
+                    onOpenHome()
+                }
 
                 DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
                     scope.launch { drawerState.close() }

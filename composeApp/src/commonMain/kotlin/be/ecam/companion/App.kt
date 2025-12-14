@@ -66,6 +66,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
                                 onOpenStudents = { currentScreen = Screen.DataStudents },
+                                onOpenHome = { currentScreen = Screen.Home },
                                 // Je rajoute ici une page pour le calendar dans le menu
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 // Je rajoute ici une apage qui va vers les settings
@@ -75,12 +76,18 @@ fun App(extraModules: List<Module> = emptyList()) {
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
-                                scheduledByDate = vm.scheduledByDate
+                                scheduledByDate = vm.scheduledByDate,
+                                onOpenHome = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings },
                             )
                             is Screen.Settings -> SettingsScreen(
                                 repo = koinInject(),
                                 onSaved = { vm.load() },
-                                onLogout = { currentScreen = Screen.Login }
+                                onLogout = { currentScreen = Screen.Login },
+                                onOpenHome = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenSettings = { currentScreen = Screen.Settings },
                             )
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
                             is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
