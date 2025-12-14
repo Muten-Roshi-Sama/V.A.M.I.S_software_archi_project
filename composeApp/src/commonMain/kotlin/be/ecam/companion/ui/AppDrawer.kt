@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,6 +27,7 @@ fun AppDrawer(
     scope: CoroutineScope,
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit,
     content: @Composable () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -42,6 +44,11 @@ fun AppDrawer(
             ) {
                 Text("Menu", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(24.dp))
+
+                DrawerItem("Home", Icons.Filled.Home) {
+                    scope.launch { drawerState.close() }
+                    onOpenHome()
+                }
 
                 DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
                     scope.launch { drawerState.close() }

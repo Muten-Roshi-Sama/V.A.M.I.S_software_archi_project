@@ -22,7 +22,8 @@ import org.koin.compose.koinInject
 fun ListAdmins(
     onBack: () -> Unit,
     onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit) {
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     // Get repository from Koin
@@ -53,7 +54,8 @@ fun ListAdmins(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ){
         Column(
             modifier = Modifier

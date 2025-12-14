@@ -93,19 +93,23 @@ fun App(extraModules: List<Module> = emptyList()) {
                             is Screen.ListAdmins -> ListAdmins(
                                 onBack = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.ListAdmins },
-                                onOpenSettings = { currentScreen = Screen.Settings })
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home })
                             is Screen.DataStudents -> DataStudentsScreen(
                                 onBack = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings })
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home })
                             is Screen.Teachers -> DataTeacherScreen(
                                 onBack = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings })
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home })
                             is Screen.Bible -> DataBibleScreen(
                                 onBack = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings })
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home })
                         }
                     }
                 }

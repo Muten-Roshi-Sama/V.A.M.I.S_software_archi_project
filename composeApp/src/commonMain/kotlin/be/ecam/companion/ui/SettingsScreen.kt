@@ -63,7 +63,8 @@ fun SettingsScreen(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ){
         IconButton(
             onClick = { scope.launch { drawerState.open() } },

@@ -24,7 +24,8 @@ import androidx.compose.material.icons.filled.Menu
 fun DataStudentsScreen(
     onBack: () -> Unit,
     onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit) {
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val repository = koinInject<ApiRepository>()
@@ -48,7 +49,8 @@ fun DataStudentsScreen(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ){
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             IconButton(

@@ -80,7 +80,8 @@ fun HomeScreen(
             drawerState = drawerState,
             scope = scope,
             onOpenCalendar = onOpenCalendar,
-            onOpenSettings = onOpenSettings
+            onOpenSettings = onOpenSettings,
+            onOpenHome = onOpenHome
         ) {
             Column(
                 modifier = Modifier

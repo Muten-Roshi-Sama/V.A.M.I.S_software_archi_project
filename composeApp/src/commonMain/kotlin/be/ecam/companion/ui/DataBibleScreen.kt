@@ -23,7 +23,8 @@ import androidx.compose.material.icons.filled.Menu
 fun DataBibleScreen(
                     onBack: () -> Unit,
                     onOpenCalendar: () -> Unit,
-                    onOpenSettings: () -> Unit) {
+                    onOpenSettings: () -> Unit,
+                    onOpenHome: () -> Unit,) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val repo = koinInject<ApiRepository>()
@@ -47,7 +48,8 @@ fun DataBibleScreen(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ){
 
 

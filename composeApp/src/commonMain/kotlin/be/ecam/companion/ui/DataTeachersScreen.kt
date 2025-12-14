@@ -19,7 +19,8 @@ import androidx.compose.material.icons.filled.Menu
 fun DataTeacherScreen(
     onBack: () -> Unit,
     onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit) {
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repo = koinInject<ApiRepository>()
     var teachers by remember { mutableStateOf<List<Teacher>?>(null) }
@@ -39,7 +40,8 @@ fun DataTeacherScreen(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ){
         Column(Modifier.fillMaxSize().padding(16.dp)) {
 
