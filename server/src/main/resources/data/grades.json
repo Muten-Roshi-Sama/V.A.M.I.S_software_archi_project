@@ -26,5 +26,19 @@
     "student_id": "25189",
     "activities_id": "INFO1-LAB",
     "scale": 20
+  },
+  {
+    "points": 16,
+    "comment": "Bon travail global",
+    "student_id": "20123",
+    "activities_id": "INFO3-LEC",
+    "scale": 20
+  },
+  {
+    "points": 19,
+    "comment": "Très bon labo",
+    "student_id": "20123",
+    "activities_id": "INFO3-LAB",
+    "scale": 20
   }
 ]
