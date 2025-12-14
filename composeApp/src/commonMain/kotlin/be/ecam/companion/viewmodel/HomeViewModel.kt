@@ -34,19 +34,19 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
                 lastErrorMessage = friendlyErrorMessage(t)
             }
         }
-        scope.launch {
-            try {
-                val schedule = repository.fetchSchedule()
-                // parse keys as LocalDate (yyyy-MM-dd)
-                val parsed = schedule.mapKeys { (k, _) ->
-                    val parts = k.split("-")
-                    LocalDate(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
-                }.mapValues { (_, v) -> v.map { it.title } }
-                scheduledByDate = parsed
-            } catch (t: Throwable) {
-                lastErrorMessage = friendlyErrorMessage(t)
-            }
-        }
+//        scope.launch {
+//            try {
+//                val schedule = repository.fetchSchedule()
+//                // parse keys as LocalDate (yyyy-MM-dd)
+//                val parsed = schedule.mapKeys { (k, _) ->
+//                    val parts = k.split("-")
+//                    LocalDate(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
+//                }.mapValues { (_, v) -> v.map { it.title } }
+//                scheduledByDate = parsed
+//            } catch (t: Throwable) {
+//                lastErrorMessage = friendlyErrorMessage(t)
+//            }
+//        }
     }
 
     private fun friendlyErrorMessage(t: Throwable): String {

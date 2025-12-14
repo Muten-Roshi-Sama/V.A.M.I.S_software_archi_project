@@ -1,14 +1,16 @@
 [
   {
-    "id": 1,
-    "username": "marie.dupont",
+    "firstName": "Marie",
+    "lastName": "Dupont",
     "email": "admin1@school.com",
-    "password": "admin123"
+    "password": "admin123",
+    "createdAt": "2024-01-15T10:30:00Z"
   },
   {
-    "id": 2,
-    "username": "julien.dulac",
+    "firstName": "Julien",
+    "lastName": "Dulac",
     "email": "admin2@school.com",
-    "password": "admin123"
+    "password": "admin123",
+    "createdAt": "2024-01-15T10:30:00Z"
   }
 ]

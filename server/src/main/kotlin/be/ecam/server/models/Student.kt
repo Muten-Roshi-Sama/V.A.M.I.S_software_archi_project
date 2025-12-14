@@ -1,23 +1,57 @@
 package be.ecam.server.models
 
+//Table
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.ReferenceOption
 
-object StudentTable : IntIdTable("students") {
-    val email = varchar("email", 100).uniqueIndex()
-    val firstName = varchar("first_name", 100)
-    val lastName = varchar("last_name", 100)
-    val matricule = varchar("matricule", 5).uniqueIndex()
-    val year = varchar("year", 10) // BA1, BA2, BA3, MA1, MA2
-    val option = varchar("option", 50).nullable() // null pour BA1/BA2
+//DAO
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.IntEntityClass
+
+//DTO
+import be.ecam.common.api.StudentDTO
+
+object StudentTable : IntIdTable(name = "students") {
+    val person = reference("person_id", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    
+    //  student-specific fields
+    val studentId = varchar("student_id", 20).nullable().uniqueIndex()
+    val studyYear = varchar("study_year", 64).nullable()
+    val optionCode = varchar("option_code", 64).nullable()
+
 }
 
-object EvaluationTable : Table("evaluations") {
-    val id = integer("id").autoIncrement()
-    val student = reference("student_id", StudentTable)
-    val activityName = varchar("activity_name", 255)
-    val session = varchar("session", 50) // "Janvier 2025", "Juin 2024", ...
-    val score = integer("score")
-    val maxScore = integer("max_score")
-    override val primaryKey = PrimaryKey(id)
+class Student(id: EntityID<Int>) : IntEntity(id), PersonInfo {
+
+    companion object : IntEntityClass<Student>(StudentTable) {
+        fun createForPerson(person: Person): Student = new { this.person = person }
+    }
+
+    var person by Person referencedOn StudentTable.person
+    var studentId by StudentTable.studentId    
+    var studyYear by StudentTable.studyYear    
+    var optionCode by StudentTable.optionCode 
+
+    // Getters from PersonInfo interface
+    override val personId: Int? get() = person.id.value
+    override val firstName: String? get() = person.firstName
+    override val lastName: String? get() = person.lastName
+    override val email: String get() = person.email
+    override val createdAt: String get() = person.createdAt
+
+    // REMOVE the duplicate override declarations for studentId, studyYear, optionCode
+
+    fun toDto(): StudentDTO = StudentDTO(
+        id = this.id.value,
+        studentId = this.studentId,      // Now unambiguous
+        firstName = this.firstName,
+        lastName = this.lastName,
+        email = this.email,
+        password = null,
+        studyYear = this.studyYear,      // Now unambiguous
+        optionCode = this.optionCode,    // Now unambiguous
+        createdAt = this.createdAt
+    )
 }
+

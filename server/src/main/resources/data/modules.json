@@ -23,7 +23,6 @@
     "coordinator": "prof.dupont@ecam.be",
     "course_code": "INFO1"
   },
-
   {
     "activity_name": "Object-Oriented Programming - Lectures",
     "activity_code": "INFO2-LEC",
@@ -32,7 +31,6 @@
     "coordinator": "prof.martin@ecam.be",
     "course_code": "INFO2"
   },
-
   {
     "activity_name": "Artificial Intelligence - Theory",
     "activity_code": "AI4-THEORY",
@@ -41,7 +39,6 @@
     "coordinator": "prof.dupont@ecam.be",
     "course_code": "AI4"
   },
-
   {
     "activity_name": "Master Thesis",
     "activity_code": "TFE5-THESIS",

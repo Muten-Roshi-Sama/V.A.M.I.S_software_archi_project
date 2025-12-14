@@ -26,76 +26,116 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.Module
 
-// ===== IMPORTS UI =====
-import be.ecam.companion.ui.ListAdmins
-import be.ecam.companion.ui.Screen
-import be.ecam.companion.ui.HomeScreen
+import be.ecam.companion.ui.LoginScreen
+import be.ecam.companion.ui.admin.ListAdmins
+import be.ecam.companion.ui.admin.ListStudents
 import be.ecam.companion.ui.CalendarScreen
 import be.ecam.companion.ui.SettingsScreen
-import be.ecam.companion.ui.DataStudentsScreen
-import be.ecam.companion.ui.DataTeacherScreen
-import be.ecam.companion.ui.DataBibleScreen
+import be.ecam.companion.ui.admin.AdminDashboard
+import be.ecam.companion.ui.student.StudentDashboard
+import be.ecam.companion.ui.teacher.TeacherDashboard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(extraModules: List<Module> = emptyList()) {
     KoinApplication(application = { modules(appModule + extraModules) }) {
-        val vm = koinInject<HomeViewModel>()
         MaterialTheme {
-            var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }//Variable that says: “Which screen is currently displayed?”
-            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-            val scope = rememberCoroutineScope()
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
-            ModalNavigationDrawer(
-                drawerState = drawerState,
-                drawerContent = { /* small drawer */ }
-            ) {
-                Scaffold(
-                    // topBar = { AppTopBar(...) },
-                    // bottomBar = { AppBottomBar(...) }
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        when (currentScreen) {
-                            is Screen.Home -> HomeScreen(
-                                onOpenAdmins = { currentScreen = Screen.ListAdmins },
-                                //If currentScreen = DataStudents → display the report card screen :
-                                onOpenStudents = { currentScreen = Screen.DataStudents },
-                                onOpenTeachers = { currentScreen = Screen.Teachers },
-                                onOpenBible = { currentScreen = Screen.Bible }
-                            )
-                            is Screen.Calendar -> CalendarScreen(
-                                modifier = Modifier.fillMaxSize(),
-                                scheduledByDate = vm.scheduledByDate
-                            )
-                            is Screen.Settings -> SettingsScreen(
-                                repo = koinInject(),
-                                onSaved = { vm.load() }
-                            )
-                            is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
-                            is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
-                            is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
-                            is Screen.Bible -> DataBibleScreen(onBack = { currentScreen = Screen.Home })
+            when (val screen = currentScreen) {
+                is Screen.Login -> {
+                    LoginScreen(
+                        onLoginSuccess = { role ->
+                            currentScreen = when (role.lowercase()) {
+                                "admin" -> Screen.AdminDashboard
+                                "student" -> Screen.StudentDashboard
+                                "teacher" -> Screen.TeacherDashboard
+                                else -> Screen.AdminDashboard
+                            }
                         }
-                    }
+                    )
+                }
+                
+                is Screen.AdminDashboard -> {
+                    AdminDashboard(
+                        onNavigateToAdmins = { currentScreen = Screen.AdminList },
+                        onNavigateToStudents = { currentScreen = Screen.StudentList },
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings },
+                        onLogout = { currentScreen = Screen.Login }
+                    )
+                }
+                
+                is Screen.StudentDashboard -> {
+                    StudentDashboard(
+                        onLogout = { currentScreen = Screen.Login },
+                        onNavigateToGrades = { currentScreen = Screen.MyGrades },
+                        onNavigateToCourses = { currentScreen = Screen.MyCourses },
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings }
+                    )
+                }
+                
+                is Screen.TeacherDashboard -> {
+                    TeacherDashboard(
+                        onLogout = { currentScreen = Screen.Login },
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings }
+                    )
+                }
+                
+                is Screen.AdminList -> {
+                    ListAdmins(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+                
+                is Screen.StudentList -> {
+                    ListStudents(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+                
+                is Screen.MyGrades -> {
+                    be.ecam.companion.ui.student.MyGradesScreen(
+                        onBack = { currentScreen = Screen.StudentDashboard }
+                    )
+                }
+                
+                is Screen.MyCourses -> {
+                    be.ecam.companion.ui.student.MyCoursesScreen(
+                        onBack = { currentScreen = Screen.StudentDashboard }
+                    )
+                }
+                
+                is Screen.Calendar -> {
+                    CalendarScreen()
+                }
+                
+                is Screen.Settings -> {
+                    val settingsRepo = koinInject<SettingsRepository>()
+                    SettingsScreen(
+                        repo = settingsRepo,
+                        onSaved = { currentScreen = when {
+                            currentScreen == Screen.Settings -> Screen.AdminDashboard
+                            else -> Screen.AdminDashboard
+                        }}
+                    )
                 }
             }
         }
     }
 }
 
-private enum class BottomItem {
-    HOME, CALENDAR, SETTINGS;
-
-    @Composable
-    fun getLabel() = when (this) {
-        HOME -> stringResource(Res.string.home)
-        CALENDAR -> stringResource(Res.string.calendar)
-        SETTINGS -> stringResource(Res.string.settings)
-    }
-
-    fun getIconRes() = when (this) {
-        HOME -> Icons.Filled.Home
-        CALENDAR -> Icons.Filled.CalendarMonth
-        SETTINGS -> Icons.Filled.Settings
-    }
+private sealed class Screen {
+    object Login : Screen()
+    object AdminDashboard : Screen()
+    object StudentDashboard : Screen()
+    object TeacherDashboard : Screen()
+    object AdminList : Screen()
+    object StudentList : Screen()
+    object MyGrades : Screen()
+    object MyCourses : Screen()
+    object Calendar : Screen()
+    object Settings : Screen()
 }
