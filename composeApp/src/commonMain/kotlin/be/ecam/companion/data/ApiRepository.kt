@@ -6,7 +6,10 @@ import be.ecam.common.api.ScheduleItem
 import be.ecam.common.api.ProgramWithDetails
 import be.ecam.common.api.StudentBulletin
 import be.ecam.common.api.Teacher
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonNames
 
 interface ApiRepository {
     suspend fun fetchAdmins(): List<AdminDTO>
@@ -19,9 +22,18 @@ interface ApiRepository {
     suspend fun fetchBible(): List<ProgramWithDetails>
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Course(
+    @SerialName("course_code")
+    @JsonNames("course_code", "courseCode", "Code", "code")
     val code: String,
+
+    @SerialName("course_name")
+    @JsonNames("course_name", "courseName", "name")
     val name: String,
-    val year: Int
+
+    @SerialName("total_hours")
+    @JsonNames("total_hours", "totalHours", "hours")
+    val totalHours: Int? = null,
 )

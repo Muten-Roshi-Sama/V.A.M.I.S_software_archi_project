@@ -66,6 +66,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenAdmins = { currentScreen = Screen.ListAdmins },
                                 //If currentScreen = DataStudents → display the report card screen :
                                 onOpenStudents = { currentScreen = Screen.DataStudents },
+                                onOpenHome = { currentScreen = Screen.Home },
                                 // Je rajoute ici une page pour le calendar dans le menu
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 // Je rajoute ici une apage qui va vers les settings
@@ -77,14 +78,17 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 modifier = Modifier.fillMaxSize(),
                                 scheduledByDate = vm.scheduledByDate,
                                 onOpenCalendar = { currentScreen = Screen.ListAdmins },
-                                onOpenSettings = { currentScreen = Screen.Settings }
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home }
                             )
                             is Screen.Settings -> SettingsScreen(
                                 repo = koinInject(),
                                 onSaved = { vm.load() },
                                 onLogout = { currentScreen = Screen.Login },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings }
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenHome = { currentScreen = Screen.Home }
+
                             )
                             is Screen.ListAdmins -> ListAdmins(
                                 onBack = { currentScreen = Screen.Home },

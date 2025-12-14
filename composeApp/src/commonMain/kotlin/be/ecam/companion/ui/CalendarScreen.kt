@@ -6,17 +6,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -27,11 +34,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.rememberDrawerState
 import kotlinx.datetime.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
@@ -41,10 +50,9 @@ import kotlin.time.ExperimentalTime
 import be.ecam.companion.data.Course
 import be.ecam.companion.data.ApiRepository
 import org.koin.compose.koinInject
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.DrawerValue
 import kotlinx.coroutines.launch
+
+
 
 
 const val SLIDE_DURATION_MS = 100
@@ -63,11 +71,10 @@ fun CalendarScreen(
     initialAnchorDate: LocalDate? = null,
     initialDialogDate: LocalDate? = null,
     scheduledByDate: Map<LocalDate, List<String>> = emptyMap(),
-    onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenHome: () -> Unit = {},
+    onOpenCalendar: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
 ) {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     var today by remember {
         mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     }
@@ -88,18 +95,43 @@ fun CalendarScreen(
     var date by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
 
-    AppDrawer(
-        drawerState = drawerState,
-        scope = scope,
-        onOpenCalendar = onOpenCalendar,
-        onOpenSettings = onOpenSettings
-    ){
-        IconButton(
-            onClick = { scope.launch { drawerState.open() } }
-        ) {
-            Icon(Icons.Filled.Menu, contentDescription = "Menu")
-        }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Column(
+                modifier = Modifier
+                    .width(240.dp)
+                    .fillMaxHeight()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
+                    .shadow(8.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
+            ) {
+                Text("Menu", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(24.dp))
+
+                DrawerItem("Home", Icons.Filled.Home) {
+                    scope.launch { drawerState.close() }
+                    onOpenHome()
+                }
+
+                DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
+                    scope.launch { drawerState.close() }
+                    onOpenCalendar()
+                }
+
+                DrawerItem("Settings", Icons.Filled.Settings) {
+                    scope.launch { drawerState.close() }
+                    onOpenSettings()
+                }
+            }
+        },
+        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
+    ) {
         Row(modifier = modifier.fillMaxSize().padding(8.dp)) {
             // 🗓️ Partie gauche : calendrier
             Column(
@@ -115,6 +147,12 @@ fun CalendarScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    IconButton(
+                        onClick = { scope.launch { drawerState.open() } }
+                    ) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                    }
 
                     // Partie droite : profil + nom/prénom
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -678,7 +716,6 @@ fun CalendarScreen(
             }
         }
     }
-
 }
 
 // --- Autres fonctions inchangées ---
@@ -800,9 +837,5 @@ private fun LocalDate.startOfWeek(): LocalDate {
 @Preview
 @Composable
 private fun Preview_Calendar_Month() {
-    CalendarScreen(
-        initialMode = CalendarMode.Month,
-        initialAnchorDate = LocalDate(2025, 9, 15),
-        onOpenCalendar = {},
-        onOpenSettings = {})
+    CalendarScreen(initialMode = CalendarMode.Month, initialAnchorDate = LocalDate(2025, 9, 15))
 }

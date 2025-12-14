@@ -3,22 +3,39 @@ package be.ecam.companion.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import be.ecam.companion.data.SettingsRepository
 import be.ecam.companion.di.buildBaseUrl
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.DrawerValue
+
+import androidx.compose.material3.rememberDrawerState
 
 @Composable
 fun SettingsScreen(
@@ -26,7 +43,8 @@ fun SettingsScreen(
     onSaved: (() -> Unit)? = null,
     onLogout: () -> Unit,
     onOpenCalendar: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -56,6 +74,50 @@ fun SettingsScreen(
         Column {
             Text("Server configuration")
             Spacer(Modifier.height(8.dp))
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Column(
+                modifier = Modifier
+                    .width(240.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
+                    .shadow(8.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
+            ) {
+                Text("Menu", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(24.dp))
+
+                DrawerItem("Home", Icons.Filled.Home) {
+                    scope.launch { drawerState.close() }
+                    onOpenHome()
+                }
+
+                DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
+                    scope.launch { drawerState.close() }
+                    onOpenCalendar()
+                }
+
+                DrawerItem("Settings", Icons.Filled.Settings) {
+                    scope.launch { drawerState.close() }
+                    onOpenSettings()
+                }
+            }
+        },
+        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
+    ) {
+    Column {
+        IconButton(
+            onClick = { scope.launch { drawerState.open() } }
+        ) {
+            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+        }
+
+        Text("Server configuration")
+        Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -133,5 +195,14 @@ fun SettingsScreen(
             }
         }
     }
-
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onLogout() }
+        ) {
+            Text("Log Out")
+        }
+    }
+    }
 }
+
+
