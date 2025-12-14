@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
+import java.time.Year
 
 //DTOs used only to read JSON at startup (seed)
 @Serializable
@@ -24,6 +25,18 @@ data class StudentSeedDTO(
 )
 
 @Serializable
+data class StudentSeedV2DTO(
+    val student_id: String,
+    val first_name: String,
+    val last_name: String,
+    val email: String,
+    val password: String? = null,
+    val created_at: String? = null,
+    val study_year: String,
+    val option_code: String? = null,
+)
+
+@Serializable
 data class EvaluationSeedDTO(
     val activityName: String,
     val session: String,
@@ -31,8 +44,19 @@ data class EvaluationSeedDTO(
     val maxScore: Int
 )
 
+@Serializable
+data class GradeSeedDTO(
+    val points: Int,
+    val comment: String? = null,
+    val student_id: String,
+    val activities_id: String,
+    val scale: Int,
+)
+
 class StudentService {
     private val json = Json { ignoreUnknownKeys = true }
+
+    private fun defaultEvaluationSession(): String = Year.now().value.toString()
 
     //Seed function called once when the server starts up
     //It reads students.json and fills the database
@@ -48,7 +72,22 @@ class StudentService {
                 return
             }
 
-        val students = json.decodeFromString<List<StudentSeedDTO>>(file.readText())
+        val fileText = file.readText()
+        val studentsV1: List<StudentSeedDTO>? = try {
+            json.decodeFromString(fileText)
+        } catch (_: Exception) {
+            null
+        }
+
+        val studentsV2: List<StudentSeedV2DTO>? = if (studentsV1 == null) {
+            try {
+                json.decodeFromString(fileText)
+            } catch (e: Exception) {
+                throw e
+            }
+        } else {
+            null
+        }
 
         transaction {
             if (StudentTable.selectAll().count() > 0L) {
@@ -56,28 +95,111 @@ class StudentService {
                 return@transaction
             }
 
-            students.forEach { studentDto ->
-                val studentId = StudentTable.insertAndGetId { row ->
-                    row[email] = studentDto.studentEmail
-                    row[firstName] = studentDto.firstName
-                    row[lastName] = studentDto.lastName
-                    row[matricule] = studentDto.matricule
-                    row[year] = studentDto.year
-                    row[option] = studentDto.option
+            if (studentsV1 != null) {
+                studentsV1.forEach { studentDto ->
+                    val studentId = StudentTable.insertAndGetId { row ->
+                        row[email] = studentDto.studentEmail
+                        row[firstName] = studentDto.firstName
+                        row[lastName] = studentDto.lastName
+                        row[matricule] = studentDto.matricule
+                        row[year] = studentDto.year
+                        row[option] = studentDto.option
+                    }
+
+                    studentDto.evaluations.forEach { eval ->
+                        EvaluationTable.insert { row ->
+                            row[this.student] = studentId.value
+                            row[activityName] = eval.activityName
+                            row[session] = eval.session
+                            row[score] = eval.score
+                            row[maxScore] = eval.maxScore
+                        }
+                    }
+                }
+                println("Success: ${studentsV1.size} students + their evaluations seeded from students.json")
+                return@transaction
+            }
+
+            if (studentsV2 != null) {
+                studentsV2.forEach { studentDto ->
+                    StudentTable.insert { row ->
+                        row[email] = studentDto.email
+                        row[firstName] = studentDto.first_name
+                        row[lastName] = studentDto.last_name
+                        row[matricule] = studentDto.student_id
+                        row[year] = studentDto.study_year
+                        row[option] = studentDto.option_code
+                    }
+                }
+                println("Success: ${studentsV2.size} students seeded from students.json (no evaluations)")
+            }
+        }
+    }
+
+    fun syncGradesFromJson() {
+        val possiblePaths = listOf(
+            "server/src/main/resources/data/grades.json",
+            "src/main/resources/data/grades.json",
+            "data/grades.json"
+        )
+        val file = possiblePaths.map(::File).firstOrNull { it.exists() }
+            ?: run {
+                println("Warning: grades.json not found in any expected path")
+                return
+            }
+
+        val grades = json.decodeFromString<List<GradeSeedDTO>>(file.readText())
+        val sessionValue = defaultEvaluationSession()
+
+        transaction {
+            var inserted = 0
+            var updated = 0
+            var missingStudents = 0
+
+            grades.forEach { grade ->
+                val matricule = grade.student_id.trim()
+                val studentRow = StudentTable
+                    .selectAll()
+                    .where { StudentTable.matricule eq matricule }
+                    .firstOrNull()
+
+                if (studentRow == null) {
+                    missingStudents++
+                    return@forEach
                 }
 
-                studentDto.evaluations.forEach { eval ->
-                    EvaluationTable.insert { row ->
-                        row[this.student] = studentId.value
-                        row[activityName] = eval.activityName
-                        row[session] = eval.session
-                        row[score] = eval.score
-                        row[maxScore] = eval.maxScore
+                val studentId = studentRow[StudentTable.id]
+                val existing = EvaluationTable
+                    .selectAll()
+                    .where {
+                        (EvaluationTable.student eq studentId) and
+                                (EvaluationTable.activityName eq grade.activities_id) and
+                                (EvaluationTable.session eq sessionValue)
                     }
+                    .firstOrNull()
+
+                if (existing == null) {
+                    EvaluationTable.insert { row ->
+                        row[this.student] = studentId
+                        row[activityName] = grade.activities_id
+                        row[session] = sessionValue
+                        row[score] = grade.points
+                        row[maxScore] = grade.scale
+                    }
+                    inserted++
+                } else {
+                    val evalId = existing[EvaluationTable.id]
+                    val changed = EvaluationTable.update({ EvaluationTable.id eq evalId }) { row ->
+                        row[score] = grade.points
+                        row[maxScore] = grade.scale
+                    }
+                    if (changed > 0) updated++
                 }
             }
 
-            println("Success: ${students.size} students + their evaluations seeded from students.json")
+            if (inserted > 0) println("Success: $inserted new evaluation(s) inserted from grades.json")
+            if (updated > 0) println("Success: $updated evaluation(s) updated from grades.json")
+            if (missingStudents > 0) println("Warning: $missingStudents grade(s) skipped (no matching student matricule)")
         }
     }
 
