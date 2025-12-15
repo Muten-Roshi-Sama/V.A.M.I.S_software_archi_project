@@ -9,9 +9,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -102,26 +106,48 @@ fun HomeScreen(
                 Spacer(Modifier.height(8.dp))
             }
 
-            Button(onClick = onOpenAdmins) {
-                Text("Open Admins List")
-            }
 
             Spacer(Modifier.height(12.dp))
 
-            Button(onClick = onOpenStudents) {
-                Text("See all student reports")
-            }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "Admins",
+                        icon = Icons.Filled.AdminPanelSettings,
+                        onClick = onOpenAdmins,
+                        modifier = Modifier.weight(1f)
+                    )
+                    HomeTile(
+                        title = "Students",
+                        icon = Icons.Filled.School,
+                        onClick = onOpenStudents,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
-            Spacer(Modifier.height(12.dp))
-
-            Button(onClick = onOpenTeachers) {
-                Text("Voir les enseignants")
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            Button(onClick = onOpenBible) {
-                Text("\ud83d\udcd2 Bible des Programmes")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "Teachers",
+                        icon = Icons.Filled.Groups,
+                        onClick = onOpenTeachers,
+                        modifier = Modifier.weight(1f)
+                    )
+                    HomeTile(
+                        title = "Bible",
+                        icon = Icons.Filled.MenuBook,
+                        onClick = onOpenBible,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
 
             Spacer(Modifier.height(20.dp))
@@ -148,7 +174,7 @@ fun DrawerItem(label: String, icon: ImageVector, onClick: () -> Unit) {
             )
             .clickable(
                 interactionSource = interactionSource,
-                indication = null // tu peux ajouter une ripple si tu veux
+                indication = null
             ) {
                 onClick()
             }
@@ -162,5 +188,36 @@ fun DrawerItem(label: String, icon: ImageVector, onClick: () -> Unit) {
         )
         Spacer(Modifier.width(12.dp))
         Text(label, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+private fun HomeTile(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.aspectRatio(1f),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(44.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(title, style = MaterialTheme.typography.titleMedium)
+        }
     }
 }
