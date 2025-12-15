@@ -26,6 +26,19 @@ class StudentRoutesTest {
     }
     
     @Test
+    fun `GET crud students count - admin can count students`() = testApplication {
+        application { module() }
+        val token = loginAdmin(client)
+
+        val response = client.get("/crud/students/count") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertTrue(response.bodyAsText().contains("count"))
+    }
+
+
+    @Test
     fun `GET crud students me - student can fetch own profile`() = testApplication {
         application { module() }
         val token = loginStudent(client)
@@ -39,18 +52,47 @@ class StudentRoutesTest {
         assertTrue(body.contains("studentId"))
     }
     
+
+    @Test
+    fun `GET crud students - unauthenticated returns 401`() = testApplication {
+        application { module() }
+        val response = client.get("/crud/students")
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    // PUT /crud/students/me
+
     @Test
     fun `PUT crud students me - student can update own password only`() = testApplication {
         application { module() }
         val token = loginStudent(client)
-    
+
+        
         val response = client.put("/crud/students/me") {
             header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody("""{"password":"newpass123"}""")
         }
         assertEquals(HttpStatusCode.OK, response.status)
-    }
+
+        // ensure profile still accessible and unchanged fields are present
+        val me = client.get("/crud/students/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.OK, me.status)
+        val body = me.bodyAsText()
+        assertTrue(body.contains("alice@student.com"))
+        assertTrue(body.contains("studentId"))
+        
+        // reset seed user password to avoid breaking subsequent tests
+        val reset = client.put("/crud/students/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody("""{"password":"pass123"}""")
+        }
+        assertEquals(HttpStatusCode.OK, reset.status)
+        }
+
 
 
     @Test

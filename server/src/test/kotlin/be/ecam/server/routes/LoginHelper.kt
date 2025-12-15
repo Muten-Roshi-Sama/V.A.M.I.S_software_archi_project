@@ -83,8 +83,13 @@ suspend fun loginAdmin(client: HttpClient): String {
 }
 
 suspend fun loginStudent(client: HttpClient): String {
-    TestDatabaseSetup.initialize()  // ← ADD THIS
+    TestDatabaseSetup.initialize()
     
+    transaction {
+        val students = be.ecam.server.models.Student.all().map { it.person.email to it.person.password }
+        println("DEBUG students in DB: $students")
+    }
+
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
         setBody("""{"email":"alice@student.com","password":"pass123"}""")
