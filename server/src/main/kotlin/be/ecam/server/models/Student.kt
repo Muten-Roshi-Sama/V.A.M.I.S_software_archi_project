@@ -13,12 +13,12 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import be.ecam.common.api.StudentDTO
 
 object StudentTable : IntIdTable(name = "students") {
-    val person = reference("person_id", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val person = reference("personId", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     
     //  student-specific fields
-    val studentId = varchar("student_id", 20).nullable().uniqueIndex()
-    val studyYear = varchar("study_year", 64).nullable()
-    val optionCode = varchar("option_code", 64).nullable()
+    val studentId = varchar("studentId", 20).nullable().uniqueIndex()
+    val studyYear = varchar("studyYear", 64).nullable()
+    val optionCode = varchar("optionCode", 64).nullable()
 
 }
 

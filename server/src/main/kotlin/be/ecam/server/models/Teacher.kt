@@ -8,8 +8,8 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import be.ecam.common.api.TeacherDTO
 
 object TeacherTable : IntIdTable(name = "teachers") {
-    val person = reference("person_id", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val teacherId = integer("teacher_id").nullable().uniqueIndex()
+    val person = reference("personId", PersonTable, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val teacherId = varchar("teacherId", 20).nullable().uniqueIndex()  // CHANGE from integer() to varchar()
 }
 
 class Teacher(id: EntityID<Int>) : IntEntity(id), PersonInfo {
