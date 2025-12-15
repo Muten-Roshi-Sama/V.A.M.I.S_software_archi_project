@@ -37,6 +37,18 @@ import androidx.compose.material3.rememberDrawerState
 
 import androidx.compose.material3.rememberDrawerState
 
+
+import androidx.compose.foundation.layout.*
+
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.unit.dp
+
+import be.ecam.companion.di.buildBaseUrl
+import kotlinx.coroutines.launch
+
 @Composable
 fun SettingsScreen(
     repo: SettingsRepository,
@@ -46,8 +58,10 @@ fun SettingsScreen(
     onOpenSettings: () -> Unit,
     onOpenHome: () -> Unit = {}
 ) {
+    // 🔹 UN SEUL drawerState (celui de AppDrawer)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
     var host by remember { mutableStateOf("") }
     var portText by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
@@ -65,92 +79,63 @@ fun SettingsScreen(
         onOpenCalendar = onOpenCalendar,
         onOpenSettings = onOpenSettings,
         onOpenHome = onOpenHome
-    ){
-        IconButton(
-            onClick = { scope.launch { drawerState.open() } },
-        ) {
-            Icon(Icons.Filled.Menu, contentDescription = "Menu")
-        }
-
-        Column {
-            Text("Server configuration")
-            Spacer(Modifier.height(8.dp))
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            Column(
-                modifier = Modifier
-                    .width(240.dp)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
-                    .shadow(8.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
-            ) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(24.dp))
-
-                DrawerItem("Home", Icons.Filled.Home) {
-                    scope.launch { drawerState.close() }
-                    onOpenHome()
-                }
-
-                DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
-                    scope.launch { drawerState.close() }
-                    onOpenCalendar()
-                }
-
-                DrawerItem("Settings", Icons.Filled.Settings) {
-                    scope.launch { drawerState.close() }
-                    onOpenSettings()
-                }
-            }
-        },
-        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
     ) {
-    Column {
-        IconButton(
-            onClick = { scope.launch { drawerState.open() } }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-        }
 
-        Text("Server configuration")
-        Spacer(Modifier.height(8.dp))
+            // ☰ Bouton menu (UNIQUE)
+            IconButton(
+                onClick = { scope.launch { drawerState.open() } }
+            ) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu")
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = "Server configuration",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(Modifier.height(16.dp))
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = host,
                 onValueChange = { host = it },
-                label = { Text("Server host (e.g. 192.168.1.10 or http://example.com)") },
+                label = { Text("Server host (e.g. 192.168.1.10)") },
                 singleLine = true
             )
+
             Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = portText,
-                onValueChange = { portText = it.filter { ch -> ch.isDigit() } },
+                onValueChange = { portText = it.filter(Char::isDigit) },
                 label = { Text("Port") },
                 singleLine = true
             )
 
             if (error != null) {
                 Spacer(Modifier.height(8.dp))
-                Text(error!!)
+                Text(error!!, color = MaterialTheme.colorScheme.error)
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(16.dp))
+
             Button(
                 enabled = !saving,
                 onClick = {
                     val port = portText.toIntOrNull()
                     if (host.isBlank() || port == null || port !in 1..65535) {
-                        error = "Please enter a valid host and port (1-65535)."
+                        error = "Please enter a valid host and port (1–65535)."
                         return@Button
                     }
+
                     error = null
                     scope.launch {
                         saving = true
@@ -174,7 +159,9 @@ fun SettingsScreen(
 
             val preview = run {
                 val p = portText.toIntOrNull() ?: 0
-                if (host.isNotBlank() && p in 1..65535) buildBaseUrl(host, p) else ""
+                if (host.isNotBlank() && p in 1..65535)
+                    buildBaseUrl(host, p)
+                else ""
             }
 
             if (preview.isNotBlank()) {
@@ -183,27 +170,17 @@ fun SettingsScreen(
 
             if (saved) {
                 Spacer(Modifier.height(4.dp))
-                Text("Saved. Reloading…")
+                Text("Saved.")
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(32.dp))
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onLogout() }
+                onClick = onLogout
             ) {
                 Text("Log Out")
             }
         }
     }
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onLogout() }
-        ) {
-            Text("Log Out")
-        }
-    }
-    }
 }
-
-
