@@ -41,6 +41,9 @@ import java.sql.Statement
 
 // ====================================================================
 object DatabaseFactory {
+    private var dbPath: String? = null
+    private var database: Database? = null
+
     fun connect() {
         val dbFolder = File("data")
         if (!dbFolder.exists()) {
@@ -49,11 +52,12 @@ object DatabaseFactory {
         }
 
         // Get DB file path
-        val dbPath = File(dbFolder, "sqlite.db").absolutePath
+        val path = File(dbFolder, "sqlite.db").absolutePath
+        dbPath = path
 
         //Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
-        Database.connect("jdbc:sqlite:$dbPath?foreign_keys=true", driver = "org.sqlite.JDBC")
-        println("Connected to SQLite database, path is : $dbPath")
+        database = Database.connect("jdbc:sqlite:$path?foreign_keys=true", driver = "org.sqlite.JDBC")
+        println("Connected to SQLite database, path is : $path")
     }
 
     fun resetDb(){
@@ -64,8 +68,8 @@ object DatabaseFactory {
 
     fun initDb() {
         println("Database INIT requested.")
-        
-        createAllTables()
+
+        ensureSchemaOrReset()
 
         // ===== Seed Manager =======
         SeedManager.clear()
@@ -98,6 +102,90 @@ object DatabaseFactory {
         seedCoursesIfEmpty()
         seedStudyPlansIfEmpty()
         seedSchedulesIfEmpty()
+    }
+
+    private fun ensureSchemaOrReset() {
+        try {
+            createAllTables()
+            validateSchema()
+        } catch (e: Exception) {
+            if (!looksLikeSchemaMismatch(e)) throw e
+
+            println("Detected incompatible SQLite schema (likely old DB without person_id). Resetting sqlite.db...")
+            resetDbFile()
+
+            // Reconnect to the new DB file and recreate schema
+            connect()
+            createAllTables()
+            validateSchema()
+        }
+    }
+
+    private fun validateSchema() {
+        transaction {
+            // Force SQLite to validate that all columns expected by Exposed exist.
+            PersonTable.selectAll().limit(1).toList()
+            AdminTable.selectAll().limit(1).toList()
+            TeacherTable.selectAll().limit(1).toList()
+            StudentTable.selectAll().limit(1).toList()
+            EvaluationTable.selectAll().limit(1).toList()
+            ModulesTable.selectAll().limit(1).toList()
+            OptionTable.selectAll().limit(1).toList()
+            CourseTable.selectAll().limit(1).toList()
+            AnnualStudyPlanTable.selectAll().limit(1).toList()
+            PlanCourseTable.selectAll().limit(1).toList()
+            ScheduleTable.selectAll().limit(1).toList()
+        }
+    }
+
+    private fun looksLikeSchemaMismatch(error: Throwable): Boolean {
+        val markers = listOf(
+            "no such column",
+            "has no column",
+            "has no column named",
+            "database schema mismatch",
+            "duplicate column name",
+            "cannot add a not null column",
+            "sql error or missing database",
+        )
+
+        var current: Throwable? = error
+        while (current != null) {
+            val message = (current.message ?: "").lowercase()
+            if (markers.any { message.contains(it) }) return true
+            current = current.cause
+        }
+        return false
+    }
+
+    private fun resetDbFile() {
+        val path = dbPath ?: "data/sqlite.db"
+        val dbFile = File(path)
+        if (!dbFile.exists()) return
+
+        // Close registered Exposed database to release file handles.
+        database?.let {
+            try {
+                TransactionManager.closeAndUnregister(it)
+            } catch (_: Throwable) {
+                // Best-effort.
+            }
+        }
+        database = null
+
+        val backup = File(dbFile.parentFile, "sqlite.db.bak-${System.currentTimeMillis()}")
+        val renamed = dbFile.renameTo(backup)
+        if (renamed) {
+            println("Backed up incompatible DB to: ${backup.absolutePath}")
+            return
+        }
+
+        val deleted = dbFile.delete()
+        if (deleted) {
+            println("Deleted incompatible DB at: ${dbFile.absolutePath}")
+        } else {
+            error("Failed to reset sqlite.db (rename & delete failed). Please remove it manually: ${dbFile.absolutePath}")
+        }
     }
 
 
