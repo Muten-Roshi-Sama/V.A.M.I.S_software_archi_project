@@ -104,30 +104,27 @@ class StudentRoutes(private val service: StudentService) : InterfaceRoutes {
                 put("/me") {
                     val principal = call.principal<JWTPrincipal>()
                         ?: return@put call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
-                    
-                    val userId = principal.payload.getClaim("id").asInt()
-                    val role = principal.payload.getClaim("role").asString()
-                    
-                    val updateDto = call.receive<StudentUpdateDTO>()
-                    
-                    // Students can only update their own email/password, NOT studentId/year/option
+                    val personId = principal.payload.getClaim("id").asInt()
+                
+                    val incoming = call.receive<StudentUpdateDTO>()
                     val sanitizedDto = StudentUpdateDTO(
                         firstName = null,
                         lastName = null,
                         email = null,
-                        password = updateDto.password,
-                        studentId = null,      // Prevent students from changing these
+                        password = incoming.password,
+                        studentId = null,
                         studyYear = null,
                         optionCode = null
                     )
-                    
                     try {
-                        val updated = service.update(userId, sanitizedDto)
+                        val student = service.getByPersonId(personId)
+                            ?: return@put call.respond(HttpStatusCode.NotFound, mapOf("error" to "Student profile not found"))
+                        val studentId = student.id ?: return@put call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Student ID is null"))
+                        val updated = service.update(studentId, sanitizedDto)
                         call.respond(HttpStatusCode.OK, updated)
                     } catch (e: IllegalArgumentException) {
                         call.respond(HttpStatusCode.BadRequest, mapOf("error" to (e.message ?: "Invalid data")))
                     }
-                    
                 }
             } // end student self-service
         }
