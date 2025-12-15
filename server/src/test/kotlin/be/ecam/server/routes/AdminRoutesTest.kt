@@ -113,8 +113,7 @@ class AdminRoutesTest {
             val deleteResponse = client.delete("/crud/admins/by/$createdId") {
                 header(HttpHeaders.Authorization, "Bearer $token")
             }
-            assertEquals(HttpStatusCode.OK, deleteResponse.status)
-
+            assertEquals(HttpStatusCode.NoContent, deleteResponse.status)
             // 6. Verify deleted (404)
             val get404 = client.get("/crud/admins/by/$createdId") {
                 header(HttpHeaders.Authorization, "Bearer $token")
