@@ -1,4 +1,4 @@
-package be.ecam.companion.ui
+﻿package be.ecam.companion.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -85,7 +85,7 @@ fun SettingsScreen(repo: SettingsRepository, onSaved: (() -> Unit)? = null) {
         }
         if (saved) {
             Spacer(Modifier.height(4.dp))
-            Text("Saved. Reloading…")
+            Text("Saved. ReloadingÔÇª")
         }
     }
 }

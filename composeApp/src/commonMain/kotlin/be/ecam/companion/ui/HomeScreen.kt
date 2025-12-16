@@ -10,7 +10,13 @@ import org.koin.compose.koinInject
 import be.ecam.companion.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit) {
+fun HomeScreen(
+    onOpenAdmins: () -> Unit, 
+    onOpenStudents: () -> Unit, 
+    onOpenTeachers: () -> Unit, 
+    onOpenBible: () -> Unit,
+    onOpenCalendar: () -> Unit
+) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
 
@@ -22,11 +28,31 @@ fun HomeScreen(onOpenAdmins: () -> Unit, onOpenStudents: () -> Unit) {
     ) {
         Text("Home", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
+        
         if (vm.lastErrorMessage.isNotEmpty()) {
             Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
             Spacer(Modifier.height(8.dp))
         }
+
+        Button(onClick = onOpenAdmins) { Text("Open Admins List") }
+        Spacer(Modifier.height(12.dp))
+        
+        Button(onClick = onOpenStudents) {
+            Text("See all student reports")
         }
         Spacer(Modifier.height(12.dp))
+        
+        Button(onClick = onOpenTeachers) { Text("Voir les enseignants") }
+        Spacer(Modifier.height(12.dp))
+        
+        Button(onClick = onOpenBible) {
+            Text("📚 Bible des Programmes")
+        }
+        Spacer(Modifier.height(12.dp))
+        
+        Button(onClick = onOpenCalendar) { Text("📅 Calendrier") }
+        Spacer(Modifier.height(12.dp))
+        
         Text(vm.helloMessage)
     }
+}

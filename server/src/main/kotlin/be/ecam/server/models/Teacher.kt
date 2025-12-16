@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.sql.ReferenceOption
+import org.jetbrains.exposed.sql.Table
 import be.ecam.common.api.TeacherDTO
 
 object TeacherTable : IntIdTable(name = "teachers") {
@@ -35,4 +36,15 @@ class Teacher(id: EntityID<Int>) : IntEntity(id), PersonInfo {
         password = null,
         createdAt = this.createdAt
     )
+}
+
+object ModulesTable : Table("modules") {
+    val id = integer("id").autoIncrement()
+    val activityName = varchar("activity_name", 255)
+    val activityCode = varchar("activity_code", 50).uniqueIndex()
+    val ects = integer("ects")
+    val description = varchar("description", 500).nullable()
+    val coordinator = varchar("coordinator", 100)
+    val courseCode = varchar("course_code", 20).nullable()
+    override val primaryKey = PrimaryKey(id)
 }

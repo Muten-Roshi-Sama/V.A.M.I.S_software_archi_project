@@ -17,7 +17,11 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeacherDashboard(onLogout: () -> Unit) {
+fun TeacherDashboard(
+    onLogout: () -> Unit,
+    onNavigateToCalendar: (() -> Unit)? = null,
+    onNavigateToSettings: (() -> Unit)? = null
+) {
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
     var userInfo by remember { mutableStateOf<String?>(null) }
@@ -78,10 +82,9 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                 
                 Spacer(Modifier.height(16.dp))
 
-                // My Classes Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* TODO: Navigate to my classes */ }
+                    onClick = { }
                 ) {
                     Row(
                         modifier = Modifier
@@ -103,10 +106,13 @@ fun TeacherDashboard(onLogout: () -> Unit) {
                     }
                 }
 
+<<<<<<< HEAD
                 // Grade Students Card
+=======
+>>>>>>> origin/backend/salwa
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* TODO: Navigate to grading */ }
+                    onClick = { }
                 ) {
                     Row(
                         modifier = Modifier

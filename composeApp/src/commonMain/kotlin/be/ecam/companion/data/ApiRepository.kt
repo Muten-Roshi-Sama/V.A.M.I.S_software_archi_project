@@ -50,11 +50,24 @@ interface ApiRepository {
 
 
 
+    suspend fun fetchAllTeachers(): List<Teacher>
+    
+    // -------- Bible (Study Plans) ----------
+    suspend fun fetchBible(): List<ProgramWithDetails>
+    
+    // -------- Student Bulletins & Grades ----------
+    suspend fun fetchMyGrades(): StudentBulletin
+    suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
+
+    // -------- Schedules ----------
+    suspend fun fetchAllSchedules(): List<ScheduleDTO>
+    suspend fun fetchSchedulesByDateRange(startDate: String, endDate: String): List<ScheduleDTO>
+    suspend fun fetchSchedulesByActivity(activityName: String): List<ScheduleDTO>
+    suspend fun fetchSchedulesByYear(studyYear: String): List<ScheduleDTO>
+    suspend fun fetchSchedulesByTeacher(teacherName: String): List<ScheduleDTO>
 
     // -------- Legacy endpoints ----------
     suspend fun fetchHello(): HelloResponse
-//    suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>
-//    suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
 }
 
 //@Serializable

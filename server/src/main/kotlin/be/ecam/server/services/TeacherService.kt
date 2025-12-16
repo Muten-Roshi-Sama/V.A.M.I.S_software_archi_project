@@ -56,6 +56,23 @@ class TeacherService(private val personService: PersonService = PersonService())
     fun getById(id: Int): TeacherDTO? = ops.getById(id)
     fun delete(id: Int): Boolean = ops.delete(id)
     fun count(): Long = ops.count()
+    
+    fun getAllTeachers(): List<TeacherDTO> = getAll()
+    
+    fun getTeacherByEmail(email: String): TeacherDTO? = transaction {
+        val person = Person.find { PersonTable.email eq email }.firstOrNull() ?: return@transaction null
+        val teacher = Teacher.find { TeacherTable.person eq person.id }.firstOrNull() ?: return@transaction null
+        teacher.toDto()
+    }
+    
+    fun findTeachersByName(nameQuery: String): List<TeacherDTO> = transaction {
+        val lowerQuery = nameQuery.lowercase()
+        Teacher.all().filter { teacher ->
+            val firstName = teacher.firstName?.lowercase() ?: ""
+            val lastName = teacher.lastName?.lowercase() ?: ""
+            firstName.contains(lowerQuery) || lastName.contains(lowerQuery)
+        }.map { it.toDto() }
+    }
 
     fun create(dto: TeacherCreateDTO): TeacherDTO = transaction {
         val email = dto.email

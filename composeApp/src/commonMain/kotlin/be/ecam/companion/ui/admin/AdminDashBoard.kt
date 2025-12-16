@@ -22,6 +22,8 @@ fun AdminDashboard(
     onNavigateToAdmins: () -> Unit,
     onNavigateToStudents: () -> Unit,
     onNavigateToTeachers: () -> Unit,
+    onNavigateToCalendar: (() -> Unit)? = null,
+    onNavigateToSettings: (() -> Unit)? = null,
     onLogout: () -> Unit
 ) {
     val repository = koinInject<ApiRepository>()
@@ -84,7 +86,6 @@ fun AdminDashboard(
                 
                 Spacer(Modifier.height(16.dp))
 
-                // Admin Management Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onNavigateToAdmins
@@ -109,7 +110,6 @@ fun AdminDashboard(
                     }
                 }
 
-                // Student Management Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onNavigateToStudents

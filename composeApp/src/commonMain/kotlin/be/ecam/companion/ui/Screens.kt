@@ -1,10 +1,12 @@
 package be.ecam.companion.ui
 
 sealed class Screen(val key: String) {
+    object Login : Screen("login")
     object Home : Screen("home")
     object Calendar : Screen("calendar")
     object Settings : Screen("settings")
     object ListAdmins : Screen("admins")
-//    Object SettingsScreen
     object DataStudents : Screen("dataStudents")
+    object Teachers : Screen("teachers")
+    object Bible : Screen("bible")
 }

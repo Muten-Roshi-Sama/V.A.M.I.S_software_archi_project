@@ -1,20 +1,5 @@
 [
-  {
-    "code": "CSCI",
-    "name": "Computer Science",
-    "description": "Bachelor's in Computer Science, 3 years",
-    "modules": ["M101", "M102", "M103"]
-  },
-  {
-    "code": "MATH",
-    "name": "Mathematics",
-    "description": "Bachelor's in Pure Mathematics, 3 years",
-    "modules": ["M101", "M102", "M201"]
-  },
-  {
-    "code": "PHYS",
-    "name": "Physics",
-    "description": "Bachelor's in Physics and Astronomy, 3 years",
-    "modules": ["M102", "M201", "M301"]
-  }
+  { "option_code": "INFO", "name": "Informatique" },
+  { "option_code": "ELEC", "name": "Électricité" },
+  { "option_code": "EM", "name": "Mécanique" }
 ]

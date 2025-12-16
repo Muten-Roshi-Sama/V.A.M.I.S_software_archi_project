@@ -1,22 +1,32 @@
 [
   {
-    "studentId": "12345",
-    "email": "alice@student.com",
+    "studentId": "25347",
+    "email": "alice@student.school.com",
     "firstName": "Alice",
-    "lastName": "Student",
+    "lastName": "Dubois",
     "password": "pass123",
-    "studyYear": "BA2",
+    "studyYear": "BA1",
     "optionCode": null,
     "createdAt": "2024-01-01T10:00:00Z"
   },
   {
-    "studentId": "12346",
-    "email": "bob@student.com",
+    "studentId": "25189",
+    "email": "bob@student.school.com",
     "firstName": "Bob",
-    "lastName": "Learner",
+    "lastName": "Leroy",
     "password": "pass123",
-    "studyYear": "MA1",
-    "optionCode": "INFO",
+    "studyYear": "BA1",
+    "optionCode": null,
     "createdAt": "2024-01-02T10:00:00Z"
+  },
+  {
+    "studentId": "20123",
+    "email": "charlie@student.school.com",
+    "firstName": "Charlie",
+    "lastName": "Martin",
+    "password": "pass123",
+    "studyYear": "BA3",
+    "optionCode": "INFO",
+    "createdAt": "2024-01-03T10:00:00Z"
   }
 ]

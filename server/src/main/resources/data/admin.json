@@ -1,16 +1,16 @@
 [
   {
-    "firstName": "admin134565432345676543",
-    "lastName": "One",
-    "email": "admin1@admin.com",
-    "password": "pass123",
+    "firstName": "Marie",
+    "lastName": "Dupont",
+    "email": "admin1@school.com",
+    "password": "admin123",
     "createdAt": "2024-01-15T10:30:00Z"
   },
   {
-    "firstName": "admin234566543",
-    "lastName": "Two",
-    "email": "admin2@admin.com",
-    "password": "pass123",
+    "firstName": "Julien",
+    "lastName": "Dulac",
+    "email": "admin2@school.com",
+    "password": "admin123",
     "createdAt": "2024-01-15T10:30:00Z"
   }
 ]

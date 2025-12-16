@@ -66,6 +66,39 @@ data class TeacherDTO(
 
 
 
+// ========== Schedule DTOs ==========
+
+@Serializable
+data class ScheduleDTO(
+    val id: Int? = null,
+    val activityName: String,
+    val startTime: String,
+    val endTime: String,
+    val description: String? = null,
+    val studyYear: String,
+    val teacherName: String
+)
+
+@Serializable
+data class ScheduleCreateDTO(
+    val activityName: String,
+    val startTime: String,
+    val endTime: String,
+    val description: String? = null,
+    val studyYear: String,
+    val teacherName: String
+)
+
+@Serializable
+data class ScheduleUpdateDTO(
+    val activityName: String? = null,
+    val startTime: String? = null,
+    val endTime: String? = null,
+    val description: String? = null,
+    val studyYear: String? = null,
+    val teacherName: String? = null
+)
+
 // ========================================
 @Serializable
 data class HelloResponse(val message: String)

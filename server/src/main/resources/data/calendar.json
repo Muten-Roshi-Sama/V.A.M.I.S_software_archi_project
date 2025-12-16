@@ -1,0 +1,242 @@
+[
+  {
+    "activity_name": "Introduction to Programming - Lecture",
+    "start_time": "2025-01-13T08:30:00",
+    "end_time": "2025-01-13T10:30:00",
+    "description": "INFO1 - Amphi A - Prof. Dupont",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Introduction to Programming - Lab",
+    "start_time": "2025-01-15T14:00:00",
+    "end_time": "2025-01-15T16:00:00",
+    "description": "INFO1 - Lab Room 101 - Prof. Dupont",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Mathematics I - Lecture",
+    "start_time": "2025-01-14T08:30:00",
+    "end_time": "2025-01-14T10:30:00",
+    "description": "MATH1 - Amphi B - Prof. Martin",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "General Physics - Lecture",
+    "start_time": "2025-01-16T10:45:00",
+    "end_time": "2025-01-16T12:45:00",
+    "description": "PHYS1 - Amphi A - Prof. Bernard",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Bernard"
+  },
+  {
+    "activity_name": "General Physics - Lab",
+    "start_time": "2025-01-17T08:30:00",
+    "end_time": "2025-01-17T10:30:00",
+    "description": "PHYS1 - Physics Lab - Prof. Bernard",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Bernard"
+  },
+  {
+    "activity_name": "Basic Electricity - Lecture",
+    "start_time": "2025-01-17T14:00:00",
+    "end_time": "2025-01-17T16:00:00",
+    "description": "ELEC1 - Room B201 - Prof. Leroy",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Leroy"
+  },
+  {
+    "activity_name": "Mechanics I - Lecture",
+    "start_time": "2025-01-17T10:45:00",
+    "end_time": "2025-01-17T12:45:00",
+    "description": "MECA1 - Room D101 - Prof. Laurent",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Laurent"
+  },
+  {
+    "activity_name": "Introduction to Project",
+    "start_time": "2025-01-17T14:00:00",
+    "end_time": "2025-01-17T17:00:00",
+    "description": "PROJECT1 - Lab Room 102 - Prof. Dupont",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Object-Oriented Programming - Lecture",
+    "start_time": "2025-01-13T10:45:00",
+    "end_time": "2025-01-13T12:45:00",
+    "description": "INFO2 - Amphi C - Prof. Martin",
+    "study_year": "BA2",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "Object-Oriented Programming - Lab",
+    "start_time": "2025-01-17T08:30:00",
+    "end_time": "2025-01-17T10:30:00",
+    "description": "INFO2 - Lab Room 201 - Prof. Martin",
+    "study_year": "BA2",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "Analog Electronics - Lecture",
+    "start_time": "2025-01-15T08:30:00",
+    "end_time": "2025-01-15T10:30:00",
+    "description": "ELEC2 - Room B201 - Prof. Leroy",
+    "study_year": "BA2",
+    "teacher_name": "Prof. Leroy"
+  },
+  {
+    "activity_name": "Mathematics II - Lecture",
+    "start_time": "2025-01-14T10:45:00",
+    "end_time": "2025-01-14T12:45:00",
+    "description": "MATH2 - Amphi B - Prof. Martin",
+    "study_year": "BA2",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "Data Structures & Algorithms - Lecture",
+    "start_time": "2025-01-14T14:00:00",
+    "end_time": "2025-01-14T16:00:00",
+    "description": "INFO3 - Amphi A - Prof. Dupont",
+    "study_year": "BA3",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Computer Networks - Lab",
+    "start_time": "2025-01-16T08:30:00",
+    "end_time": "2025-01-16T10:30:00",
+    "description": "NETWORK3 - Lab Room 301 - Prof. Simon",
+    "study_year": "BA3",
+    "teacher_name": "Prof. Simon"
+  },
+  {
+    "activity_name": "Digital Electronics - Lecture",
+    "start_time": "2025-01-13T08:30:00",
+    "end_time": "2025-01-13T10:30:00",
+    "description": "ELEC3 - Room B301 - Prof. Leroy",
+    "study_year": "BA3",
+    "teacher_name": "Prof. Leroy"
+  },
+  {
+    "activity_name": "Artificial Intelligence - Lecture",
+    "start_time": "2025-01-13T14:00:00",
+    "end_time": "2025-01-13T16:00:00",
+    "description": "AI4 - Room C401 - Prof. Dupont",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Artificial Intelligence - Lab",
+    "start_time": "2025-01-15T10:45:00",
+    "end_time": "2025-01-15T12:45:00",
+    "description": "AI4 - Lab Room 401 - Prof. Dupont",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Advanced Networks - Lab",
+    "start_time": "2025-01-17T14:00:00",
+    "end_time": "2025-01-17T16:00:00",
+    "description": "NETWORK4 - Lab Room 401 - Prof. Simon",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Simon"
+  },
+  {
+    "activity_name": "Introduction to Programming - Lecture",
+    "start_time": "2025-01-20T08:30:00",
+    "end_time": "2025-01-20T10:30:00",
+    "description": "INFO1 - Amphi A - Prof. Dupont",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Introduction to Programming - Lab",
+    "start_time": "2025-01-22T14:00:00",
+    "end_time": "2025-01-22T16:00:00",
+    "description": "INFO1 - Lab Room 101 - Prof. Dupont",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Dupont"
+  },
+  {
+    "activity_name": "Mathematics I - Lecture",
+    "start_time": "2025-01-21T08:30:00",
+    "end_time": "2025-01-21T10:30:00",
+    "description": "MATH1 - Amphi B - Prof. Martin",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "General Physics - Lecture",
+    "start_time": "2025-01-23T10:45:00",
+    "end_time": "2025-01-23T12:45:00",
+    "description": "PHYS1 - Amphi A - Prof. Bernard",
+    "study_year": "BA1",
+    "teacher_name": "Prof. Bernard"
+  },
+  {
+    "activity_name": "Bachelor Project",
+    "start_time": "2025-01-22T14:00:00",
+    "end_time": "2025-01-22T17:00:00",
+    "description": "PROJECT3 - Project Room 301 - Multiple Advisors",
+    "study_year": "BA3",
+    "teacher_name": "Multiple Advisors"
+  },
+  {
+    "activity_name": "Web Development - Lab",
+    "start_time": "2025-01-23T08:30:00",
+    "end_time": "2025-01-23T10:30:00",
+    "description": "WEB4 - Lab Room 402 - Prof. Dubois",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Dubois"
+  },
+  {
+    "activity_name": "Mobile Development - Lab",
+    "start_time": "2025-01-24T14:00:00",
+    "end_time": "2025-01-24T16:00:00",
+    "description": "MOBILE4 - Lab Room 402 - Prof. Dubois",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Dubois"
+  },
+  {
+    "activity_name": "GPU Programming - Lab",
+    "start_time": "2025-01-23T14:00:00",
+    "end_time": "2025-01-23T16:00:00",
+    "description": "GPU4 - Lab Room 403 - Prof. Laurent",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Laurent"
+  },
+  {
+    "activity_name": "Operating Systems - Lecture",
+    "start_time": "2025-01-21T10:45:00",
+    "end_time": "2025-01-21T12:45:00",
+    "description": "SYSTEM4 - Amphi C - Prof. Simon",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Simon"
+  },
+  {
+    "activity_name": "Databases & Big Data - Lecture",
+    "start_time": "2025-01-22T08:30:00",
+    "end_time": "2025-01-22T10:30:00",
+    "description": "DATA4 - Amphi B - Prof. Martin",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Martin"
+  },
+  {
+    "activity_name": "Project Management - Lecture",
+    "start_time": "2025-01-24T10:45:00",
+    "end_time": "2025-01-24T12:45:00",
+    "description": "GESTION4 - Room C301 - Prof. Rousseau",
+    "study_year": "MA1",
+    "teacher_name": "Prof. Rousseau"
+  },
+  {
+    "activity_name": "Master Project I",
+    "start_time": "2025-01-24T14:00:00",
+    "end_time": "2025-01-24T17:00:00",
+    "description": "PROJECT4 - Project Room 401 - Multiple Advisors",
+    "study_year": "MA1",
+    "teacher_name": "Multiple Advisors"
+  }
+]

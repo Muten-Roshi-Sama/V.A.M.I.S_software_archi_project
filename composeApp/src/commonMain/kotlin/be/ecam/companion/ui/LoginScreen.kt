@@ -17,8 +17,8 @@ fun LoginScreen(onLoginSuccess: (String) -> Unit) {  // <-- Changed signature
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
 
-    var email by remember { mutableStateOf("admin1@admin.com") }
-    var password by remember { mutableStateOf("pass123") }
+    var email by remember { mutableStateOf("admin1@school.com") }
+    var password by remember { mutableStateOf("admin123") }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 

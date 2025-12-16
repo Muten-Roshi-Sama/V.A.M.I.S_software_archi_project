@@ -16,7 +16,13 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentDashboard(onLogout: () -> Unit) {
+fun StudentDashboard(
+    onLogout: () -> Unit,
+    onNavigateToGrades: () -> Unit = {},
+    onNavigateToCourses: () -> Unit = {},
+    onNavigateToCalendar: (() -> Unit)? = null,
+    onNavigateToSettings: (() -> Unit)? = null
+) {
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
     var userInfo by remember { mutableStateOf<String?>(null) }
@@ -77,10 +83,9 @@ fun StudentDashboard(onLogout: () -> Unit) {
                 
                 Spacer(Modifier.height(16.dp))
 
-                // My Courses Card (placeholder)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* TODO: Navigate to courses */ }
+                    onClick = onNavigateToCourses
                 ) {
                     Row(
                         modifier = Modifier
@@ -102,10 +107,9 @@ fun StudentDashboard(onLogout: () -> Unit) {
                     }
                 }
 
-                // My Grades Card (placeholder)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* TODO: Navigate to grades */ }
+                    onClick = onNavigateToGrades
                 ) {
                     Row(
                         modifier = Modifier

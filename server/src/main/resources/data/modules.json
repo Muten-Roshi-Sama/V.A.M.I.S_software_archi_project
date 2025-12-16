@@ -1,26 +1,66 @@
 [
   {
-    "code": "M101",
-    "name": "Linear Algebra",
+    "activity_name": "Introduction to Programming - Lectures",
+    "activity_code": "INFO1-LEC",
     "ects": 6,
-    "description": "Fundamentals of linear algebra and matrix theory",
-    "year": "BA1",
-    "courses": ["C101A", "C101B"]
+    "description": "Theoretical course on programming fundamentals",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "INFO1"
   },
   {
-    "code": "M102",
-    "name": "Calculus I",
-    "ects": 6,
-    "description": "Differential calculus and applications",
-    "year": "BA1",
-    "courses": ["C102A", "C102B"]
+    "activity_name": "Kotlin Multiplatform Labs",
+    "activity_code": "INFO1-LAB",
+    "ects": 4,
+    "description": "Hands-on labs in Kotlin for Android, iOS and Desktop",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "INFO1"
   },
   {
-    "code": "M201",
-    "name": "Data Structures",
+    "activity_name": "Programming Project",
+    "activity_code": "INFO1-PROJ",
+    "ects": 5,
+    "description": "End-of-year group project",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "INFO1"
+  },
+  {
+    "activity_name": "Object-Oriented Programming - Lectures",
+    "activity_code": "INFO2-LEC",
     "ects": 6,
-    "description": "Arrays, lists, trees, graphs and algorithms",
-    "year": "BA2",
-    "courses": ["C201A"]
+    "description": "Advanced OOP concepts in Java/Kotlin",
+    "coordinator": "prof.martin@ecam.be",
+    "course_code": "INFO2"
+  },
+  {
+    "activity_name": "Artificial Intelligence - Theory",
+    "activity_code": "AI4-THEORY",
+    "ects": 5,
+    "description": "Machine learning foundations",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "AI4"
+  },
+  {
+    "activity_name": "Master Thesis",
+    "activity_code": "TFE5-THESIS",
+    "ects": 24,
+    "description": "Final master thesis",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "TFE5"
+  },
+  {
+    "activity_name": "Power Electronics",
+    "activity_code": "ELEC4-LEC",
+    "ects": 6,
+    "description": "Study of converters, inverters and motor drives",
+    "coordinator": "prof.vermeulen@ecam.be",
+    "course_code": "ELEC4"
+  },
+  {
+    "activity_name": "Master Thesis Supervision",
+    "activity_code": "TFE5-SUP",
+    "ects": 24,
+    "description": "Individual supervision of master thesis",
+    "coordinator": "prof.dupont@ecam.be",
+    "course_code": "TFE5"
   }
 ]

@@ -4,8 +4,8 @@ package be.ecam.server.routes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-// Java
 import java.time.*
+import be.ecam.server.routes.studentBulletinRoutes
 
 // SHARED Functions
 import be.ecam.common.Greeting
@@ -16,12 +16,15 @@ import be.ecam.server.services.PersonService
 import be.ecam.server.services.AdminService
 import be.ecam.server.services.StudentService
 import be.ecam.server.services.TeacherService
+import be.ecam.server.services.ScheduleService
 
 // Handlers
 import be.ecam.server.routes.auth.AuthRoutes
 import be.ecam.server.routes.handlers.AdminRoutes
 import be.ecam.server.routes.handlers.StudentRoutes
 import be.ecam.server.routes.handlers.TeacherRoutes
+import be.ecam.server.routes.handlers.scheduleRoutes
+// import be.ecam.server.routes.handlers.TeacherRoutes
 
 
 // Auth helpers
@@ -51,23 +54,28 @@ fun Application.configureRoutes(
     authRoutes: AuthRoutes? = null
     ) {
     routing {
-        // Root health check
         get("/") { call.respondText("Ktor Status: OK") }
 
-        // Health routes
         healthRoutes(
             isDevFeatureEnabled = true,
             devResetHandler = {
-                // Optional: trigger DB reset in dev
                 be.ecam.server.db.DatabaseFactory.resetDb()
             }
         )
 
-        // Auth routes (login, /me)
         authRoutes?.register(this)
 
-        // CRUD resources
         registry.registerAllUnder(this, "/crud")
+        
+        route("/crud") {
+            studentBulletinRoutes()
+            teacherDataRoute()
+            bibleDataRoute()
+            
+            route("/schedules") {
+                scheduleRoutes()
+            }
+        }
     }
 }
 
