@@ -15,6 +15,7 @@ import org.koin.compose.koinInject
 import org.koin.core.module.Module
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(extraModules: List<Module> = emptyList()) {
@@ -55,7 +56,11 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onNavigateToStudents = { currentScreen = Screen.StudentList },
                         onNavigateToCalendar = { currentScreen = Screen.Calendar },
                         onNavigateToSettings = { currentScreen = Screen.Settings },
-                        onLogout = { currentScreen = Screen.Login }
+                        onLogout = { currentScreen = Screen.Login },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.Settings },
+
                     )
                 }
 
