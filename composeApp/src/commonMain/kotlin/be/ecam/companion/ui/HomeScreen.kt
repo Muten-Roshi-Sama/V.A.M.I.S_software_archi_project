@@ -134,5 +134,25 @@ fun HomeScreen(
                 Text(vm.helloMessage)
             }
         }
+        Button(onClick = onOpenAdmins) { Text("Open Admins List") }
+        Spacer(Modifier.height(12.dp))
+
+        Button(onClick = onOpenStudents) {
+            Text("See all student reports")
+        }
+        Spacer(Modifier.height(12.dp))
+
+        Button(onClick = onOpenTeachers) { Text("Voir les enseignants") }
+        Spacer(Modifier.height(12.dp))
+
+        Button(onClick = onOpenBible) {
+            Text("📚 Bible des Programmes")
+        }
+        Spacer(Modifier.height(12.dp))
+
+        Button(onClick = onOpenCalendar) { Text("📅 Calendrier") }
+        Spacer(Modifier.height(12.dp))
+
+        Text(vm.helloMessage)
     }
 }

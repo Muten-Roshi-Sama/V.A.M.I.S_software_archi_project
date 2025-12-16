@@ -1,4 +1,4 @@
-package be.ecam.companion.ui
+﻿package be.ecam.companion.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -41,6 +41,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextField
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import kotlinx.datetime.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
@@ -386,7 +391,7 @@ fun CalendarScreen(
                                 LaunchedEffect(Unit) {
                                     try {
                                         isLoadingCourses = true
-                                        courses = apiRepository.fetchAllCourses()
+                                        //courses = apiRepository.fetchAllCourses()
                                     } catch (e: Exception) {
                                         courseLoadError = e.message
                                     } finally {

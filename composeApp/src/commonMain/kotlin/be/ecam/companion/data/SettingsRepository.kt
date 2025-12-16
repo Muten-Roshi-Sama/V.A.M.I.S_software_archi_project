@@ -1,4 +1,4 @@
-package be.ecam.companion.data
+﻿package be.ecam.companion.data
 
 import kotlinx.coroutines.flow.Flow
 

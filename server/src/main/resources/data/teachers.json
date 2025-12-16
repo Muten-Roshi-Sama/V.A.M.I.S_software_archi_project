@@ -1,82 +1,82 @@
 [
   {
-    "teacher_id": 1001,
-    "first_name": "Jean",
-    "last_name": "Dupont",
+    "teacherId": "1001",
     "email": "prof.dupont@ecam.be",
     "password": "Jean2025",
-    "created_at": "2023-01-01T10:00:00Z"
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "createdAt": "2023-01-01T10:00:00Z"
   },
   {
-    "teacher_id": 1002,
-    "first_name": "Sophie",
-    "last_name": "Martin",
+    "teacherId": "1002",
     "email": "prof.martin@ecam.be",
     "password": "Sophie2025",
-    "created_at": "2013-01-01T10:00:00Z"
+    "firstName": "Sophie",
+    "lastName": "Martin",
+    "createdAt": "2013-01-01T10:00:00Z"
   },
   {
-    "teacher_id": 1003,
-    "first_name": "Pierre",
-    "last_name": "Vermeulen",
+    "teacherId": "1003",
     "email": "prof.vermeulen@ecam.be",
     "password": "Pierre2025",
-    "created_at": "2002-01-01T10:00:00Z"
+    "firstName": "Pierre",
+    "lastName": "Vermeulen",
+    "createdAt": "2002-01-01T10:00:00Z"
   },
   {
-    "teacher_id": 1004,
-    "first_name": "Claire",
-    "last_name": "Dubois",
+    "teacherId": "1004",
     "email": "prof.dubois@ecam.be",
     "password": "Claire2025",
-    "created_at": "2018-09-01T08:00:00Z"
+    "firstName": "Claire",
+    "lastName": "Dubois",
+    "createdAt": "2018-09-01T08:00:00Z"
   },
   {
-    "teacher_id": 1005,
-    "first_name": "Ahmed",
-    "last_name": "Benali",
+    "teacherId": "1005",
     "email": "prof.benali@ecam.be",
     "password": "Ahmed2025",
-    "created_at": "2020-01-15T09:00:00Z"
+    "firstName": "Ahmed",
+    "lastName": "Benali",
+    "createdAt": "2020-01-15T09:00:00Z"
   },
   {
-    "teacher_id": 1006,
-    "first_name": "Isabelle",
-    "last_name": "Leroy",
+    "teacherId": "1006",
     "email": "prof.leroy@ecam.be",
     "password": "Isabelle2025",
-    "created_at": "2015-03-10T11:00:00Z"
+    "firstName": "Isabelle",
+    "lastName": "Leroy",
+    "createdAt": "2015-03-10T11:00:00Z"
   },
   {
-    "teacher_id": 1007,
-    "first_name": "Thomas",
-    "last_name": "Moreau",
+    "teacherId": "1007",
     "email": "prof.moreau@ecam.be",
     "password": "Thomas2025",
-    "created_at": "2010-09-01T07:30:00Z"
+    "firstName": "Thomas",
+    "lastName": "Moreau",
+    "createdAt": "2010-09-01T07:30:00Z"
   },
   {
-    "teacher_id": 1008,
-    "first_name": "Laura",
-    "last_name": "Van Damme",
+    "teacherId": "1008",
     "email": "prof.vandamme@ecam.be",
     "password": "Laura2025",
-    "created_at": "2022-09-01T08:15:00Z"
+    "firstName": "Laura",
+    "lastName": "Van Damme",
+    "createdAt": "2022-09-01T08:15:00Z"
   },
   {
-    "teacher_id": 1009,
-    "first_name": "Marc",
-    "last_name": "De Smet",
+    "teacherId": "1009",
     "email": "prof.desmet@ecam.be",
     "password": "Marc2025",
-    "created_at": "2008-01-20T10:30:00Z"
+    "firstName": "Marc",
+    "lastName": "De Smet",
+    "createdAt": "2008-01-20T10:30:00Z"
   },
   {
-    "teacher_id": 1010,
-    "first_name": "Fatima",
-    "last_name": "El Amrani",
+    "teacherId": "1010",
     "email": "prof.elamrani@ecam.be",
     "password": "Fatima2025",
-    "created_at": "2019-09-01T09:45:00Z"
+    "firstName": "Fatima",
+    "lastName": "El Amrani",
+    "createdAt": "2019-09-01T09:45:00Z"
   }
 ]

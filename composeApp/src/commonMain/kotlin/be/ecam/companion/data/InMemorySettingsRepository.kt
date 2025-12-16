@@ -1,4 +1,4 @@
-package be.ecam.companion.data
+﻿package be.ecam.companion.data
 
 import be.ecam.common.SERVER_PORT
 import kotlinx.coroutines.flow.MutableStateFlow

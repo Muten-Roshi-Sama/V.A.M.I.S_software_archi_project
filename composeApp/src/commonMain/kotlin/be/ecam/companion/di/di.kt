@@ -6,6 +6,7 @@ package be.ecam.companion.di
 import be.ecam.companion.data.ApiRepository
 import be.ecam.companion.data.KtorApiRepository
 import be.ecam.companion.data.SettingsRepository
+import be.ecam.companion.data.InMemorySettingsRepository
 import be.ecam.companion.viewmodel.HomeViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.viewModel
@@ -17,6 +18,9 @@ val appModule = module {
 
     // Provide Ktor HttpClient with JSON plugin (base URL includes port; client itself is engine + JSON only)
     single { platformBuildHttpClient() }
+
+    // Settings Repository
+    single<SettingsRepository> { InMemorySettingsRepository() }
 
     // Repository implementations
     single {

@@ -1,136 +1,163 @@
 package be.ecam.companion
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import be.ecam.companion.data.SettingsRepository
 import be.ecam.companion.di.appModule
-import be.ecam.companion.ui.CalendarScreen
-import be.ecam.companion.ui.SettingsScreen
-import be.ecam.companion.ui.LoginScreen
 import be.ecam.companion.viewmodel.HomeViewModel
-import companion.composeapp.generated.resources.Res
-import companion.composeapp.generated.resources.calendar
-import companion.composeapp.generated.resources.home
-import companion.composeapp.generated.resources.settings
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
+import be.ecam.companion.data.SettingsRepository
+import be.ecam.companion.ui.*
+import be.ecam.companion.ui.admin.*
+import be.ecam.companion.ui.student.*
+import be.ecam.companion.ui.teacher.*
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.Module
 
-// ===== IMPORTS UI =====
-import be.ecam.companion.ui.ListAdmins
-import be.ecam.companion.ui.Screen
-import be.ecam.companion.ui.HomeScreen
-import be.ecam.companion.ui.CalendarScreen
-import be.ecam.companion.ui.SettingsScreen
-import be.ecam.companion.ui.DataStudentsScreen
-import be.ecam.companion.ui.DataTeacherScreen
-import be.ecam.companion.ui.DataBibleScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(extraModules: List<Module> = emptyList()) {
+
     KoinApplication(application = { modules(appModule + extraModules) }) {
-        val vm = koinInject<HomeViewModel>()
+
+        val homeVm = koinInject<HomeViewModel>()
+        val settingsRepo = koinInject<SettingsRepository>()
+
         MaterialTheme {
-            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }//Variable that says: “Which screen is currently displayed?”
-            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-            val scope = rememberCoroutineScope()
 
-            ModalNavigationDrawer(
-                drawerState = drawerState,
-                drawerContent = { /* small drawer */ }
-            ) {
-                Scaffold(
-                    // topBar = { AppTopBar(...) },
-                    // bottomBar = { AppBottomBar(...) }
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        when (currentScreen) {
-                            is Screen.Login -> LoginScreen(
-                                onLoginSuccess = { currentScreen = Screen.Home }
-                            )
-                            is Screen.Home -> HomeScreen(
-                                onOpenAdmins = { currentScreen = Screen.ListAdmins },
-                                //If currentScreen = DataStudents → display the report card screen :
-                                onOpenStudents = { currentScreen = Screen.DataStudents },
-                                onOpenHome = { currentScreen = Screen.Home },
-                                // Je rajoute ici une page pour le calendar dans le menu
-                                onOpenCalendar = { currentScreen = Screen.Calendar },
-                                // Je rajoute ici une apage qui va vers les settings
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenTeachers = { currentScreen = Screen.Teachers },
-                                onOpenBible = { currentScreen = Screen.Bible }
-                            )
-                            is Screen.Calendar -> CalendarScreen(
-                                modifier = Modifier.fillMaxSize(),
-                                scheduledByDate = vm.scheduledByDate,
-                                onOpenCalendar = { currentScreen = Screen.ListAdmins },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home }
-                            )
-                            is Screen.Settings -> SettingsScreen(
-                                repo = koinInject(),
-                                onSaved = { vm.load() },
-                                onLogout = { currentScreen = Screen.Login },
-                                onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home }
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
-                            )
-                            is Screen.ListAdmins -> ListAdmins(
-                                onBack = { currentScreen = Screen.Home },
-                                onOpenCalendar = { currentScreen = Screen.ListAdmins },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home })
-                            is Screen.DataStudents -> DataStudentsScreen(
-                                onBack = { currentScreen = Screen.Home },
-                                onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home })
-                            is Screen.Teachers -> DataTeacherScreen(
-                                onBack = { currentScreen = Screen.Home },
-                                onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home })
-                            is Screen.Bible -> DataBibleScreen(
-                                onBack = { currentScreen = Screen.Home },
-                                onOpenCalendar = { currentScreen = Screen.Calendar },
-                                onOpenSettings = { currentScreen = Screen.Settings },
-                                onOpenHome = { currentScreen = Screen.Home })
+            when (currentScreen) {
+
+                // =======================
+                //        LOGIN
+                // =======================
+                Screen.Login -> {
+                    LoginScreen(
+                        onLoginSuccess = { role ->
+                            currentScreen = when (role.lowercase()) {
+                                "admin" -> Screen.AdminDashboard
+                                "student" -> Screen.StudentDashboard
+                                "teacher" -> Screen.TeacherDashboard
+                                else -> Screen.AdminDashboard
+                            }
                         }
-                    }
+                    )
+                }
+
+                // =======================
+                //      DASHBOARDS
+                // =======================
+                Screen.AdminDashboard -> {
+                    AdminDashboard(
+                        onNavigateToAdmins = { currentScreen = Screen.AdminList },
+                        onNavigateToStudents = { currentScreen = Screen.StudentList },
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings },
+                        onLogout = { currentScreen = Screen.Login }
+                    )
+                }
+
+                Screen.StudentDashboard -> {
+                    StudentDashboard(
+                        onNavigateToGrades = { currentScreen = Screen.MyGrades },
+                        onNavigateToCourses = { currentScreen = Screen.MyCourses },
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings },
+                        onLogout = { currentScreen = Screen.Login }
+                    )
+                }
+
+                Screen.TeacherDashboard -> {
+                    TeacherDashboard(
+                        onNavigateToCalendar = { currentScreen = Screen.Calendar },
+                        onNavigateToSettings = { currentScreen = Screen.Settings },
+                        onLogout = { currentScreen = Screen.Login }
+                    )
+                }
+
+                // =======================
+                //        ADMIN
+                // =======================
+                Screen.AdminList -> {
+                    ListAdmins(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+                Screen.StudentList -> {
+                    ListStudents(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+                // =======================
+                //       STUDENT
+                // =======================
+                Screen.MyGrades -> {
+                    MyGradesScreen(
+                        onBack = { currentScreen = Screen.StudentDashboard }
+                    )
+                }
+
+                Screen.MyCourses -> {
+                    MyCoursesScreen(
+                        onBack = { currentScreen = Screen.StudentDashboard }
+                    )
+                }
+
+                // =======================
+                //       SHARED
+                // =======================
+                Screen.Calendar -> {
+                    CalendarScreen(
+                        modifier = Modifier,
+                        scheduledByDate = homeVm.scheduledByDate,
+                        onOpenHome = {
+                            currentScreen = when {
+                                currentScreen == Screen.Calendar -> Screen.AdminDashboard
+                                else -> Screen.AdminDashboard
+                            }
+                        },
+                        onOpenCalendar = { },
+                        onOpenSettings = { currentScreen = Screen.Settings }
+                    )
+                }
+
+                Screen.Settings -> {
+                    SettingsScreen(
+                        repo = settingsRepo,
+                        onSaved = { homeVm.load() },
+                        onLogout = { currentScreen = Screen.Login },
+                        onOpenHome = {
+                            currentScreen = when {
+                                currentScreen == Screen.Settings -> Screen.AdminDashboard
+                                else -> Screen.AdminDashboard
+                            }
+                        },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { }
+                    )
                 }
             }
         }
     }
 }
 
-private enum class BottomItem {
-    HOME, CALENDAR, SETTINGS;
+sealed class Screen {
+    object Login : Screen()
 
-    @Composable
-    fun getLabel() = when (this) {
-        HOME -> stringResource(Res.string.home)
-        CALENDAR -> stringResource(Res.string.calendar)
-        SETTINGS -> stringResource(Res.string.settings)
-    }
+    object AdminDashboard : Screen()
+    object StudentDashboard : Screen()
+    object TeacherDashboard : Screen()
 
-    fun getIconRes() = when (this) {
-        HOME -> Icons.Filled.Home
-        CALENDAR -> Icons.Filled.CalendarMonth
-        SETTINGS -> Icons.Filled.Settings
-    }
+    object AdminList : Screen()
+    object StudentList : Screen()
+
+    object MyGrades : Screen()
+    object MyCourses : Screen()
+
+    object Calendar : Screen()
+    object Settings : Screen()
 }

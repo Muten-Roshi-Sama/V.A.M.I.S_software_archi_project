@@ -1,46 +1,61 @@
 package be.ecam.server
 
+<<<<<<< HEAD
 import be.ecam.server.models.Admin
 import be.ecam.server.models.AdminTable
 import be.ecam.server.models.AdminTable.username
 import io.ktor.server.testing.*
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+=======
+// Ktor
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.testing.*
+import io.ktor.server.routing.*
+import io.ktor.server.response.*
+
+// Kotlin
+>>>>>>> backend/salwa
 import kotlin.test.*
 
-class ApplicationTest {
+// Other
+import be.ecam.server.routes.configureRoutes
 
+
+class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
+<<<<<<< HEAD
             module()
         }
+=======
+>>>>>>> backend/salwa
 
+            installCommonPlugins()
 
-    fun addAdmin(){
-        transaction {
-//            SchemaUtils.create(AdminTable)
-//            println("✅ AdminTable created.")
-
-//            if (Admin.all().empty()) {
-                Admin.new {
-                    username = "admin789"
-                    password = "1234"
-                    email = "admin@example.com"
+//            configureRoutes()
+            // Register the root route (GET /)
+            routing {
+                get("/") {
+                    call.respondText("Ktor Status: OK")
                 }
-//            }
-
-
-//        val admin = Admin.find()
-
-
-
-
+            }
         }
-        assert(Admin.find{AdminTable.username eq username }.count() == 1L)
+
+        val response = client.get("/")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals("Ktor Status: OK", response.bodyAsText())
     }
+<<<<<<< HEAD
 //        val response = client.get("/")
 //        assertEquals(HttpStatusCode.OK, response.status)
 //        assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
     }
 }
+=======
+}
+>>>>>>> backend/salwa

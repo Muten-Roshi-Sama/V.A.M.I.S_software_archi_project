@@ -1,320 +1,191 @@
 package be.ecam.server.services
 
-import be.ecam.server.models.TeacherTable
-import be.ecam.server.models.ModulesTable
+import be.ecam.server.models.*
+import be.ecam.common.api.TeacherDTO
+import be.ecam.server.db.SeedResult
+import be.ecam.server.db.seedFromResourceIfMissing
+import be.ecam.server.util.requireValidEmail
+import be.ecam.server.util.requireValidPassword
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.io.File
-import be.ecam.common.api.Teacher
-import be.ecam.common.api.Module
 
-//DTOs used only to read JSON at startup (seed)
 @Serializable
-data class TeacherSeedDTO(
-    val teacher_id: Int,
+data class TeacherCreateDTO(
+    val firstName: String? = null,
+    val lastName: String? = null,
     val email: String,
-    val first_name: String,
-    val last_name: String,
-    val password: String? = null,
-    val created_at: String
+    val password: String,
+    val teacherId: Int? = null,
+    val createdAt: String? = null
 )
 
 @Serializable
-data class ModuleSeedDTO(
-    val activity_name: String,
-    val activity_code: String,
-    val ects: Int,
-    val description: String,
-    val coordinator: String,
-    val course_code: String? = null
+data class TeacherUpdateDTO(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
+    val password: String? = null,
+    val teacherId: Int? = null
 )
 
-class TeacherService {
-    private val json = Json { ignoreUnknownKeys = true }
-    //Seed function called once when the server starts up
-    //It reads students.json and fills the database
-    fun seedFromJson() {
-        val possiblePaths = listOf(
-            "server/src/main/resources/data/teachers.json",
-            "src/main/resources/data/teachers.json",
-            "data/teachers.json"
-        )
-        val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-            ?: run {
-                println("Warning: teachers.json not found in any expected path")
-                return
-            }
+class TeacherService(private val personService: PersonService = PersonService()) {
+    private val ops = RoleService<TeacherDTO, Teacher>(
+        personService = personService,
+        findAll = { Teacher.all() },
+        findById = { id -> Teacher.findById(id) },
+        deleteById = { id -> Teacher.findById(id)?.delete() != null },
+        createForPerson = { person -> Teacher.createForPerson(person) },
+        toDto = { it.toDto() },
+        dtoToPersonCreate = { dto ->
+            PersonCreateDTO(
+                firstName = dto.firstName,
+                lastName = dto.lastName,
+                email = dto.email,
+                password = dto.password ?: throw IllegalArgumentException("password required for creation"),
+                createdAt = dto.createdAt
+            )
+        },
+        dtoEmail = { it.email }
+    )
 
-        val teachers = json.decodeFromString<List<TeacherSeedDTO>>(file.readText())
-
-        transaction {
-            if (TeacherTable.selectAll().count() > 0L) {
-                println("Info: Teachers already seeded, skipping")
-                return@transaction
-            }
-
-            teachers.forEach { teacherDto ->
-                TeacherTable.insert { row ->
-                    row[TeacherTable.teacherId] = teacherDto.teacher_id
-                    row[TeacherTable.email] = teacherDto.email
-                    row[TeacherTable.firstName] = teacherDto.first_name
-                    row[TeacherTable.lastName] = teacherDto.last_name
-                    row[TeacherTable.password] = teacherDto.password
-                    row[TeacherTable.createdAt] = teacherDto.created_at
-                }
-            }
-
-            println("Success: ${teachers.size} teachers seeded from teachers.json")
-        }
+    fun getAll(): List<TeacherDTO> = ops.getAll()
+    fun getById(id: Int): TeacherDTO? = ops.getById(id)
+    fun delete(id: Int): Boolean = ops.delete(id)
+    fun count(): Long = ops.count()
+    
+    fun getAllTeachers(): List<TeacherDTO> = getAll()
+    
+    fun getTeacherByEmail(email: String): TeacherDTO? = transaction {
+        val person = Person.find { PersonTable.email eq email }.firstOrNull() ?: return@transaction null
+        val teacher = Teacher.find { TeacherTable.person eq person.id }.firstOrNull() ?: return@transaction null
+        teacher.toDto()
+    }
+    
+    fun findTeachersByName(nameQuery: String): List<TeacherDTO> = transaction {
+        val lowerQuery = nameQuery.lowercase()
+        Teacher.all().filter { teacher ->
+            val firstName = teacher.firstName?.lowercase() ?: ""
+            val lastName = teacher.lastName?.lowercase() ?: ""
+            firstName.contains(lowerQuery) || lastName.contains(lowerQuery)
+        }.map { it.toDto() }
     }
 
-    fun seedModulesFromJson() {
-        val possiblePaths = listOf(
-            "server/src/main/resources/data/modules.json",
-            "src/main/resources/data/modules.json",
-            "data/modules.json"
-        )
-        val file = possiblePaths.map(::File).firstOrNull { it.exists() }
-            ?: run {
-                println("Warning: modules.json not found in any expected path")
-                return
-            }
+    fun create(dto: TeacherCreateDTO): TeacherDTO = transaction {
+        val email = dto.email
+        val password = dto.password
+        requireValidEmail(email)
+        requireValidPassword(password, minLength = 6)
 
-        val modules = json.decodeFromString<List<ModuleSeedDTO>>(file.readText())
-
-        transaction {
-            if (ModulesTable.selectAll().count() > 0L) {
-                println("Info: Modules already seeded, skipping")
-                return@transaction
-            }
-
-            modules.forEach { moduleDto ->
-                ModulesTable.insert { row ->
-                    row[ModulesTable.activityName] = moduleDto.activity_name
-                    row[ModulesTable.activityCode] = moduleDto.activity_code
-                    row[ModulesTable.ects] = moduleDto.ects
-                    row[ModulesTable.description] = moduleDto.description
-                    row[ModulesTable.coordinator] = moduleDto.coordinator
-                    row[ModulesTable.courseCode] = moduleDto.course_code
-                }
-            }
-
-            println("Success: ${modules.size} modules seeded from modules.json")
+        if (personService.existsByEmail(email)) {
+            throw IllegalArgumentException("Email '$email' is already registered")
         }
-    }
 
-    //// ========== CRUD : READ from BD ==========
-    fun getAllTeachers(): List<Teacher> {
-        return transaction {
-            // SELECT * FROM teachers
-            TeacherTable.selectAll().map { tRow ->
-                val email = tRow[TeacherTable.email]
-                val first = tRow[TeacherTable.firstName]
-                val last = tRow[TeacherTable.lastName]
-
-                //retrieval modules
-                val modules = ModulesTable
-                    .selectAll()
-                    .where { ModulesTable.coordinator eq email }
-                    .map { mRow ->
-                        Module(
-                            activity_name = mRow[ModulesTable.activityName],
-                            description = mRow[ModulesTable.description] ?: "",
-                            activity_code = mRow[ModulesTable.activityCode],
-                            ects = mRow[ModulesTable.ects]
-                        )
-                    }
-
-                Teacher(
+        try {
+            val person = personService.create(
+                PersonCreateDTO(
+                    firstName = dto.firstName,
+                    lastName = dto.lastName,
                     email = email,
-                    first_name = first,
-                    last_name = last,
-                    modules = modules
+                    password = password,
+                    createdAt = dto.createdAt
+                )
+            )
+            val teacher = Teacher.createForPerson(person)
+            teacher.teacherId = dto.teacherId
+            teacher.toDto()
+        } catch (ex: ExposedSQLException) {
+            val msg = ex.message ?: ""
+            if (msg.contains("UNIQUE", true) || msg.contains("constraint", true)) {
+                throw IllegalArgumentException("Email '$email' is already registered (unique constraint).")
+            }
+            throw ex
+        }
+    }
+
+    fun update(id: Int, dto: TeacherUpdateDTO): TeacherDTO = transaction {
+        val teacher = Teacher.findById(id) ?: throw IllegalArgumentException("not found")
+        val person = teacher.person
+
+        dto.email?.let { newEmail ->
+            if (newEmail != person.email) {
+                requireValidEmail(newEmail)
+                val existing = personService.findByEmail(newEmail)
+                if (existing != null && existing.id.value != person.id.value) {
+                    throw IllegalArgumentException("Email '$newEmail' is already registered")
+                }
+                person.email = newEmail
+            }
+        }
+        dto.firstName?.let { person.firstName = it }
+        dto.lastName?.let { person.lastName = it }
+        dto.password?.let { pw ->
+            requireValidPassword(pw, minLength = 6)
+            person.password = pw
+        }
+        dto.teacherId?.let { teacher.teacherId = it }
+
+        teacher.toDto()
+    }
+
+    fun existsByEmail(email: String): Boolean = transaction {
+        val person = personService.findByEmail(email) ?: return@transaction false
+        Teacher.find { TeacherTable.person eq person.id }.firstOrNull() != null
+    }
+
+    fun getByPersonId(personId: Int): TeacherDTO? = transaction {
+        Teacher.find { TeacherTable.person eq EntityID(personId, PersonTable) }
+            .firstOrNull()
+            ?.toDto()
+    }
+
+    fun createTeacherFromDto(dto: TeacherDTO) {
+        val createDto = TeacherCreateDTO(
+            firstName = dto.firstName,
+            lastName = dto.lastName,
+            email = dto.email,
+            password = dto.password ?: "",
+            teacherId = dto.teacherId,
+            createdAt = dto.createdAt
+        )
+        create(createDto)
+    }
+
+    fun seedFromResource(resourcePath: String = "data/teacher.json"): SeedResult {
+        return seedFromResourceIfMissing<TeacherDTO>(
+            name = "teachers",
+            resourcePath = resourcePath,
+            exists = { dto -> existsByEmail(dto.email) },
+            create = { dto -> createTeacherFromDto(dto) },
+            legacyMapper = { map ->
+                fun getString(vararg keys: String): String? {
+                    for (k in keys) {
+                        val v = map[k] ?: map[k.lowercase()]
+                        if (v is String) return v
+                        if (v != null) return v.toString()
+                    }
+                    return null
+                }
+                fun getInt(vararg keys: String): Int? {
+                    for (k in keys) {
+                        val v = map[k] ?: map[k.lowercase()]
+                        if (v is Int) return v
+                        if (v is Number) return v.toInt()
+                        if (v is String) return v.toIntOrNull()
+                    }
+                    return null
+                }
+                TeacherDTO(
+                    id = null,
+                    firstName = getString("firstName") ?: "",
+                    lastName = getString("lastName") ?: "",
+                    email = getString("email") ?: "",
+                    password = getString("password"),
+                    createdAt = getString("createdAt") ?: "",
+                    teacherId = getInt("teacherId", "teacher_id")
                 )
             }
-        }
-    }
-
-    //Getting one student by his email
-    fun getTeacherByEmail(emailParam: String): Teacher? {
-        return transaction {
-            val tRow = TeacherTable
-                .selectAll()
-                .where { TeacherTable.email eq emailParam }
-                .firstOrNull() ?: return@transaction null
-
-            val modules = ModulesTable
-                .selectAll()
-                .where { ModulesTable.coordinator eq emailParam }
-                .map { mRow ->
-                    Module(
-                        activity_name = mRow[ModulesTable.activityName],
-                        description = mRow[ModulesTable.description] ?: "",
-                        activity_code = mRow[ModulesTable.activityCode],
-                        ects = mRow[ModulesTable.ects]
-                    )
-                }
-
-            Teacher(
-                email = tRow[TeacherTable.email],
-                first_name = tRow[TeacherTable.firstName],
-                last_name = tRow[TeacherTable.lastName],
-                modules = modules
-            )
-        }
-    }
-
-    //Filter
-    fun findTeachersByName(q: String): List<Teacher> {
-        val needle = q.trim().lowercase()
-        if (needle.isEmpty()) return emptyList()
-
-        return getAllTeachers().filter { t ->
-            t.first_name.lowercase().contains(needle) ||
-                    t.last_name.lowercase().contains(needle)
-        }
-    }
-
-    //// ========== CREATE (change in the database) ==========
-    fun createTeacher(teacher: TeacherSeedDTO) {
-        transaction {
-            // Vérifie si le teacher existe déjà
-            val existing = TeacherTable
-                .selectAll()
-                .where {
-                    (TeacherTable.email eq teacher.email) or
-                            (TeacherTable.teacherId eq teacher.teacher_id)
-                }
-                .count()
-
-            if (existing > 0L) {
-                throw IllegalArgumentException("Teacher with this email or teacherId already exists")
-            }
-
-            //insert into teachers
-            TeacherTable.insert { row ->
-                row[teacherId] = teacher.teacher_id
-                row[email] = teacher.email
-                row[firstName] = teacher.first_name
-                row[lastName] = teacher.last_name
-                row[password] = teacher.password
-                row[createdAt] = teacher.created_at
-            }
-
-            println("Teacher created: ${teacher.email}")
-        }
-    }
-
-    //Adding a module
-    fun addModule(module: ModuleSeedDTO) {
-        transaction {
-            val teacherExists = TeacherTable
-                .selectAll()
-                .where { TeacherTable.email eq module.coordinator }
-                .count()
-            if (teacherExists == 0L) {
-                throw IllegalArgumentException("Teacher (coordinator) not found: ${module.coordinator}")
-            }
-            val moduleExists = ModulesTable
-                .selectAll()
-                .where { ModulesTable.activityCode eq module.activity_code }
-                .count()
-
-            if (moduleExists > 0L) {
-                throw IllegalArgumentException("Module with this activity_code already exists: ${module.activity_code}")
-            }
-
-            //insert into modules
-            ModulesTable.insert { row ->
-                row[activityName] = module.activity_name
-                row[activityCode] = module.activity_code
-                row[ects] = module.ects
-                row[description] = module.description
-                row[coordinator] = module.coordinator
-                row[courseCode] = module.course_code
-            }
-
-            println("Module added: ${module.activity_code} for ${module.coordinator}")
-        }
-    }
-
-    // ========== UPDATE change in the database ==========
-
-    fun updateTeacher(emailParam: String, newData: TeacherSeedDTO) {
-        transaction {
-            // UPDATE teachers SET ... WHERE email = ?
-            val updated = TeacherTable.update({ TeacherTable.email eq emailParam }) { row ->
-                row[firstName] = newData.first_name
-                row[lastName] = newData.last_name
-                row[password] = newData.password
-            }
-
-            if (updated == 0) {
-                throw IllegalArgumentException("Teacher not found: $emailParam")
-            }
-
-            println("Teacher updated: $emailParam")
-        }
-    }
-
-    fun updateModule(activityCode: String, newData: ModuleSeedDTO) {
-        transaction {
-            val updated = ModulesTable.update({ ModulesTable.activityCode eq activityCode }) { row ->
-                row[activityName] = newData.activity_name
-                row[ects] = newData.ects
-                row[description] = newData.description
-                row[coordinator] = newData.coordinator
-                row[courseCode] = newData.course_code
-            }
-
-            if (updated == 0) {
-                throw IllegalArgumentException("Module not found: $activityCode")
-            }
-
-            println("Module updated: $activityCode")
-        }
-    }
-
-    // ========== DELETE ==========
-
-    //Delete the teacher with his modules
-    fun deleteTeacher(emailParam: String) {
-        transaction {
-            val teacherExists = TeacherTable
-                .selectAll()
-                .where { TeacherTable.email eq emailParam }
-                .count()
-
-            if (teacherExists == 0L) {
-                throw IllegalArgumentException("Teacher not found: $emailParam")
-            }
-
-            val deletedModules = ModulesTable.deleteWhere {
-                ModulesTable.coordinator eq emailParam
-            }
-
-            val deletedTeacher = TeacherTable.deleteWhere {
-                TeacherTable.email eq emailParam
-            }
-
-            println("Teacher deleted: $emailParam ($deletedModules modules removed)")
-        }
-    }
-
-    fun deleteModule(activityCode: String) {
-        transaction {
-            val deleted = ModulesTable.deleteWhere {
-                ModulesTable.activityCode eq activityCode
-            }
-
-            if (deleted == 0) {
-                throw IllegalArgumentException("Module not found: $activityCode")
-            }
-
-            println("Module deleted: $activityCode")
-        }
+        )
     }
 }

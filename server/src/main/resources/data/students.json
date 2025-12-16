@@ -1,32 +1,32 @@
 [
   {
-    "student_id": "25347",
-    "first_name": "Alice",
-    "last_name": "Dubois",
+    "studentId": "25347",
     "email": "alice@student.school.com",
-    "password": "alice123",
-    "created_at": "2025-09-01T10:00:00Z",
-    "study_year": "BA1",
-    "option_code": null
+    "firstName": "Alice",
+    "lastName": "Dubois",
+    "password": "pass123",
+    "studyYear": "BA1",
+    "optionCode": null,
+    "createdAt": "2024-01-01T10:00:00Z"
   },
   {
-    "student_id": "25189",
-    "first_name": "Bob",
-    "last_name": "Leroy",
+    "studentId": "25189",
     "email": "bob@student.school.com",
-    "password": "bob123",
-    "created_at": "2025-09-01T10:00:00Z",
-    "study_year": "BA1",
-    "option_code": null
+    "firstName": "Bob",
+    "lastName": "Leroy",
+    "password": "pass123",
+    "studyYear": "BA1",
+    "optionCode": null,
+    "createdAt": "2024-01-02T10:00:00Z"
   },
   {
-    "student_id": "20123",
-    "first_name": "Charlie",
-    "last_name": "Martin",
+    "studentId": "20123",
     "email": "charlie@student.school.com",
-    "password": "charlie123",
-    "created_at": "2020-09-01T10:00:00Z",
-    "study_year": "BA3",
-    "option_code": "INFO"
+    "firstName": "Charlie",
+    "lastName": "Martin",
+    "password": "pass123",
+    "studyYear": "BA3",
+    "optionCode": "INFO",
+    "createdAt": "2024-01-03T10:00:00Z"
   }
 ]
