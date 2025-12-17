@@ -94,10 +94,6 @@ class StudentRoutes(private val service: StudentService) : InterfaceRoutes {
                     val userId = principal.payload.getClaim("id").asInt()
                     val role = principal.payload.getClaim("role").asString()
 
-                    if (role != "student") {
-                        return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not a student"))
-                    }
-
                     val student = service.getByPersonId(userId)
                         ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Student profile not found"))
 
@@ -108,32 +104,26 @@ class StudentRoutes(private val service: StudentService) : InterfaceRoutes {
                 put("/me") {
                     val principal = call.principal<JWTPrincipal>()
                         ?: return@put call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
-                    
-                    val userId = principal.payload.getClaim("id").asInt()
-                    val role = principal.payload.getClaim("role").asString()
-                    
-                    if (role == "student") {
-                        val updateDto = call.receive<StudentUpdateDTO>()
-                        
-                        // Students can only update their own email/password, NOT studentId/year/option
-                        val sanitizedDto = StudentUpdateDTO(
-                            firstName = updateDto.firstName,
-                            lastName = updateDto.lastName,
-                            email = updateDto.email,
-                            password = updateDto.password,
-                            studentId = null,      // Prevent students from changing these
-                            studyYear = null,
-                            optionCode = null
-                        )
-                        
-                        try {
-                            val updated = service.update(userId, sanitizedDto)
-                            call.respond(HttpStatusCode.OK, updated)
-                        } catch (e: IllegalArgumentException) {
-                            call.respond(HttpStatusCode.BadRequest, mapOf("error" to (e.message ?: "Invalid data")))
-                        }
-                    } else {
-                        call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Access denied"))
+                    val personId = principal.payload.getClaim("id").asInt()
+                
+                    val incoming = call.receive<StudentUpdateDTO>()
+                    val sanitizedDto = StudentUpdateDTO(
+                        firstName = null,
+                        lastName = null,
+                        email = null,
+                        password = incoming.password,
+                        studentId = null,
+                        studyYear = null,
+                        optionCode = null
+                    )
+                    try {
+                        val student = service.getByPersonId(personId)
+                            ?: return@put call.respond(HttpStatusCode.NotFound, mapOf("error" to "Student profile not found"))
+                        val studentId = student.id ?: return@put call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Student ID is null"))
+                        val updated = service.update(studentId, sanitizedDto)
+                        call.respond(HttpStatusCode.OK, updated)
+                    } catch (e: IllegalArgumentException) {
+                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to (e.message ?: "Invalid data")))
                     }
                 }
             } // end student self-service

@@ -3,18 +3,18 @@ package be.ecam.companion
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import be.ecam.companion.data.SettingsRepository
 import be.ecam.companion.di.appModule
 import be.ecam.companion.viewmodel.HomeViewModel
-import be.ecam.companion.data.SettingsRepository
-import be.ecam.companion.ui.*
+import be.ecam.companion.ui.LoginScreen
+import be.ecam.companion.ui.CalendarScreen
+import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.admin.*
 import be.ecam.companion.ui.student.*
 import be.ecam.companion.ui.teacher.*
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.Module
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,14 +54,13 @@ fun App(extraModules: List<Module> = emptyList()) {
                     AdminDashboard(
                         onNavigateToAdmins = { currentScreen = Screen.AdminList },
                         onNavigateToStudents = { currentScreen = Screen.StudentList },
+                        onNavigateToTeachers = { currentScreen = Screen.TeacherList },
                         onNavigateToCalendar = { currentScreen = Screen.Calendar },
                         onNavigateToSettings = { currentScreen = Screen.Settings },
                         onLogout = { currentScreen = Screen.Login },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.Settings },
-
-
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
@@ -84,14 +83,14 @@ fun App(extraModules: List<Module> = emptyList()) {
                 }
 
                 // =======================
-                //        ADMIN
+                //        ADMIN CRUD
                 // =======================
                 Screen.AdminList -> {
                     ListAdmins(
                         onBack = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.Settings }
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
@@ -100,7 +99,13 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onBack = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.Settings }
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+                Screen.TeacherList -> {
+                    ListTeachers(
+                        onBack = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
@@ -126,12 +131,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                     CalendarScreen(
                         modifier = Modifier,
                         scheduledByDate = homeVm.scheduledByDate,
-                        onOpenHome = {
-                            currentScreen = when {
-                                currentScreen == Screen.Calendar -> Screen.AdminDashboard
-                                else -> Screen.AdminDashboard
-                            }
-                        },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { },
                         onOpenSettings = { currentScreen = Screen.Settings }
                     )
@@ -142,12 +142,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                         repo = settingsRepo,
                         onSaved = { homeVm.load() },
                         onLogout = { currentScreen = Screen.Login },
-                        onOpenHome = {
-                            currentScreen = when {
-                                currentScreen == Screen.Settings -> Screen.AdminDashboard
-                                else -> Screen.AdminDashboard
-                            }
-                        },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { }
                     )
@@ -157,6 +152,9 @@ fun App(extraModules: List<Module> = emptyList()) {
     }
 }
 
+// =======================
+//        SCREENS
+// =======================
 sealed class Screen {
     object Login : Screen()
 
@@ -166,6 +164,7 @@ sealed class Screen {
 
     object AdminList : Screen()
     object StudentList : Screen()
+    object TeacherList : Screen()
 
     object MyGrades : Screen()
     object MyCourses : Screen()

@@ -2,6 +2,8 @@ package be.ecam.server.services
 
 import be.ecam.server.models.*
 import be.ecam.common.api.TeacherDTO
+import be.ecam.server.models.TeacherTable
+
 import be.ecam.server.db.SeedResult
 import be.ecam.server.db.seedFromResourceIfMissing
 import be.ecam.server.util.requireValidEmail
@@ -17,7 +19,7 @@ data class TeacherCreateDTO(
     val lastName: String? = null,
     val email: String,
     val password: String,
-    val teacherId: Int? = null,
+    val teacherId: String? = null,
     val createdAt: String? = null
 )
 
@@ -27,7 +29,7 @@ data class TeacherUpdateDTO(
     val lastName: String? = null,
     val email: String? = null,
     val password: String? = null,
-    val teacherId: Int? = null
+    val teacherId: String? = null
 )
 
 class TeacherService(private val personService: PersonService = PersonService()) {
@@ -183,7 +185,7 @@ class TeacherService(private val personService: PersonService = PersonService())
                     email = getString("email") ?: "",
                     password = getString("password"),
                     createdAt = getString("createdAt") ?: "",
-                    teacherId = getInt("teacherId", "teacher_id")
+                    teacherId = getString("teacherId", "teacher_id")
                 )
             }
         )

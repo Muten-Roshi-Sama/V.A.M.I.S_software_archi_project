@@ -53,7 +53,7 @@ data class StudentDTO(
 @Serializable
 data class TeacherDTO(
     val id: Int? = null,
-    val teacherId: Int? = null,
+    val teacherId: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
     val email: String,
