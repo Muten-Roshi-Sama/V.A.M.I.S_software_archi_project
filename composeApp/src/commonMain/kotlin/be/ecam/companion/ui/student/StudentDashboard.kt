@@ -47,7 +47,7 @@ fun StudentDashboard(
         }
     }
 
-    AppDrawer_student(
+    AppDrawer(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,

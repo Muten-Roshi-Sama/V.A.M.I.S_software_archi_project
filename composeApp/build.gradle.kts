@@ -44,6 +44,8 @@ kotlin {
             implementation(libs.ktor.client.android)
             // Ktor client logging (debug diagnostics)
             implementation(libs.ktor.client.logging)
+            // Remote images (URL)
+            implementation(libs.kamel.image)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -74,6 +76,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
+            // Remote images (URL)
+            implementation(libs.kamel.image)
         }
         iosMain.dependencies {
             // Ktor iOS engine (Darwin)

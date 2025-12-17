@@ -45,7 +45,7 @@ fun MyCoursesScreen(
         }
     }
 
-    AppDrawer_student(
+    AppDrawer(
         drawerState = drawerState,
         scope = scope,
         onOpenCalendar = onOpenCalendar,

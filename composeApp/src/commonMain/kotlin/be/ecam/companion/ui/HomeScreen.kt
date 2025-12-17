@@ -1,14 +1,22 @@
 package be.ecam.companion.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,10 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import be.ecam.companion.viewmodel.HomeViewModel
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +47,7 @@ fun HomeScreen(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
     // Drawer partiel avec fond lumineux et scrim sombre
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -72,87 +83,130 @@ fun HomeScreen(
         },
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
     ) {
-
-
-
-    // Utilisation du drawer réutilisable
-        AppDrawer(
-            drawerState = drawerState,
-            scope = scope,
-            onOpenCalendar = onOpenCalendar,
-            onOpenSettings = onOpenSettings,
-            onOpenHome = onOpenHome
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+            IconButton(
+                onClick = { scope.launch { drawerState.open() } },
+                modifier = Modifier.align(Alignment.Start)
             ) {
-                IconButton(
-                    onClick = { scope.launch { drawerState.open() } },
-                    modifier = Modifier.align(Alignment.Start)
-                ) {
-                    Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                Text("Home", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(12.dp))
-
-                if (vm.lastErrorMessage.isNotEmpty()) {
-                    Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
-                    Spacer(Modifier.height(8.dp))
-                }
-
-                Button(onClick = onOpenAdmins) {
-                    Text("Open Admins List")
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                Button(onClick = onOpenStudents) {
-                    Text("See all student reports")
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                Button(onClick = onOpenTeachers) {
-                    Text("Voir les enseignants")
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                Button(onClick = onOpenBible) {
-                    Text("\ud83d\udcd2 Bible des Programmes")
-                }
-
-                Spacer(Modifier.height(20.dp))
-
-                Text(vm.helloMessage)
+                Icon(Icons.Filled.Menu, contentDescription = "Open menu")
             }
+
+            Spacer(Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Home",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+
+            if (vm.lastErrorMessage.isNotEmpty()) {
+                Text(vm.lastErrorMessage, color = MaterialTheme.colorScheme.error)
+                Spacer(Modifier.height(8.dp))
+            }
+
+
+            Spacer(Modifier.height(12.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "Admins",
+                        icon = Icons.Filled.AdminPanelSettings,
+                        onClick = onOpenAdmins,
+                        modifier = Modifier.weight(1f)
+                    )
+                    HomeTile(
+                        title = "Students",
+                        icon = Icons.Filled.School,
+                        onClick = onOpenStudents,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "Teachers",
+                        icon = Icons.Filled.Groups,
+                        onClick = onOpenTeachers,
+                        modifier = Modifier.weight(1f)
+                    )
+                    HomeTile(
+                        title = "Bible",
+                        icon = Icons.Filled.MenuBook,
+                        onClick = onOpenBible,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(vm.helloMessage)
         }
-        Button(onClick = onOpenAdmins) { Text("Open Admins List") }
-        Spacer(Modifier.height(12.dp))
+    }
+}
 
-        Button(onClick = onOpenStudents) {
-            Text("See all student reports")
+
+
+@Composable
+private fun HomeTile(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.aspectRatio(1f),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(44.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(title, style = MaterialTheme.typography.titleMedium)
         }
-        Spacer(Modifier.height(12.dp))
-
-        Button(onClick = onOpenTeachers) { Text("Voir les enseignants") }
-        Spacer(Modifier.height(12.dp))
-
-        Button(onClick = onOpenBible) {
-            Text("📚 Bible des Programmes")
-        }
-        Spacer(Modifier.height(12.dp))
-
-        Button(onClick = onOpenCalendar) { Text("📅 Calendrier") }
-        Spacer(Modifier.height(12.dp))
-
-        Text(vm.helloMessage)
     }
 }
