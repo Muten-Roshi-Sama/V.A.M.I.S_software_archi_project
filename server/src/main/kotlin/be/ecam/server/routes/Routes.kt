@@ -22,6 +22,7 @@ import be.ecam.server.services.ScheduleService
 import be.ecam.server.routes.auth.AuthRoutes
 import be.ecam.server.routes.handlers.AdminRoutes
 import be.ecam.server.routes.handlers.StudentRoutes
+import be.ecam.server.routes.handlers.TeacherRoutes
 import be.ecam.server.routes.handlers.scheduleRoutes
 // import be.ecam.server.routes.handlers.TeacherRoutes
 
@@ -64,9 +65,10 @@ fun Application.configureRoutes(
 
         authRoutes?.register(this)
 
-        registry.registerAllUnder(this, "/crud")
+        
         
         route("/crud") {
+            registry.registerAllUnder(this)
             studentBulletinRoutes()
             teacherDataRoute()
             bibleDataRoute()
@@ -114,14 +116,14 @@ fun Application.configureRoutes() {
     // 4. Create resource handlers
     val adminRoutes = AdminRoutes(adminService)
     val studentRoutes = StudentRoutes(studentService)
-    // val teacherRoutes = TeacherRoutes(teacherService)
+    val teacherRoutes = TeacherRoutes(teacherService)
 
     // 5. Build registry
     val registry = CrudRegistry(
         mapOf(
             "admins" to adminRoutes,
-            "students" to studentRoutes
-            // "teachers" to teacherRoutes
+            "students" to studentRoutes,
+            "teachers" to teacherRoutes
         )
     )
 

@@ -14,11 +14,14 @@ import be.ecam.companion.data.ApiRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+import androidx.compose.material.icons.filled.Person
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDashboard(
     onNavigateToAdmins: () -> Unit,
     onNavigateToStudents: () -> Unit,
+    onNavigateToTeachers: () -> Unit,
     onNavigateToCalendar: (() -> Unit)? = null,
     onNavigateToSettings: (() -> Unit)? = null,
     onLogout: () -> Unit
@@ -86,7 +89,7 @@ fun AdminDashboard(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onNavigateToAdmins
-                ) {
+                    ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -110,7 +113,7 @@ fun AdminDashboard(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onNavigateToStudents
-                ) {
+                    ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -130,6 +133,40 @@ fun AdminDashboard(
                         }
                     }
                 }
+
+
+                // Teacher Management Card
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onNavigateToTeachers
+                    ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.Person,  // or another appropriate icon
+                            contentDescription = "Teachers",
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.tertiary
+                        )
+                        Column {
+                            Text("Teachers", style = MaterialTheme.typography.titleLarge)
+                            Text("Manage teacher accounts", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+
+                // Other Cards...
+
+
+
+
+
+
             }
         }
     }

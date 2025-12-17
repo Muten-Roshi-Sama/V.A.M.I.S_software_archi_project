@@ -65,9 +65,7 @@ class TeacherRoutes(private val service: TeacherService) : InterfaceRoutes {
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
                     val userId = principal.payload.getClaim("id").asInt()
                     val role = principal.payload.getClaim("role").asString()
-                    if (role != "teacher") {
-                        return@get call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not a teacher"))
-                    }
+                    
                     val teacher = service.getByPersonId(userId)
                         ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Teacher profile not found"))
                     call.respond(HttpStatusCode.OK, teacher)
@@ -76,21 +74,21 @@ class TeacherRoutes(private val service: TeacherService) : InterfaceRoutes {
                 put("/me") {
                     val principal = call.principal<JWTPrincipal>()
                         ?: return@put call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Not authenticated"))
-                    val userId = principal.payload.getClaim("id").asInt()
-                    val role = principal.payload.getClaim("role").asString()
-                    if (role != "teacher") {
-                        return@put call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Not a teacher"))
-                    }
+                    val personId = principal.payload.getClaim("id").asInt()
+                    
                     val incoming = call.receive<TeacherUpdateDTO>()
                     val sanitized = TeacherUpdateDTO(
                         firstName = null,
                         lastName = null,
                         email = null,
-                        password = incoming.password, // only password allowed
+                        password = incoming.password,
                         teacherId = null
                     )
                     try {
-                        call.respond(HttpStatusCode.OK, service.update(userId, sanitized))
+                        val teacher = service.getByPersonId(personId)
+                            ?: return@put call.respond(HttpStatusCode.NotFound, mapOf("error" to "Teacher profile not found"))
+                        val teacherId = teacher.id ?: return@put call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Teacher ID is null"))
+                        call.respond(HttpStatusCode.OK, service.update(teacherId, sanitized))
                     } catch (e: IllegalArgumentException) {
                         call.respond(HttpStatusCode.BadRequest, mapOf("error" to (e.message ?: "Invalid data")))
                     }

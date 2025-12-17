@@ -1,5 +1,15 @@
 [
   {
+    "studentId": "12345",
+    "email": "student@student.school.com",
+    "firstName": "Charlie",
+    "lastName": "Martin",
+    "password": "pass123",
+    "studyYear": "BA3",
+    "optionCode": "INFO",
+    "createdAt": "2024-01-03T10:00:00Z"
+  },
+  {
     "studentId": "25347",
     "email": "alice@student.school.com",
     "firstName": "Alice",
@@ -28,5 +38,17 @@
     "studyYear": "BA3",
     "optionCode": "INFO",
     "createdAt": "2024-01-03T10:00:00Z"
+  },
+  {
+    "studentId": "99999",
+    "email": "TESTSTUDENT@student.com",
+    "firstName": "TEST",
+    "lastName": "STUDENT",
+    "password": "pass123",
+    "studyYear": "",
+    "optionCode": "",
+    "createdAt": "2024-01-03T10:00:00Z"
   }
 ]
+
+

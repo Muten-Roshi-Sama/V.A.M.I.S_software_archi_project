@@ -16,6 +16,8 @@ import be.ecam.server.models.ScheduleTable
 // DAO Class
 import be.ecam.server.models.Admin
 import be.ecam.server.models.Teacher
+import be.ecam.server.models.Student
+//import be.ecam.server.models.Course
 
 // DAO Services
 import be.ecam.server.services.AdminService
@@ -27,6 +29,9 @@ import be.ecam.server.services.ScheduleService
 // Shared DTO
 import be.ecam.common.api.AdminDTO
 import be.ecam.common.api.TeacherDTO
+import be.ecam.common.api.StudentDTO
+//import be.ecam.common.api.CourseDTO
+
 
 // Kotlin imports
 import kotlinx.serialization.decodeFromString
@@ -78,6 +83,8 @@ object DatabaseFactory {
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
         SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
         SeedManager.register("teachers") { TeacherService().seedFromResource("data/teachers.json") }
+
+
 
         // run all registered seeders and gather results
         val seedReports = SeedManager.seedAll()

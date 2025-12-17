@@ -34,6 +34,7 @@ import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.admin.AdminDashboard
 import be.ecam.companion.ui.student.StudentDashboard
 import be.ecam.companion.ui.teacher.TeacherDashboard
+import be.ecam.companion.ui.admin.ListTeachers
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,10 +57,13 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
                 
+
+                // User Dashboards
                 is Screen.AdminDashboard -> {
                     AdminDashboard(
                         onNavigateToAdmins = { currentScreen = Screen.AdminList },
                         onNavigateToStudents = { currentScreen = Screen.StudentList },
+                        onNavigateToTeachers = { currentScreen = Screen.TeacherList },
                         onNavigateToCalendar = { currentScreen = Screen.Calendar },
                         onNavigateToSettings = { currentScreen = Screen.Settings },
                         onLogout = { currentScreen = Screen.Login }
@@ -84,6 +88,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
                 
+
+                // ADMIN CRUD
                 is Screen.AdminList -> {
                     ListAdmins(
                         onBack = { currentScreen = Screen.AdminDashboard }
@@ -95,6 +101,13 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onBack = { currentScreen = Screen.AdminDashboard }
                     )
                 }
+                is Screen.TeacherList -> {
+                    ListTeachers(
+                        onBack = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+
                 
                 is Screen.MyGrades -> {
                     be.ecam.companion.ui.student.MyGradesScreen(
@@ -129,11 +142,16 @@ fun App(extraModules: List<Module> = emptyList()) {
 
 private sealed class Screen {
     object Login : Screen()
+
+    // User Dashboards
     object AdminDashboard : Screen()
     object StudentDashboard : Screen()
     object TeacherDashboard : Screen()
+
+    // Admin CRUD
     object AdminList : Screen()
     object StudentList : Screen()
+    object TeacherList : Screen()
     object MyGrades : Screen()
     object MyCourses : Screen()
     object Calendar : Screen()

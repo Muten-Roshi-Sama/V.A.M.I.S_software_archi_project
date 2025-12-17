@@ -25,12 +25,11 @@ interface PersonInfo {
 
 // Defines the DB table schema
 object PersonTable : IntIdTable(name = "persons") {
-    val firstName = varchar("first_name", 120).nullable()
-    val lastName = varchar("last_name", 120).nullable()
+    val firstName = varchar("firstName", 120).nullable()
+    val lastName = varchar("lastName", 120).nullable()
     val email = varchar("email", 255).uniqueIndex()
     val password = varchar("password", 255)
-    val createdAt = varchar("created_at", 64).clientDefault { Instant.now().toString() }}
-
+    val createdAt = varchar("createdAt", 64).clientDefault { Instant.now().toString() }}
 // Implementation of object PersonTable
 class Person(id: EntityID<Int>) : IntEntity(id), PersonInfo {
     companion object : IntEntityClass<Person>(PersonTable)
