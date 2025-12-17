@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -84,6 +86,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenHome = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenGrades = { currentScreen = Screen.Grades },
+
                             )
                             is Screen.Settings -> SettingsScreen(
                                 repo = koinInject(),
@@ -92,6 +96,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenHome = { currentScreen = Screen.Home },
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 onOpenSettings = { currentScreen = Screen.Settings },
+                                onOpenGrades = { currentScreen = Screen.Grades },
+
                             )
 
                             is Screen.Grades -> GradesScreen(

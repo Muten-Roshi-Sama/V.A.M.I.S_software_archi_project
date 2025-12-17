@@ -29,6 +29,9 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Check
 import kotlinx.coroutines.launch
 import androidx.compose.material3.rememberDrawerState
 
@@ -40,6 +43,7 @@ fun SettingsScreen(
     onOpenHome: () -> Unit = {},
     onOpenCalendar: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenGrades: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     var host by remember { mutableStateOf("") }
@@ -80,10 +84,16 @@ fun SettingsScreen(
                     onOpenCalendar()
                 }
 
+                DrawerItem("Grades", Icons.Filled.Check) {
+                    scope.launch { drawerState.close() }
+                    onOpenGrades()
+                }
+
                 DrawerItem("Settings", Icons.Filled.Settings) {
                     scope.launch { drawerState.close() }
                     onOpenSettings()
                 }
+
             }
         },
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)

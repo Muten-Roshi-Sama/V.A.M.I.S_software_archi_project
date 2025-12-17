@@ -14,6 +14,9 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,6 +77,7 @@ fun CalendarScreen(
     onOpenHome: () -> Unit = {},
     onOpenCalendar: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenGrades: () -> Unit = {},
 ) {
     var today by remember {
         mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
@@ -124,10 +128,16 @@ fun CalendarScreen(
                     onOpenCalendar()
                 }
 
+                DrawerItem("Grades", Icons.Filled.Check) {
+                    scope.launch { drawerState.close() }
+                    onOpenGrades()
+                }
+
                 DrawerItem("Settings", Icons.Filled.Settings) {
                     scope.launch { drawerState.close() }
                     onOpenSettings()
                 }
+
             }
         },
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)

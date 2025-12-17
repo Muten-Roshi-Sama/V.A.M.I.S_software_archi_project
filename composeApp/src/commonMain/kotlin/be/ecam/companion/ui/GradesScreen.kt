@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -67,7 +69,7 @@ fun GradesScreen(
                     scope.launch { drawerState.close() }
                     onOpenCalendar()
                 }
-                DrawerItem("Grades", Icons.Filled.Home /* tu peux changer d’icône si tu veux */) {
+                DrawerItem("Grades", Icons.Filled.Check) {
                     scope.launch { drawerState.close() }
                     onOpenGrades()
                 }
@@ -137,17 +139,6 @@ fun GradesScreen(
                         }
                     }
                 }
-            }
-
-            // Bottom bar (mockup)
-            Spacer(Modifier.height(10.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                TextButton(onClick = onOpenHome) { Text("Home") }
-                TextButton(onClick = onOpenCalendar) { Text("Calendar") }
-                TextButton(onClick = onOpenGrades) { Text("Grades") }
             }
         }
     }
