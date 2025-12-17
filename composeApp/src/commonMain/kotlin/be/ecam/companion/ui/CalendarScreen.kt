@@ -340,13 +340,13 @@ fun CalendarScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Bouton "Ajouter un évènement" + Formulaire à sa droite
-            Row(
+            // Bouton "Ajouter un évènement" + Formulaire en dessous (mobile-friendly)
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp, top = 8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 // 🟦 Bouton principal
                 Button(
@@ -355,7 +355,7 @@ fun CalendarScreen(
                     Text("Ajouter un évènement")
                 }
 
-                // 🧩 Formulaire animé à droite du bouton
+                // 🧩 Formulaire animé sous le bouton
                 AnimatedVisibility(
                     visible = showAddEventPanel,
                     enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
@@ -364,7 +364,6 @@ fun CalendarScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp)
                             .background(
                                 MaterialTheme.colorScheme.surfaceVariant,
                                 shape = MaterialTheme.shapes.medium
