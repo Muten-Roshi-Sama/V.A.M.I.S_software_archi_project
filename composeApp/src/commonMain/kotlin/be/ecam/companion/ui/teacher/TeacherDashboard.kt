@@ -6,12 +6,15 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import be.ecam.companion.data.ApiRepository
+import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -20,8 +23,12 @@ import org.koin.compose.koinInject
 fun TeacherDashboard(
     onLogout: () -> Unit,
     onNavigateToCalendar: (() -> Unit)? = null,
-    onNavigateToSettings: (() -> Unit)? = null
+    onNavigateToSettings: (() -> Unit)? = null,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit
 ) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
     var userInfo by remember { mutableStateOf<String?>(null) }
@@ -39,11 +46,29 @@ fun TeacherDashboard(
             }
         }
     }
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Teacher Dashboard") },
+                navigationIcon = {
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                    }
+                },
+                title = {
+                    Text(
+                        "Teacher Dashboard",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
                 actions = {
                     IconButton(onClick = {
                         scope.launch {
@@ -55,6 +80,7 @@ fun TeacherDashboard(
                     }
                 }
             )
+
         }
     ) { padding ->
         Column(
@@ -157,5 +183,5 @@ fun TeacherDashboard(
                 }
             }
         }
-    }
+    }}
 }
