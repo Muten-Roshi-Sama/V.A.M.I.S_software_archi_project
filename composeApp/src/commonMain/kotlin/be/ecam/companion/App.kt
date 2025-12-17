@@ -70,7 +70,10 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onNavigateToCourses = { currentScreen = Screen.MyCourses },
                         onNavigateToCalendar = { currentScreen = Screen.Calendar },
                         onNavigateToSettings = { currentScreen = Screen.Settings },
-                        onLogout = { currentScreen = Screen.Login }
+                        onLogout = { currentScreen = Screen.Login },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
@@ -105,7 +108,10 @@ fun App(extraModules: List<Module> = emptyList()) {
 
                 Screen.TeacherList -> {
                     ListTeachers(
-                        onBack = { currentScreen = Screen.AdminDashboard }
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
@@ -114,13 +120,19 @@ fun App(extraModules: List<Module> = emptyList()) {
                 // =======================
                 Screen.MyGrades -> {
                     MyGradesScreen(
-                        onBack = { currentScreen = Screen.StudentDashboard }
+                        onBack = { currentScreen = Screen.StudentDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 
                 Screen.MyCourses -> {
                     MyCoursesScreen(
-                        onBack = { currentScreen = Screen.StudentDashboard }
+                        onBack = { currentScreen = Screen.StudentDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
 

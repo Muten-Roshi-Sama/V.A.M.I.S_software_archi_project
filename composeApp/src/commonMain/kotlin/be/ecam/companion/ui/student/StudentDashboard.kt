@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import be.ecam.companion.data.ApiRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import be.ecam.companion.ui.AppDrawer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,8 +23,12 @@ fun StudentDashboard(
     onNavigateToGrades: () -> Unit = {},
     onNavigateToCourses: () -> Unit = {},
     onNavigateToCalendar: (() -> Unit)? = null,
-    onNavigateToSettings: (() -> Unit)? = null
+    onNavigateToSettings: (() -> Unit)? = null,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit
 ) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
     var userInfo by remember { mutableStateOf<String?>(null) }
@@ -41,9 +47,21 @@ fun StudentDashboard(
         }
     }
 
+    AppDrawer_student(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
     Scaffold(
         topBar = {
             TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                    }
+                },
                 title = { Text("Student Dashboard") },
                 actions = {
                     IconButton(onClick = {
@@ -132,5 +150,5 @@ fun StudentDashboard(
                 }
             }
         }
-    }
+    }}
 }

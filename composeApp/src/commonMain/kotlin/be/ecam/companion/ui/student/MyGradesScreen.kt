@@ -3,6 +3,8 @@ package be.ecam.companion.ui.student
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,12 +16,19 @@ import androidx.compose.ui.unit.sp
 import be.ecam.common.api.StudentBulletin
 import be.ecam.common.api.Evaluation
 import be.ecam.companion.data.ApiRepository
+import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyGradesScreen(onBack: () -> Unit) {
+fun MyGradesScreen(
+    onBack: () -> Unit,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val repository = koinInject<ApiRepository>()
     val repo = koinInject<ApiRepository>()
     var bulletin by remember { mutableStateOf<StudentBulletin?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -38,14 +47,34 @@ fun MyGradesScreen(onBack: () -> Unit) {
         }
     }
 
+    AppDrawer_student(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Grades") },
+                title = { Text("My Courses") },
                 navigationIcon = {
-                    TextButton(onClick = onBack) { Text("← Back") }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } }
+                        ) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                        }
+
+                        TextButton(onClick = onBack) {
+                            Text("← Back")
+                        }
+                    }
                 }
             )
+
         }
     ) { padding ->
         Column(
@@ -111,7 +140,7 @@ fun MyGradesScreen(onBack: () -> Unit) {
                 }
             }
         }
-    }
+    }}
 }
 
 @Composable
