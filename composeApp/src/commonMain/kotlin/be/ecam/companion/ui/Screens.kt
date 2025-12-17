@@ -9,4 +9,6 @@ sealed class Screen(val key: String) {
     object DataStudents : Screen("dataStudents")
     object Teachers : Screen("teachers")
     object Bible : Screen("bible")
+    object Grades : Screen("grades")
+
 }

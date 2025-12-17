@@ -40,7 +40,8 @@ fun HomeScreen(
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTeachers: () -> Unit,
-    onOpenBible: () -> Unit
+    onOpenBible: () -> Unit,
+    onOpenGrades: () -> Unit
 ) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
@@ -79,6 +80,12 @@ fun HomeScreen(
                     scope.launch { drawerState.close() }
                     onOpenSettings()
                 }
+
+                DrawerItem("Grades", Icons.Filled.School) {
+                    scope.launch { drawerState.close() }
+                    onOpenGrades()
+                }
+
             }
         },
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)

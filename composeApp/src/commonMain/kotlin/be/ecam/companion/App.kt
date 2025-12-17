@@ -38,6 +38,9 @@ import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.DataStudentsScreen
 import be.ecam.companion.ui.DataTeacherScreen
 import be.ecam.companion.ui.DataBibleScreen
+import be.ecam.companion.ui.GradesScreen
+import be.ecam.companion.ui.CourseGradeUi
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,10 +72,11 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenHome = { currentScreen = Screen.Home },
                                 // Je rajoute ici une page pour le calendar dans le menu
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
-                                // Je rajoute ici une apage qui va vers les settings
+                                // Je rajoute ici une page qui va vers les settings
                                 onOpenSettings = { currentScreen = Screen.Settings },
                                 onOpenTeachers = { currentScreen = Screen.Teachers },
-                                onOpenBible = { currentScreen = Screen.Bible }
+                                onOpenBible = { currentScreen = Screen.Bible },
+                                onOpenGrades = { currentScreen = Screen.Grades }
                             )
                             is Screen.Calendar -> CalendarScreen(
                                 modifier = Modifier.fillMaxSize(),
@@ -89,6 +93,22 @@ fun App(extraModules: List<Module> = emptyList()) {
                                 onOpenCalendar = { currentScreen = Screen.Calendar },
                                 onOpenSettings = { currentScreen = Screen.Settings },
                             )
+
+                            is Screen.Grades -> GradesScreen(
+                                grades = listOf(
+                                    CourseGradeUi("Web Development", "WD4P", 12, 5),
+                                    CourseGradeUi("Advanced Database", "AD3T", 15, 5),
+                                    CourseGradeUi("Accounting", "AC4T", null, 5), // ✅ ne s'affiche pas
+                                    CourseGradeUi("Algorithm Complexity", "AL4T", 12, 5),
+                                    CourseGradeUi("Artificial Intelligence", "AI4P", 10, 5),
+                                    CourseGradeUi("Project Management", "PM4T", 10, 5),
+                                ),
+                                onOpenHome = { currentScreen = Screen.Home },
+                                onOpenCalendar = { currentScreen = Screen.Calendar },
+                                onOpenGrades = { currentScreen = Screen.Grades },
+                                onOpenSettings = { currentScreen = Screen.Settings },
+                            )
+
                             is Screen.ListAdmins -> ListAdmins(onBack = { currentScreen = Screen.Home })
                             is Screen.DataStudents -> DataStudentsScreen(onBack = { currentScreen = Screen.Home })
                             is Screen.Teachers -> DataTeacherScreen(onBack = { currentScreen = Screen.Home })
