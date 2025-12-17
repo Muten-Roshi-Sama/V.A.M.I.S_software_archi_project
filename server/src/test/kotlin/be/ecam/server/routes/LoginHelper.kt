@@ -70,12 +70,21 @@ object TestDatabaseSetup {
 
 
 suspend fun loginAdmin(client: HttpClient): String {
-    TestDatabaseSetup.initialize()  // ← ADD THIS
+    TestDatabaseSetup.initialize()
     
+    transaction {
+        val admins = be.ecam.server.models.Admin.all().map { it.person.email to it.person.password }
+        println("DEBUG admins in DB: $admins")
+    }
+
+
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"admin1@admin.com","password":"pass123"}""")
+        setBody("""{"email":"admin1@school.com","password":"admin123"}""")
     }
+    println("🔐 loginAdmin response status: ${res.status}")
+    println("🔐 loginAdmin response body: ${res.bodyAsText()}")
+
     if (!res.status.isSuccess()) {
         error("admin login failed: ${res.status} body=${res.bodyAsText()}")
     }
@@ -85,15 +94,19 @@ suspend fun loginAdmin(client: HttpClient): String {
 suspend fun loginStudent(client: HttpClient): String {
     TestDatabaseSetup.initialize()
     
-    transaction {
-        val students = be.ecam.server.models.Student.all().map { it.person.email to it.person.password }
-        println("DEBUG students in DB: $students")
-    }
+    // transaction {
+    //     val students = be.ecam.server.models.Student.all().map { it.person.email to it.person.password }
+    //     println("DEBUG students in DB: $students")
+    // }
 
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"alice@student.com","password":"pass123"}""")
+        setBody("""{"email":"alice@student.school.com","password":"pass123"}""")
     }
+
+    
+
+
     if (!res.status.isSuccess()) {
         error("student login failed: ${res.status} body=${res.bodyAsText()}")
     }
@@ -105,7 +118,7 @@ suspend fun loginTeacher(client: HttpClient): String {
     
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"dupont@teacher.be","password":"pass123"}""")
+        setBody("""{"email":"prof.dupont@ecam.be","password":"Jean2025"}""")
     }
     if (!res.status.isSuccess()) {
         error("teacher login failed: ${res.status} body=${res.bodyAsText()}")

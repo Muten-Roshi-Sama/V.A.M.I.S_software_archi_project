@@ -65,9 +65,10 @@ fun Application.configureRoutes(
 
         authRoutes?.register(this)
 
-        registry.registerAllUnder(this, "/crud")
+        
         
         route("/crud") {
+            registry.registerAllUnder(this)
             studentBulletinRoutes()
             teacherDataRoute()
             bibleDataRoute()

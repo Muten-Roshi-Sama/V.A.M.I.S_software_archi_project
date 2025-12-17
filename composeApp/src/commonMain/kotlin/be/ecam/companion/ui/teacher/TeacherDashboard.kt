@@ -106,10 +106,7 @@ fun TeacherDashboard(
                     }
                 }
 
-<<<<<<< HEAD
                 // Grade Students Card
-=======
->>>>>>> origin/backend/salwa
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { }

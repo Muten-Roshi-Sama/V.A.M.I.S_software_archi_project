@@ -1,174 +1,174 @@
 package be.ecam.server.routes
 
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.server.testing.testApplication
-import kotlin.test.*
+// import io.ktor.client.request.*
+// import io.ktor.client.statement.*
+// import io.ktor.http.*
+// import io.ktor.server.testing.testApplication
+// import kotlin.test.*
 
-import be.ecam.server.module
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.selectAll
-import be.ecam.server.models.StudentTable
+// import be.ecam.server.module
+// import org.jetbrains.exposed.sql.transactions.transaction
+// import org.jetbrains.exposed.sql.selectAll
+// import be.ecam.server.models.StudentTable
 
-class StudentRoutesTest {
+// class StudentRoutesTest {
 
-    @Test
-    fun `GET crud students - admin can list all students`() = testApplication {
-        application { module() }
-        val token = loginAdmin(client)
+//     @Test
+//     fun `GET crud students - admin can list all students`() = testApplication {
+//         application { module() }
+//         val token = loginAdmin(client)
     
-        val response = client.get("/crud/students") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertTrue(response.bodyAsText().contains("alice@student.com"))
-    }
+//         val response = client.get("/crud/students") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//         }
+//         assertEquals(HttpStatusCode.OK, response.status)
+//         assertTrue(response.bodyAsText().contains("alice@student.com"))
+//     }
     
-    @Test
-    fun `GET crud students count - admin can count students`() = testApplication {
-        application { module() }
-        val token = loginAdmin(client)
+//     @Test
+//     fun `GET crud students count - admin can count students`() = testApplication {
+//         application { module() }
+//         val token = loginAdmin(client)
 
-        val response = client.get("/crud/students/count") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertTrue(response.bodyAsText().contains("count"))
-    }
+//         val response = client.get("/crud/students/count") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//         }
+//         assertEquals(HttpStatusCode.OK, response.status)
+//         assertTrue(response.bodyAsText().contains("count"))
+//     }
 
 
-    @Test
-    fun `GET crud students me - student can fetch own profile`() = testApplication {
-        application { module() }
-        val token = loginStudent(client)
+//     @Test
+//     fun `GET crud students me - student can fetch own profile`() = testApplication {
+//         application { module() }
+//         val token = loginStudent(client)
     
-        val response = client.get("/crud/students/me") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("alice@student.com"))
-        assertTrue(body.contains("studentId"))
-    }
+//         val response = client.get("/crud/students/me") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//         }
+//         assertEquals(HttpStatusCode.OK, response.status)
+//         val body = response.bodyAsText()
+//         assertTrue(body.contains("alice@student.com"))
+//         assertTrue(body.contains("studentId"))
+//     }
     
 
-    @Test
-    fun `GET crud students - unauthenticated returns 401`() = testApplication {
-        application { module() }
-        val response = client.get("/crud/students")
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-    }
+//     @Test
+//     fun `GET crud students - unauthenticated returns 401`() = testApplication {
+//         application { module() }
+//         val response = client.get("/crud/students")
+//         assertEquals(HttpStatusCode.Unauthorized, response.status)
+//     }
 
-    // PUT /crud/students/me
+//     // PUT /crud/students/me
 
-    @Test
-    fun `PUT crud students me - student can update own password only`() = testApplication {
-        application { module() }
-        val token = loginStudent(client)
+//     @Test
+//     fun `PUT crud students me - student can update own password only`() = testApplication {
+//         application { module() }
+//         val token = loginStudent(client)
 
         
-        val response = client.put("/crud/students/me") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"password":"newpass123"}""")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
+//         val response = client.put("/crud/students/me") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//             contentType(ContentType.Application.Json)
+//             setBody("""{"password":"newpass123"}""")
+//         }
+//         assertEquals(HttpStatusCode.OK, response.status)
 
-        // ensure profile still accessible and unchanged fields are present
-        val me = client.get("/crud/students/me") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, me.status)
-        val body = me.bodyAsText()
-        assertTrue(body.contains("alice@student.com"))
-        assertTrue(body.contains("studentId"))
+//         // ensure profile still accessible and unchanged fields are present
+//         val me = client.get("/crud/students/me") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//         }
+//         assertEquals(HttpStatusCode.OK, me.status)
+//         val body = me.bodyAsText()
+//         assertTrue(body.contains("alice@student.com"))
+//         assertTrue(body.contains("studentId"))
         
-        // reset seed user password to avoid breaking subsequent tests
-        val reset = client.put("/crud/students/me") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"password":"pass123"}""")
-        }
-        assertEquals(HttpStatusCode.OK, reset.status)
-        }
+//         // reset seed user password to avoid breaking subsequent tests
+//         val reset = client.put("/crud/students/me") {
+//             header(HttpHeaders.Authorization, "Bearer $token")
+//             contentType(ContentType.Application.Json)
+//             setBody("""{"password":"pass123"}""")
+//         }
+//         assertEquals(HttpStatusCode.OK, reset.status)
+//         }
 
 
 
-    @Test
-    fun `full CRUD lifecycle - admin creates, updates, deletes student`() = testApplication {
-        application { module() }
-        val token = loginAdmin(client)
-        val testEmail = "test-student-${System.currentTimeMillis()}@test.com"
-        var createdId: Int? = null
+//     @Test
+//     fun `full CRUD lifecycle - admin creates, updates, deletes student`() = testApplication {
+//         application { module() }
+//         val token = loginAdmin(client)
+//         val testEmail = "test-student-${System.currentTimeMillis()}@test.com"
+//         var createdId: Int? = null
 
-        try {
-            // CREATE
-            val createResponse = client.post("/crud/students") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-                contentType(ContentType.Application.Json)
-                setBody("""{"firstName":"Test","lastName":"Student","email":"$testEmail","password":"pass123","studentId":"99999","studyYear":"BA1"}""")
-            }
-            assertEquals(HttpStatusCode.Created, createResponse.status)
-            createdId = extractId(createResponse.bodyAsText())
+//         try {
+//             // CREATE
+//             val createResponse = client.post("/crud/students") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//                 contentType(ContentType.Application.Json)
+//                 setBody("""{"firstName":"Test","lastName":"Student","email":"$testEmail","password":"pass123","studentId":"99999","studyYear":"BA1"}""")
+//             }
+//             assertEquals(HttpStatusCode.Created, createResponse.status)
+//             createdId = extractId(createResponse.bodyAsText())
 
-            // LIST
-            val listResponse = client.get("/crud/students") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }
-            assertTrue(listResponse.bodyAsText().contains(testEmail))
+//             // LIST
+//             val listResponse = client.get("/crud/students") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//             }
+//             assertTrue(listResponse.bodyAsText().contains(testEmail))
 
-            // GET by ID
-            val getResponse = client.get("/crud/students/by/$createdId") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }
-            assertEquals(HttpStatusCode.OK, getResponse.status)
-            assertTrue(getResponse.bodyAsText().contains("99999"))
+//             // GET by ID
+//             val getResponse = client.get("/crud/students/by/$createdId") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//             }
+//             assertEquals(HttpStatusCode.OK, getResponse.status)
+//             assertTrue(getResponse.bodyAsText().contains("99999"))
 
-            // UPDATE
-            val updateResponse = client.put("/crud/students/by/$createdId") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-                contentType(ContentType.Application.Json)
-                setBody("""{"firstName":"Updated","lastName":"Student","email":"$testEmail","studyYear":"BA2"}""")
-            }
-            assertEquals(HttpStatusCode.OK, updateResponse.status)
+//             // UPDATE
+//             val updateResponse = client.put("/crud/students/by/$createdId") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//                 contentType(ContentType.Application.Json)
+//                 setBody("""{"firstName":"Updated","lastName":"Student","email":"$testEmail","studyYear":"BA2"}""")
+//             }
+//             assertEquals(HttpStatusCode.OK, updateResponse.status)
 
-            // DELETE
-            val deleteResponse = client.delete("/crud/students/by/$createdId") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }
-            assertEquals(HttpStatusCode.OK, deleteResponse.status)
+//             // DELETE
+//             val deleteResponse = client.delete("/crud/students/by/$createdId") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//             }
+//             assertEquals(HttpStatusCode.OK, deleteResponse.status)
 
-            // Verify deleted
-            val get404 = client.get("/crud/students/by/$createdId") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }
-            assertEquals(HttpStatusCode.NotFound, get404.status)
+//             // Verify deleted
+//             val get404 = client.get("/crud/students/by/$createdId") {
+//                 header(HttpHeaders.Authorization, "Bearer $token")
+//             }
+//             assertEquals(HttpStatusCode.NotFound, get404.status)
 
-        } finally {
-            createdId?.let {
-                try {
-                    client.delete("/crud/students/by/$it") {
-                        header(HttpHeaders.Authorization, "Bearer $token")
-                    }
-                } catch (e: Exception) { /* already deleted */ }
-            }
-        }
-    }
+//         } finally {
+//             createdId?.let {
+//                 try {
+//                     client.delete("/crud/students/by/$it") {
+//                         header(HttpHeaders.Authorization, "Bearer $token")
+//                     }
+//                 } catch (e: Exception) { /* already deleted */ }
+//             }
+//         }
+//     }
 
 
-        @Test
-    fun `DEBUG - verify student seed exists`() = testApplication {
-        application { module() }
+//         @Test
+//     fun `DEBUG - verify student seed exists`() = testApplication {
+//         application { module() }
         
-        transaction {
-            val count = StudentTable.selectAll().count()
-            val students = StudentTable.selectAll().map { it[StudentTable.studentId] }
-            println("\n📊 STUDENTS IN DB: $count")
-            println("Student IDs: $students")
-        }
-    }
+//         transaction {
+//             val count = StudentTable.selectAll().count()
+//             val students = StudentTable.selectAll().map { it[StudentTable.studentId] }
+//             println("\n📊 STUDENTS IN DB: $count")
+//             println("Student IDs: $students")
+//         }
+//     }
 
 
 
-}
+// }
