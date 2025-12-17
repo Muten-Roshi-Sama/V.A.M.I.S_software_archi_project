@@ -8,6 +8,7 @@ import be.ecam.companion.di.appModule
 import be.ecam.companion.viewmodel.HomeViewModel
 import be.ecam.companion.ui.LoginScreen
 import be.ecam.companion.ui.CalendarScreen
+import be.ecam.companion.ui.DataBibleScreen
 import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.admin.*
 import be.ecam.companion.ui.student.*
@@ -60,7 +61,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onLogout = { currentScreen = Screen.Login },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onNavigateToBible = { currentScreen = Screen.Bible }
                     )
                 }
 
@@ -139,6 +141,15 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
 
+                Screen.Bible -> {
+                    DataBibleScreen(
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings }
+                    )
+                }
+
                 // =======================
                 //       SHARED
                 // =======================
@@ -186,4 +197,8 @@ sealed class Screen {
 
     object Calendar : Screen()
     object Settings : Screen()
+    object Bible : Screen()
+
+
+
 }
