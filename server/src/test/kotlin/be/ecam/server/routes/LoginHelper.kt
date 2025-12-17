@@ -10,6 +10,18 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.selectAll
 
 
+
+// Login credentials
+object TestLogin {
+    val adminEmail: String = System.getProperty("TEST_ADMIN_EMAIL") ?: "TESTADMIN@admin.com"
+    val adminPassword: String = System.getProperty("TEST_ADMIN_PASSWORD") ?: "pass123"
+    val studentEmail: String = System.getProperty("TEST_STUDENT_EMAIL") ?: "TESTSTUDENT@student.com"
+    val studentPassword: String = System.getProperty("TEST_STUDENT_PASSWORD") ?: "pass123"
+    val teacherEmail: String = System.getProperty("TEST_TEACHER_EMAIL") ?: "TESTTEACHER@teacher.com"
+    val teacherPassword: String = System.getProperty("TEST_TEACHER_PASSWORD") ?: "pass123"
+}
+
+// Central Database Setup/Teardown for Tests
 object TestDatabaseSetup {
     private var isInitialized = false
 
@@ -68,7 +80,18 @@ object TestDatabaseSetup {
     }
 }
 
+// Helpers
+private fun extractToken(json: String): String {
+    return json.substringAfter("\"accessToken\":\"").substringBefore('"')
+}
 
+fun extractId(json: String): Int {
+    return json.substringAfter("\"id\":").substringBefore(',').trim().toInt()
+}
+
+
+
+// Central Login 
 suspend fun loginAdmin(client: HttpClient): String {
     TestDatabaseSetup.initialize()
     
@@ -80,7 +103,7 @@ suspend fun loginAdmin(client: HttpClient): String {
 
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"admin1@school.com","password":"admin123"}""")
+        setBody("""{"email":"${TestLogin.adminEmail}","password":"${TestLogin.adminPassword}"}""")
     }
     println("🔐 loginAdmin response status: ${res.status}")
     println("🔐 loginAdmin response body: ${res.bodyAsText()}")
@@ -101,12 +124,8 @@ suspend fun loginStudent(client: HttpClient): String {
 
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"alice@student.school.com","password":"pass123"}""")
+        setBody("""{"email":"${TestLogin.studentEmail}","password":"${TestLogin.studentPassword}"}""")
     }
-
-    
-
-
     if (!res.status.isSuccess()) {
         error("student login failed: ${res.status} body=${res.bodyAsText()}")
     }
@@ -118,7 +137,7 @@ suspend fun loginTeacher(client: HttpClient): String {
     
     val res = client.post("/auth/login") {
         contentType(ContentType.Application.Json)
-        setBody("""{"email":"prof.dupont@ecam.be","password":"Jean2025"}""")
+        setBody("""{"email":"${TestLogin.teacherEmail}","password":"${TestLogin.teacherPassword}"}""")
     }
     if (!res.status.isSuccess()) {
         error("teacher login failed: ${res.status} body=${res.bodyAsText()}")
@@ -126,14 +145,3 @@ suspend fun loginTeacher(client: HttpClient): String {
     return extractToken(res.bodyAsText())
 }
 
-
-
-
-
-private fun extractToken(json: String): String {
-    return json.substringAfter("\"accessToken\":\"").substringBefore('"')
-}
-
-fun extractId(json: String): Int {
-    return json.substringAfter("\"id\":").substringBefore(',').trim().toInt()
-}

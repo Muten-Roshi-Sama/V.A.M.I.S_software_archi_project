@@ -1,5 +1,12 @@
 [
   {
+    "firstName": "Jo",
+    "lastName": "Dumas",
+    "email": "admin2@admin.school.com",
+    "password": "admin123",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  {
     "firstName": "Marie",
     "lastName": "Dupont",
     "email": "admin1@school.com",
@@ -12,5 +19,14 @@
     "email": "admin2@school.com",
     "password": "admin123",
     "createdAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "firstName": "TEST",
+    "lastName": "ADMIN",
+    "email": "TESTADMIN@admin.com",
+    "password": "pass123",
+    "createdAt": "2024-01-15T10:30:00Z"
   }
 ]
+
+
