@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun AdminDashboard(
     onNavigateToAdmins: () -> Unit,
     onNavigateToStudents: () -> Unit,
-    onNavigateToTeachers: () -> Unit,
+    //onNavigateToTeachers: () -> Unit,
     onNavigateToCalendar: (() -> Unit)? = null,
     onNavigateToSettings: (() -> Unit)? = null,
     onLogout: () -> Unit,

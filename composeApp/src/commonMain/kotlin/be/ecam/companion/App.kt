@@ -61,6 +61,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onOpenSettings = { currentScreen = Screen.Settings },
                         onOpenHome = { currentScreen = Screen.Settings },
 
+
                     )
                 }
 
