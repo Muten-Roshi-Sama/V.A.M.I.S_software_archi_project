@@ -15,6 +15,8 @@ import be.ecam.companion.data.ApiRepository
 import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import androidx.compose.ui.text.style.TextAlign
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,23 +59,34 @@ fun AdminDashboard(
         onOpenHome = onOpenHome
     ) {
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Admin Dashboard") },
-                actions = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            repository.logout()
-                            onLogout()
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
                         }
-                    }) {
-                        Icon(Icons.Filled.ExitToApp, contentDescription = "Logout")
+                    },
+                    title = {
+                        Text(
+                            "Admin Dashboard",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = {
+                            scope.launch {
+                                repository.logout()
+                                onLogout()
+                            }
+                        }) {
+                            Icon(Icons.Filled.ExitToApp, contentDescription = "Logout")
+                        }
                     }
-                }
-            )
-        }
-    ) { padding ->
+                )
+            }
+        ){ padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,12 +95,7 @@ fun AdminDashboard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
         ) {
-            IconButton(
-                onClick = { scope.launch { drawerState.open() } },
-                modifier = Modifier.align(Alignment.Start)
-            ) {
-                Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-            }
+
 
             if (isLoading) {
                 CircularProgressIndicator()

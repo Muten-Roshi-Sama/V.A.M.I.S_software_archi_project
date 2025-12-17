@@ -87,13 +87,19 @@ fun App(extraModules: List<Module> = emptyList()) {
                 // =======================
                 Screen.AdminList -> {
                     ListAdmins(
-                        onBack = { currentScreen = Screen.AdminDashboard }
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.Settings }
                     )
                 }
 
                 Screen.StudentList -> {
                     ListStudents(
-                        onBack = { currentScreen = Screen.AdminDashboard }
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.Settings }
                     )
                 }
 
