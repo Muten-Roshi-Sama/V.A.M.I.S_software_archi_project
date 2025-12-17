@@ -19,108 +19,52 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         LoginBackground(modifier = Modifier.fillMaxSize())
 
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            val showSideImage = maxWidth >= 720.dp
+            LoginFormPanel(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 32.dp)
+                    .widthIn(min = 320.dp, max = 520.dp)
+                    .wrapContentHeight()
+            ) {
+                LoginHeaderVisual(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 160.dp)
+                )
 
-            if (showSideImage) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LoginSideVisual(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    )
+                Spacer(Modifier.height(24.dp))
 
-                    Spacer(Modifier.width(24.dp))
+                Text("Connexion", style = MaterialTheme.typography.headlineMedium)
+                Spacer(Modifier.height(24.dp))
 
-                    LoginFormPanel(
-                        modifier = Modifier
-                            .weight(1.2f)
-                            .fillMaxHeight()
-                            .padding(24.dp)
-                    ) {
-                        LoginHeaderVisual(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 160.dp)
-                        )
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text("Nom d'utilisateur") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(12.dp))
 
-                        Spacer(Modifier.height(24.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Mot de passe") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(24.dp))
 
-                        Text("Connexion", style = MaterialTheme.typography.headlineMedium)
-                        Spacer(Modifier.height(24.dp))
-
-                        OutlinedTextField(
-                            value = username,
-                            onValueChange = { username = it },
-                            label = { Text("Nom d'utilisateur") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(12.dp))
-
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = { Text("Mot de passe") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(24.dp))
-
-                        Button(
-                            onClick = {
-                                if (username.isNotBlank() && password.isNotBlank()) {
-                                    onLoginSuccess()
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Se connecter")
+                Button(
+                    onClick = {
+                        if (username.isNotBlank() && password.isNotBlank()) {
+                            onLoginSuccess()
                         }
-                    }
-                }
-            } else {
-                LoginFormPanel(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-                    LoginHeaderVisual(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 160.dp)
-                    )
-
-                    Spacer(Modifier.height(24.dp))
-
-                    Text("Connexion", style = MaterialTheme.typography.headlineMedium)
-                    Spacer(Modifier.height(24.dp))
-
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text("Nom d'utilisateur") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Mot de passe") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(24.dp))
-
-                    Button(
-                        onClick = {
-                            if (username.isNotBlank() && password.isNotBlank()) {
-                                onLoginSuccess()
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Se connecter")
-                    }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Se connecter")
                 }
             }
         }
@@ -176,20 +120,6 @@ private fun LoginHeaderVisual(modifier: Modifier = Modifier) {
             modifier = Modifier.size(140.dp),
             contentDescription = "ECAM logo",
             contentScale = ContentScale.Fit,
-        )
-    }
-}
-
-@Composable
-private fun LoginSideVisual(modifier: Modifier = Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        RemoteImage(
-            url = AppImages.ECAM_LOGIN_SIDE_URL,
-            contentDescription = "ECAM login side image",
-            modifier = Modifier
-                .fillMaxSize()
-                .border(2.dp, MaterialTheme.colorScheme.outlineVariant),
-            contentScale = ContentScale.Crop,
         )
     }
 }
