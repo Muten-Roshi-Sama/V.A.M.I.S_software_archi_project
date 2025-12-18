@@ -127,7 +127,7 @@ fun StudentDashboard(
                             title = "My Grades",
                             subtitle = "View academic performance",
                             icon = Icons.Filled.AdminPanelSettings,
-                            onClick = onNavigateToCourses,
+                            onClick = onNavigateToGrades,
                             modifier = Modifier.weight(1f)
                         )
 

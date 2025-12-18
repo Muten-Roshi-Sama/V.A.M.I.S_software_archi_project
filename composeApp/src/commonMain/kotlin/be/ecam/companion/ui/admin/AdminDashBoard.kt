@@ -31,6 +31,7 @@ fun AdminDashboard(
     onNavigateToStudents: () -> Unit,
     onNavigateToTeachers: () -> Unit,
     onNavigateToBible: () -> Unit,
+    onNavigateToGrades: () -> Unit,
     //onNavigateToTeachers: () -> Unit,
     onNavigateToCalendar: (() -> Unit)? = null,
     onNavigateToSettings: (() -> Unit)? = null,
@@ -164,9 +165,22 @@ fun AdminDashboard(
                         )
                         DashboardTile(
                             title = "Bible",
-                            subtitle = "Manage teachers",
+                            subtitle = "List of courses",
                             icon = Icons.Filled.MenuBook,
                             onClick = onNavigateToBible,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        DashboardTile(
+                            title = "Grades",
+                            subtitle = "Manage student's grades",
+                            icon = Icons.Filled.Person,
+                            onClick = onNavigateToGrades,
                             modifier = Modifier.weight(1f)
                         )
                     }

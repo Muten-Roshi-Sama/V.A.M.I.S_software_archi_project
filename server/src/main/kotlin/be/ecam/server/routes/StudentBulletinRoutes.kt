@@ -10,12 +10,14 @@ import be.ecam.server.services.StudentService
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
+
+
 fun Route.studentBulletinRoutes() {
     println("Enregistrement de studentBulletinRoutes()...")
 
     route("/students") {
         println("   → Route /students created")
-        
+
         get("/all/grades") {
             println("\n🔹 [ROUTE] GET /crud/students/all/grades called")
             try {
@@ -32,7 +34,7 @@ fun Route.studentBulletinRoutes() {
                 call.respond(HttpStatusCode.InternalServerError, "Erreur serveur : ${e.message}")
             }
         }
-        
+
         authenticate("auth-jwt") {
             get("/grades/me") {
                 println("\n🔹 [ROUTE] GET /crud/students/grades/me called")
@@ -42,16 +44,16 @@ fun Route.studentBulletinRoutes() {
                         call.respond(HttpStatusCode.Unauthorized, "Not authenticated")
                         return@get
                     }
-                    
+
                     val userId = principal.payload.getClaim("id").asInt()
                     val service = StudentService()
-                    
+
                     val person = transaction { be.ecam.server.models.Person.findById(userId) }
                     if (person == null) {
                         call.respond(HttpStatusCode.NotFound, "Person not found")
                         return@get
                     }
-                    
+
                     val bulletin = service.getStudentByEmail(person.email)
                     if (bulletin == null) {
                         call.respond(HttpStatusCode.NotFound, "Student grades not found")

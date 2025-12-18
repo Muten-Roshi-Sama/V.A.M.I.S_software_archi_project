@@ -1,4 +1,4 @@
-package be.ecam.companion.ui
+package be.ecam.companion.ui.admin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import be.ecam.companion.ui.DrawerItem
 import kotlinx.coroutines.launch
 
 data class CourseGradeUi(

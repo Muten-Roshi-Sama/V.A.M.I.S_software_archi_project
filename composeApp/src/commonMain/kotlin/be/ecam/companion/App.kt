@@ -8,9 +8,9 @@ import be.ecam.companion.di.appModule
 import be.ecam.companion.viewmodel.HomeViewModel
 import be.ecam.companion.ui.LoginScreen
 import be.ecam.companion.ui.CalendarScreen
-import be.ecam.companion.ui.CourseGradeUi
+//import be.ecam.companion.ui.CourseGradeUi
 import be.ecam.companion.ui.DataBibleScreen
-import be.ecam.companion.ui.GradesScreen
+import be.ecam.companion.ui.admin.GradesScreen
 import be.ecam.companion.ui.IspListScreen
 import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.admin.*
@@ -79,7 +79,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
                         onOpenHome = { currentScreen = Screen.AdminDashboard },
-                        onNavigateToBible = { currentScreen = Screen.Bible }
+                        onNavigateToBible = { currentScreen = Screen.Bible },
+                        onNavigateToGrades = { currentScreen = Screen.Grades }
                     )
                 }
 
@@ -149,6 +150,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onOpenHome = { currentScreen = Screen.AdminDashboard }
                     )
                 }
+
+
 
                 Screen.MyCourses -> {
                     MyCoursesScreen(
