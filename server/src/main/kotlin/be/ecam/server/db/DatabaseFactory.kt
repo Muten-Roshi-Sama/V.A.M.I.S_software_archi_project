@@ -257,7 +257,7 @@ object DatabaseFactory {
             println("Modules table already contains $count module(s). Skipping seed.")
         }
     }
-    
+
     private fun seedOptionsIfEmpty() {
         val count = transaction { OptionTable.selectAll().count() }
         if (count == 0L) {
@@ -267,7 +267,7 @@ object DatabaseFactory {
             println("Options table already contains $count option(s). Skipping seed.")
         }
     }
-    
+
     private fun seedCoursesIfEmpty() {
         val count = transaction { CourseTable.selectAll().count() }
         if (count == 0L) {
@@ -277,7 +277,7 @@ object DatabaseFactory {
             println("Courses table already contains $count course(s). Skipping seed.")
         }
     }
-    
+
     private fun seedStudyPlansIfEmpty() {
         val count = transaction { AnnualStudyPlanTable.selectAll().count() }
         if (count == 0L) {
@@ -287,7 +287,7 @@ object DatabaseFactory {
             println("Study plans table already contains $count plan(s). Skipping seed.")
         }
     }
-    
+
     private fun seedSchedulesIfEmpty() {
         val count = transaction { ScheduleTable.selectAll().count() }
         if (count == 0L) {

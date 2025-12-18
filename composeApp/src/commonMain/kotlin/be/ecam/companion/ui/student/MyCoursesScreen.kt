@@ -3,6 +3,8 @@ package be.ecam.companion.ui.student
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,12 +15,18 @@ import androidx.compose.ui.unit.dp
 import be.ecam.common.api.ProgramWithDetails
 import be.ecam.common.api.ModuleDetail
 import be.ecam.companion.data.ApiRepository
+import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyCoursesScreen(onBack: () -> Unit) {
+fun MyCoursesScreen(
+    onBack: () -> Unit,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repo = koinInject<ApiRepository>()
     var programs by remember { mutableStateOf<List<ProgramWithDetails>?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -37,14 +45,34 @@ fun MyCoursesScreen(onBack: () -> Unit) {
         }
     }
 
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("My Courses") },
                 navigationIcon = {
-                    TextButton(onClick = onBack) { Text("← Back") }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } }
+                        ) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                        }
+
+                        TextButton(onClick = onBack) {
+                            Text("← Back")
+                        }
+                    }
                 }
             )
+
         }
     ) { padding ->
         Column(
@@ -78,7 +106,7 @@ fun MyCoursesScreen(onBack: () -> Unit) {
                 }
             }
         }
-    }
+    }}
 }
 
 @Composable

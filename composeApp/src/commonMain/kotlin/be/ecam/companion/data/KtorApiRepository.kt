@@ -221,7 +221,7 @@ class KtorApiRepository(
     }
 
     // ============================
-    //           Teacher CRUD 
+    //           Teacher CRUD
     // ============================
     override suspend fun fetchTeachers(): List<TeacherDTO> {
         return client.get("${baseUrl()}/crud/teachers") {

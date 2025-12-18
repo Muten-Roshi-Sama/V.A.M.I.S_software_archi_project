@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,14 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.ecam.common.api.StudentDTO
 import be.ecam.companion.data.ApiRepository
+import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+
 @Composable
-fun ListStudents(onBack: () -> Unit) {
+fun ListStudents(
+    onBack: () -> Unit,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
-
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     var students by remember { mutableStateOf<List<StudentDTO>>(emptyList()) }
     var studentCount by remember { mutableStateOf(0L) }
     var isLoading by remember { mutableStateOf(false) }
@@ -47,7 +54,13 @@ fun ListStudents(onBack: () -> Unit) {
     }
 
     LaunchedEffect(Unit) { loadStudents() }
-
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,6 +68,12 @@ fun ListStudents(onBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        IconButton(
+            onClick = { scope.launch { drawerState.open() } },
+            modifier = Modifier.align(Alignment.Start)
+        ) {
+            Icon(Icons.Filled.Menu, contentDescription = "Menu")
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -102,7 +121,7 @@ fun ListStudents(onBack: () -> Unit) {
                 }
             }
         }
-    }
+    }}
 
     if (showCreateDialog) {
         StudentDialog(

@@ -1,5 +1,15 @@
 package be.ecam.companion.data
 
+import be.ecam.common.api.AdminDTO
+import be.ecam.common.api.HelloResponse
+import be.ecam.common.api.ScheduleItem
+import be.ecam.common.api.ProgramWithDetails
+import be.ecam.common.api.StudentBulletin
+import be.ecam.common.api.Teacher
+import kotlinx.serialization.ExperimentalSerializationApi
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonNames
 // DTO's from /shared
 import be.ecam.common.api.*
 
@@ -18,6 +28,12 @@ interface ApiRepository {
 
     // -------- Admin CRUD ----------
     suspend fun fetchAdmins(): List<AdminDTO>
+    suspend fun fetchHello(): HelloResponse
+    //suspend fun fetchSchedule(): Map<String, List<ScheduleItem>>
+    suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
+    //suspend fun fetchAllCourses(): List<Course>
+    suspend fun fetchAllTeachers(): List<Teacher>
+    //suspend fun fetchTeacher(email: String): Teacher
     suspend fun fetchAdminById(id: Int): AdminDTO
     suspend fun fetchAdminCount(): Long
     suspend fun createAdmin(admin: AdminDTO): AdminDTO
@@ -50,14 +66,16 @@ interface ApiRepository {
 
 
 
-    suspend fun fetchAllTeachers(): List<Teacher>
+
     
+
+
     // -------- Bible (Study Plans) ----------
     suspend fun fetchBible(): List<ProgramWithDetails>
-    
+
     // -------- Student Bulletins & Grades ----------
     suspend fun fetchMyGrades(): StudentBulletin
-    suspend fun fetchAllStudentBulletins(): List<StudentBulletin>
+
 
     // -------- Schedules ----------
     suspend fun fetchAllSchedules(): List<ScheduleDTO>
@@ -66,9 +84,25 @@ interface ApiRepository {
     suspend fun fetchSchedulesByYear(studyYear: String): List<ScheduleDTO>
     suspend fun fetchSchedulesByTeacher(teacherName: String): List<ScheduleDTO>
 
-    // -------- Legacy endpoints ----------
-    suspend fun fetchHello(): HelloResponse
+
 }
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+data class Course(
+    @SerialName("course_code")
+    @JsonNames("course_code", "courseCode", "Code", "code")
+    val code: String,
+
+    @SerialName("course_name")
+    @JsonNames("course_name", "courseName", "name")
+    val name: String,
+
+    @SerialName("total_hours")
+    @JsonNames("total_hours", "totalHours", "hours")
+    val totalHours: Int? = null,
+)
+
 
 //@Serializable
 ////Evaluation data structure

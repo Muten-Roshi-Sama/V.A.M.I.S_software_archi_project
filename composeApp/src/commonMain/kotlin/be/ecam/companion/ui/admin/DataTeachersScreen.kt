@@ -1,4 +1,4 @@
-package be.ecam.companion.ui
+package be.ecam.companion.ui.admin
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import be.ecam.companion.ui.AppDrawer
 
 
 @Composable
@@ -42,7 +43,7 @@ fun DataTeacherScreen(
         onOpenCalendar = onOpenCalendar,
         onOpenSettings = onOpenSettings,
         onOpenHome = onOpenHome
-    ){
+    ) {
         Column(Modifier.fillMaxSize().padding(16.dp)) {
 
             IconButton(

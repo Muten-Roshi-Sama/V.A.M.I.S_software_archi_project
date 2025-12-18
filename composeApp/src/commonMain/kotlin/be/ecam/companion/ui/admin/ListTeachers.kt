@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,12 +18,18 @@ import be.ecam.companion.data.ApiRepository
 import be.ecam.common.api.TeacherDTO
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import be.ecam.companion.ui.AppDrawer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListTeachers(onBack: () -> Unit) {
+fun ListTeachers(
+    onBack: () -> Unit,
+    onOpenCalendar: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHome: () -> Unit) {
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     var teachers by remember { mutableStateOf<List<TeacherDTO>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf("") }
@@ -46,15 +53,25 @@ fun ListTeachers(onBack: () -> Unit) {
         loadTeachers()
     }
 
+    AppDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
+    ){
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Teachers") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
                     }
+
                 },
+                title = { Text("Teachers") },
+
                 actions = {
                     IconButton(onClick = { showCreateDialog = true }) {
                         Icon(Icons.Filled.Add, contentDescription = "Add Teacher")
@@ -69,6 +86,10 @@ fun ListTeachers(onBack: () -> Unit) {
                 .padding(padding)
                 .padding(16.dp)
         ) {
+            TextButton(onClick = onBack) { Text("← Back") }
+            IconButton(onClick = { showCreateDialog = true }) {
+                Icon(Icons.Filled.Add, contentDescription = "Add student")
+            }
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,
@@ -103,7 +124,7 @@ fun ListTeachers(onBack: () -> Unit) {
                 }
             }
         }
-    }
+    }}
 
     if (showCreateDialog) {
         TeacherDialog(
