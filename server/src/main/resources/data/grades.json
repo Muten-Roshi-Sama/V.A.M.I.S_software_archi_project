@@ -2,29 +2,85 @@
   {
     "points": 14,
     "comment": "Très bon travail",
-    "student_id": "25347",
+    "student_id": "240002",
     "activities_id": "INFO1-LEC",
     "scale": 20
   },
   {
     "points": 18,
     "comment": "Excellent",
-    "student_id": "25347",
+    "student_id": "240002",
     "activities_id": "INFO1-LAB",
     "scale": 20
   },
   {
     "points": 9,
     "comment": "labo: validé ; examen : échoué",
-    "student_id": "25189",
+    "student_id": "240003",
     "activities_id": "INFO1-LEC",
     "scale": 20
   },
   {
     "points": 12,
     "comment": "Participation moyenne",
-    "student_id": "25189",
+    "student_id": "240003",
     "activities_id": "INFO1-LAB",
+    "scale": 20
+  },
+  {
+    "points": 15,
+    "comment": "Bon travail continu",
+    "student_id": "240004",
+    "activities_id": "INFO1-LEC",
+    "scale": 20
+  },
+  {
+    "points": 13,
+    "comment": "Labo correct",
+    "student_id": "240004",
+    "activities_id": "INFO1-LAB",
+    "scale": 20
+  },
+  {
+    "points": 16,
+    "comment": "Projet rendu dans les temps",
+    "student_id": "240006",
+    "activities_id": "INFO1-PROJ",
+    "scale": 20
+  },
+  {
+    "points": 14,
+    "comment": "Participation régulière",
+    "student_id": "240006",
+    "activities_id": "INFO1-LEC",
+    "scale": 20
+  },
+  {
+    "points": 11,
+    "comment": "Doit renforcer les bases",
+    "student_id": "240007",
+    "activities_id": "INFO1-LEC",
+    "scale": 20
+  },
+  {
+    "points": 17,
+    "comment": "Très bon en labo",
+    "student_id": "240007",
+    "activities_id": "INFO1-LAB",
+    "scale": 20
+  },
+  {
+    "points": 18,
+    "comment": "Excellent projet",
+    "student_id": "240002",
+    "activities_id": "INFO1-PROJ",
+    "scale": 20
+  },
+  {
+    "points": 10,
+    "comment": "Peut mieux faire sur la théorie",
+    "student_id": "240003",
+    "activities_id": "INFO1-QUIZ",
     "scale": 20
   }
 ]

@@ -29,6 +29,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.dao.id.EntityID
 import java.io.File
+import java.nio.charset.Charset
 
 // ----------------------------
 
@@ -136,6 +137,91 @@ class StudentService(private val personService: PersonService = PersonService())
             }
             throw ex
         }
+    }
+
+    //Seed evaluations from grades.json
+    @Serializable
+    private data class GradeSeedRow(
+        val points: Int,
+        val comment: String? = null,
+        val student_id: String, 
+        val activities_id: String, 
+        val scale: Int
+    )
+
+    fun seedGradesFromResource(resourcePath: String = "data/grades.json"): SeedResult {
+        val errors = mutableListOf<String>()
+        var inserted = 0
+        var skipped = 0
+
+        fun readResourceText(path: String): String? {
+            val cl = Thread.currentThread().contextClassLoader
+            val stream = cl?.getResourceAsStream(path)
+            if (stream != null) {
+                return stream.bufferedReader(Charset.forName("UTF-8")).use { it.readText() }
+            }
+            val file = File(path)
+            return if (file.exists()) file.readText() else null
+        }
+
+        val jsonText = readResourceText(resourcePath)
+        if (jsonText == null) {
+            errors.add("grades seed file not found at $resourcePath")
+            return SeedResult(name = "grades", inserted = 0, skipped = 0, errors = errors)
+        }
+
+        val rows = try {
+            Json.decodeFromString<List<GradeSeedRow>>(jsonText)
+        } catch (e: Exception) {
+            errors.add("Failed to parse $resourcePath: ${e.message}")
+            return SeedResult(name = "grades", inserted = 0, skipped = 0, errors = errors)
+        }
+
+        transaction {
+            rows.forEachIndexed { idx, row ->
+                try {
+                    val student = Student.find { StudentTable.studentId eq row.student_id }.firstOrNull()
+                    if (student == null) {
+                        skipped++
+                        errors.add("[$idx] student with matricule ${row.student_id} not found; skipped")
+                        return@forEachIndexed
+                    }
+
+                    val parts = row.activities_id.split("-", limit = 2)
+                    val activityName = parts.getOrNull(0) ?: row.activities_id
+                    val session = parts.getOrNull(1) ?: "N/A"
+
+                    // idempotent: skip if an evaluation already exists for this student+activity+session
+                    val exists = !EvaluationTable
+                        .selectAll()
+                        .where {
+                            (EvaluationTable.student eq student.id.value) and
+                            (EvaluationTable.activityName eq activityName) and
+                            (EvaluationTable.session eq session)
+                        }
+                        .empty()
+
+                    if (exists) {
+                        skipped++
+                        return@forEachIndexed
+                    }
+
+                    EvaluationTable.insert { r ->
+                        r[EvaluationTable.student] = student.id.value
+                        r[EvaluationTable.activityName] = activityName
+                        r[EvaluationTable.session] = session
+                        r[EvaluationTable.score] = row.points
+                        r[EvaluationTable.maxScore] = row.scale
+                    }
+                    inserted++
+                } catch (e: Exception) {
+                    skipped++
+                    errors.add("[$idx] ${e.message}")
+                }
+            }
+        }
+
+        return SeedResult(name = "grades", inserted = inserted, skipped = skipped, errors = errors)
     }
 
     fun update(studentId: Int, dto: StudentUpdateDTO): StudentDTO = transaction {

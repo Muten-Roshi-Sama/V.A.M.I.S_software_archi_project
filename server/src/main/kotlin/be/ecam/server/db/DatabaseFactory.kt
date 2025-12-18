@@ -83,6 +83,8 @@ object DatabaseFactory {
         SeedManager.register("admins") { AdminService().seedFromResource("data/admin.json") }
         SeedManager.register("students") { StudentService().seedFromResource("data/students.json") }
         SeedManager.register("teachers") { TeacherService().seedFromResource("data/teachers.json") }
+        // grades depends on students
+        SeedManager.register("grades") { StudentService().seedGradesFromResource("data/grades.json") }
 
 
 
@@ -298,4 +300,6 @@ object DatabaseFactory {
             println("Schedules table already contains $count schedule(s). Skipping seed.")
         }
     }
+
+    // grades now seeded via SeedManager above
 }
