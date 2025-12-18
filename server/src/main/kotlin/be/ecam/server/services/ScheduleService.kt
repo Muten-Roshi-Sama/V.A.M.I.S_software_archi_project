@@ -61,6 +61,8 @@ class ScheduleService {
             description = dto.description
             studyYear = dto.studyYear
             teacherName = dto.teacherName
+            assigneeName = dto.assigneeName
+            notes = dto.notes
         }
         schedule.toDto()
     }
@@ -75,6 +77,8 @@ class ScheduleService {
         dto.description?.let { schedule.description = it }
         dto.studyYear?.let { schedule.studyYear = it }
         dto.teacherName?.let { schedule.teacherName = it }
+        dto.assigneeName?.let { schedule.assigneeName = it }
+        dto.notes?.let { schedule.notes = it }
 
         schedule.toDto()
     }
@@ -100,7 +104,9 @@ class ScheduleService {
             endTime = dto.endTime,
             description = dto.description,
             studyYear = dto.studyYear,
-            teacherName = dto.teacherName
+            teacherName = dto.teacherName,
+            assigneeName = dto.assigneeName,
+            notes = dto.notes
         )
         create(createDto)
     }
@@ -127,6 +133,8 @@ class ScheduleService {
                 val description = getString("description")
                 val studyYear = getString("studyYear", "study_year") ?: ""
                 val teacherName = getString("teacherName", "teacher_name") ?: ""
+                val assigneeName = getString("assigneeName", "assignee_name", "assignedTo", "assigned_to")
+                val notes = getString("notes")
 
                 ScheduleDTO(
                     id = null,
@@ -135,7 +143,9 @@ class ScheduleService {
                     endTime = endTime,
                     description = description,
                     studyYear = studyYear,
-                    teacherName = teacherName
+                    teacherName = teacherName,
+                    assigneeName = assigneeName,
+                    notes = notes
                 )
             }
         )
