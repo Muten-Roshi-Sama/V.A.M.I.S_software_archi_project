@@ -190,19 +190,14 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
+                ) 
+                    {
                     HomeTile(
                         title = "ISP",
                         icon = Icons.Filled.Bookmarks,
                         onClick = onOpenIspList,
                         modifier = Modifier.weight(1f)
                     )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
                     HomeTile(
                         title = "Grades",
                         icon = Icons.Filled.Check,

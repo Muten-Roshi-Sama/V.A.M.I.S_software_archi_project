@@ -41,7 +41,7 @@ fun IspEditScreen(
     var ects by remember { mutableStateOf("") }
     var hours by remember { mutableStateOf("") }
 
-    // ✅ MOCK CATALOG (à remplacer par backend plus tard)
+    // MOCK CATALOG (à remplacer par backend plus tard)
     val catalog = remember {
         listOf(
             IspCourseUi("Web Development", "WD4P", "COM", 4, "DBS", 5, 27),
@@ -55,7 +55,7 @@ fun IspEditScreen(
         )
     }
 
-    // ✅ Liste filtrée selon les champs (vide => on n’affiche rien)
+    // Liste filtrée selon les champs (vide => on n’affiche rien)
     val matches = remember(courseName, courseCode, program, year, teacher, ects, hours) {
         filterCatalog(
             catalog = catalog,
@@ -85,7 +85,7 @@ fun IspEditScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        // ✅ Zone centrale scroll horizontale (table + résultats)
+        // Zone centrale scroll horizontale (table + résultats)
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             Box(modifier = Modifier.horizontalScroll(hScroll)) {
                 Column(modifier = Modifier.width(tableWidth)) {
@@ -103,7 +103,7 @@ fun IspEditScreen(
 
                     Spacer(Modifier.height(16.dp))
 
-                    // ✅ CADRE = LISTE DES COURS CORRESPONDANTS (PLUS DE GROS TEXTE)
+                    // CADRE = LISTE DES COURS CORRESPONDANTS (PLUS DE GROS TEXTE)
                     MatchesBox(
                         matches = matches,
                         onPick = { picked ->
@@ -176,7 +176,7 @@ private fun MatchesBox(
             .border(1.dp, line, RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f))
     ) {
-        // ✅ Si aucun match : on n’affiche rien (cadre vide, comme tu veux)
+        // Si aucun match : on n’affiche rien (cadre vide, comme tu veux)
         if (matches.isEmpty()) return@Box
 
         LazyColumn(
@@ -235,7 +235,7 @@ private fun filterCatalog(
         nName.isNotEmpty() || nCode.isNotEmpty() || nProg.isNotEmpty() ||
         nTeacher.isNotEmpty() || nYear.isNotEmpty() || nEcts.isNotEmpty() || nHours.isNotEmpty()
 
-    if (!anyFilter) return emptyList() // ✅ si rien tapé : pas de liste
+    if (!anyFilter) return emptyList() // si rien tapé : pas de liste
 
     return catalog.filter { c ->
         val okName = nName.isEmpty() || c.courseName.lowercase().contains(nName)
@@ -243,7 +243,7 @@ private fun filterCatalog(
         val okProg = nProg.isEmpty() || c.program.lowercase().contains(nProg)
         val okTeacher = nTeacher.isEmpty() || c.teacher.lowercase().contains(nTeacher)
 
-        // ✅ pour les nombres : on autorise recherche progressive (startsWith)
+        // pour les nombres : on autorise recherche progressive (startsWith)
         val okYear = nYear.isEmpty() || c.year.toString().startsWith(nYear)
         val okEcts = nEcts.isEmpty() || c.ects.toString().startsWith(nEcts)
         val okHours = nHours.isEmpty() || c.hours.toString().startsWith(nHours)
