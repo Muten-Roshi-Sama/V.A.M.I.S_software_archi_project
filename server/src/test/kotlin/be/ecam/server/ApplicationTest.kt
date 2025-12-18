@@ -1,13 +1,5 @@
 package be.ecam.server
 
-<<<<<<< HEAD
-import be.ecam.server.models.Admin
-import be.ecam.server.models.AdminTable
-import be.ecam.server.models.AdminTable.username
-import io.ktor.server.testing.*
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-=======
 // Ktor
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -18,7 +10,6 @@ import io.ktor.server.routing.*
 import io.ktor.server.response.*
 
 // Kotlin
->>>>>>> backend/salwa
 import kotlin.test.*
 
 // Other
@@ -29,12 +20,6 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-<<<<<<< HEAD
-            module()
-        }
-=======
->>>>>>> backend/salwa
-
             installCommonPlugins()
 
 //            configureRoutes()
@@ -50,12 +35,4 @@ class ApplicationTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("Ktor Status: OK", response.bodyAsText())
     }
-<<<<<<< HEAD
-//        val response = client.get("/")
-//        assertEquals(HttpStatusCode.OK, response.status)
-//        assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
-    }
 }
-=======
-}
->>>>>>> backend/salwa
