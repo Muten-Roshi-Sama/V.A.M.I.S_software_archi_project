@@ -76,7 +76,9 @@ data class ScheduleDTO(
     val endTime: String,
     val description: String? = null,
     val studyYear: String,
-    val teacherName: String
+    val teacherName: String,
+    val assigneeName: String? = null,
+    val notes: String? = null
 )
 
 @Serializable
@@ -86,7 +88,9 @@ data class ScheduleCreateDTO(
     val endTime: String,
     val description: String? = null,
     val studyYear: String,
-    val teacherName: String
+    val teacherName: String,
+    val assigneeName: String? = null,
+    val notes: String? = null
 )
 
 @Serializable
@@ -96,7 +100,9 @@ data class ScheduleUpdateDTO(
     val endTime: String? = null,
     val description: String? = null,
     val studyYear: String? = null,
-    val teacherName: String? = null
+    val teacherName: String? = null,
+    val assigneeName: String? = null,
+    val notes: String? = null
 )
 
 // ========================================

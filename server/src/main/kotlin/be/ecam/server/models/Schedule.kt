@@ -14,6 +14,8 @@ object ScheduleTable : IntIdTable(name = "schedules") {
     val description = varchar("description", 500).nullable()
     val studyYear = varchar("study_year", 10)
     val teacherName = varchar("teacher_name", 100)
+    val assigneeName = varchar("assignee_name", 100).nullable()
+    val notes = varchar("notes", 500).nullable()
 }
 
 class Schedule(id: EntityID<Int>) : IntEntity(id) {
@@ -25,6 +27,8 @@ class Schedule(id: EntityID<Int>) : IntEntity(id) {
     var description by ScheduleTable.description
     var studyYear by ScheduleTable.studyYear
     var teacherName by ScheduleTable.teacherName
+    var assigneeName by ScheduleTable.assigneeName
+    var notes by ScheduleTable.notes
 
     fun toDto(): ScheduleDTO = ScheduleDTO(
         id = this.id.value,
@@ -33,6 +37,8 @@ class Schedule(id: EntityID<Int>) : IntEntity(id) {
         endTime = this.endTime,
         description = this.description,
         studyYear = this.studyYear,
-        teacherName = this.teacherName
+        teacherName = this.teacherName,
+        assigneeName = this.assigneeName,
+        notes = this.notes
     )
 }
