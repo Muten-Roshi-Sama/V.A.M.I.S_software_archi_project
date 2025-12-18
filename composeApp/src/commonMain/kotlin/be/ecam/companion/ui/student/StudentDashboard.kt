@@ -43,7 +43,7 @@ fun StudentDashboard(
         scope.launch {
             try {
                 val student = repository.fetchMyStudentProfile()
-                userInfo = "Welcome, ${student.firstName} ${student.lastName} (ID: ${student.studentId})"
+                userInfo = "Welcome, ${student.firstName} ${student.lastName}"
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {
@@ -100,10 +100,7 @@ fun StudentDashboard(
 
                 Spacer(Modifier.height(24.dp))
 
-                Text(
-                    text = "Student Portal",
-                    style = MaterialTheme.typography.headlineSmall
-                )
+
 
                 Spacer(Modifier.height(16.dp))
 

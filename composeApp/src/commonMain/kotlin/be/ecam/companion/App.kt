@@ -197,8 +197,6 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onBack = { currentScreen = Screen.StudentDashboard },
                         onOpenHome = { currentScreen = Screen.StudentDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
-                        onOpenIspList = { currentScreen = Screen.ISP },
-                        onOpenGrades = { currentScreen = Screen.Grades },
                         onOpenSettings = { currentScreen = Screen.Settings },
                     )
                 }

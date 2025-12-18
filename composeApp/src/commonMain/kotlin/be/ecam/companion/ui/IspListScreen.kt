@@ -52,8 +52,6 @@ fun IspListScreen(
     onBack: () -> Unit,
     onOpenHome: () -> Unit = {},
     onOpenCalendar: () -> Unit = {},
-    onOpenIspList: () -> Unit = {},
-    onOpenGrades: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -62,57 +60,27 @@ fun IspListScreen(
     val tableWidth = 1100.dp
     val hScroll = rememberScrollState()
 
-    ModalNavigationDrawer(
+    AppDrawer(
         drawerState = drawerState,
-        drawerContent = {
-            Column(
-                modifier = Modifier
-                    .width(240.dp)
-                    .fillMaxHeight()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
-                    .shadow(8.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
-            ) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(24.dp))
-
-                NavDrawerItem("Home", Icons.Filled.Home) {
-                    scope.launch { drawerState.close() }
-                    onOpenHome()
-                }
-                NavDrawerItem("Calendar", Icons.Filled.CalendarMonth) {
-                    scope.launch { drawerState.close() }
-                    onOpenCalendar()
-                }
-                NavDrawerItem("ISP", Icons.Filled.Bookmarks) {
-                    scope.launch { drawerState.close() }
-                    onOpenIspList()
-                }
-                NavDrawerItem("Grades", Icons.Filled.Check) {
-                    scope.launch { drawerState.close() }
-                    onOpenGrades()
-                }
-                NavDrawerItem("Settings", Icons.Filled.Settings) {
-                    scope.launch { drawerState.close() }
-                    onOpenSettings()
-                }
-            }
-        },
-        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
+        scope = scope,
+        onOpenCalendar = onOpenCalendar,
+        onOpenSettings = onOpenSettings,
+        onOpenHome = onOpenHome
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
+            IconButton(
+                onClick = { scope.launch { drawerState.open() } }
+            ) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu")
+            }
             // Top bar
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                    Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-                }
+
                 Spacer(Modifier.width(10.dp))
                 Text("ISP", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.weight(1f))
