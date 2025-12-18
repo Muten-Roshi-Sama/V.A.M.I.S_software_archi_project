@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		966B53EE27984749AEB866CE /* companion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = korgnote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		966B53EE27984749AEB866CE /* companion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = companion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */

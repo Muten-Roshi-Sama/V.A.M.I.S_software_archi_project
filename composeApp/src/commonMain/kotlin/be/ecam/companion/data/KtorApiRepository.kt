@@ -41,7 +41,8 @@ class KtorApiRepository(
     }
 
     override suspend fun fetchTeacher(email: String): Teacher {
-        val encoded = java.net.URLEncoder.encode(email, "UTF-8")
+        // commonMain: pas d'accès à java.net.* ; Ktor fournit des helpers multiplateformes.
+        val encoded = email.encodeURLPathPart()
         return client.get("${baseUrl()}/crud/teachers/$encoded").body()
     }
     override suspend fun fetchBible(): List<ProgramWithDetails> {

@@ -80,6 +80,8 @@ kotlin {
         iosMain.dependencies {
             // Ktor iOS engine (Darwin)
             implementation(libs.ktor.client.darwin)
+            // Remote images (URL)
+            implementation(libs.kamel.image)
         }
         wasmJsMain.dependencies {
             // Ktor JS engine for Wasm/JS target
