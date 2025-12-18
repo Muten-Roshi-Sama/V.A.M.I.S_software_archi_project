@@ -8,7 +8,10 @@ import be.ecam.companion.di.appModule
 import be.ecam.companion.viewmodel.HomeViewModel
 import be.ecam.companion.ui.LoginScreen
 import be.ecam.companion.ui.CalendarScreen
+import be.ecam.companion.ui.CourseGradeUi
 import be.ecam.companion.ui.DataBibleScreen
+import be.ecam.companion.ui.GradesScreen
+import be.ecam.companion.ui.IspListScreen
 import be.ecam.companion.ui.SettingsScreen
 import be.ecam.companion.ui.admin.*
 import be.ecam.companion.ui.student.*
@@ -16,6 +19,9 @@ import be.ecam.companion.ui.teacher.*
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.module.Module
+import be.ecam.companion.ui.IspCourseUi
+import be.ecam.companion.ui.IspEditScreen
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +33,17 @@ fun App(extraModules: List<Module> = emptyList()) {
         val settingsRepo = koinInject<SettingsRepository>()
 
         MaterialTheme {
+
+            val ispCourses = remember {
+                mutableStateListOf(
+                    IspCourseUi("Web Development", "WD4P", "COM", 4, "DBS", 5, 27),
+                    IspCourseUi("Advanced Database", "AD3T", "COM", 3, "SRZ", 5, 14),
+                    IspCourseUi("Accounting", "AC4T", "COM", 4, "VMN", 5, 20),
+                )
+            }
+
+            // ✅ autorisation d’édition ISP
+            var allowIspEdit by remember { mutableStateOf(false) }
 
             var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
@@ -75,7 +92,8 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onLogout = { currentScreen = Screen.Login },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onNavigateToISP = { currentScreen = Screen.ISP }
                     )
                 }
 
@@ -150,6 +168,59 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
 
+                Screen.ISP -> {
+                    IspListScreen(
+                        courses = ispCourses,
+                        onAddCourse = {
+                            allowIspEdit = true
+                            currentScreen = Screen.IspEdit
+                        },
+                        onBack = { currentScreen = Screen.StudentDashboard },
+                        onOpenHome = { currentScreen = Screen.StudentDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenIspList = { currentScreen = Screen.ISP },
+                        onOpenGrades = { currentScreen = Screen.Grades },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                    )
+                }
+
+
+                Screen.IspEdit -> {
+                    if (!allowIspEdit) {
+                        currentScreen = Screen.ISP
+                    } else {
+                        IspEditScreen(
+                            onConfirm = { newCourse ->
+                                ispCourses.add(newCourse)
+                                allowIspEdit = false
+                                currentScreen = Screen.ISP
+                            },
+                            onCancel = {
+                                allowIspEdit = false
+                                currentScreen = Screen.ISP
+                            }
+                        )
+                    }
+                }
+                Screen.Grades -> {
+                    GradesScreen(
+                        grades = listOf(
+                            CourseGradeUi("Web Development", "WD4P", 12, 5),
+                            CourseGradeUi("Advanced Database", "AD3T", 15, 5),
+                            CourseGradeUi("Accounting", "AC4T", null, 5), // ✅ ne s'affiche pas
+                            CourseGradeUi("Algorithm Complexity", "AL4T", 12, 5),
+                            CourseGradeUi("Artificial Intelligence", "AI4P", 10, 5),
+                            CourseGradeUi("Project Management", "PM4T", 10, 5),
+                        ),
+                        onOpenHome = { currentScreen = Screen.StudentDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenIspList = { currentScreen = Screen.AdminDashboard },
+                        onOpenGrades = { currentScreen = Screen.Grades }
+                    )
+                }
+
+
                 // =======================
                 //       SHARED
                 // =======================
@@ -199,6 +270,10 @@ sealed class Screen {
     object Settings : Screen()
     object Bible : Screen()
 
+    object ISP : Screen()
+    object Grades : Screen()
+
+    object IspEdit : Screen()
 
 
 }

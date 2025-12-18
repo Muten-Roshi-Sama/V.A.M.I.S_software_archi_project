@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,7 +42,10 @@ fun HomeScreen(
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTeachers: () -> Unit,
-    onOpenBible: () -> Unit
+    onOpenBible: () -> Unit,
+    onOpenGrades: () -> Unit,
+    onOpenIspList: () -> Unit,
+
 ) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
@@ -75,10 +80,21 @@ fun HomeScreen(
                     onOpenCalendar()
                 }
 
+                DrawerItem("ISP", Icons.Filled.Bookmarks) {
+                    scope.launch { drawerState.close() }
+                    onOpenIspList()
+                }
+
+                DrawerItem("Grades", Icons.Filled.Check) {
+                    scope.launch { drawerState.close() }
+                    onOpenGrades()
+                }
+
                 DrawerItem("Settings", Icons.Filled.Settings) {
                     scope.launch { drawerState.close() }
                     onOpenSettings()
                 }
+
             }
         },
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
@@ -169,6 +185,32 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "ISP",
+                        icon = Icons.Filled.Bookmarks,
+                        onClick = onOpenIspList,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "Grades",
+                        icon = Icons.Filled.Check,
+                        onClick = onOpenGrades,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
             }
 
             Spacer(Modifier.height(20.dp))

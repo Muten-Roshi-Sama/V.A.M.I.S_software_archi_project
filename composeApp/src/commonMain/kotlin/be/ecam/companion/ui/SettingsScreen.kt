@@ -30,6 +30,10 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -61,7 +65,6 @@ fun SettingsScreen(
     // 🔹 UN SEUL drawerState (celui de AppDrawer)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
     var host by remember { mutableStateOf("") }
     var portText by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
@@ -184,6 +187,7 @@ fun SettingsScreen(
     Column {
         Text("Server configuration")
         Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = host,
@@ -192,6 +196,7 @@ fun SettingsScreen(
             singleLine = true
         )
         Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = portText,
@@ -199,6 +204,7 @@ fun SettingsScreen(
             label = { Text("Port") },
             singleLine = true
         )
+
         if (error != null) {
             Spacer(Modifier.height(8.dp))
             Text(error!!)

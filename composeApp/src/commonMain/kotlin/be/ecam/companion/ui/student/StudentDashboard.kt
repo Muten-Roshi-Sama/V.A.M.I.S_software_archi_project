@@ -30,7 +30,8 @@ fun StudentDashboard(
     onNavigateToSettings: (() -> Unit)? = null,
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenHome: () -> Unit
+    onOpenHome: () -> Unit,
+    onNavigateToISP: () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repository = koinInject<ApiRepository>()
@@ -96,14 +97,14 @@ fun StudentDashboard(
                     text = userInfo ?: "Welcome",
                     style = MaterialTheme.typography.titleMedium
                 )
-                
+
                 Spacer(Modifier.height(24.dp))
-                
+
                 Text(
                     text = "Student Portal",
                     style = MaterialTheme.typography.headlineSmall
                 )
-                
+
                 Spacer(Modifier.height(16.dp))
 
                 Column(
@@ -127,6 +128,27 @@ fun StudentDashboard(
                             subtitle = "View academic performance",
                             icon = Icons.Filled.AdminPanelSettings,
                             onClick = onNavigateToCourses,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        DashboardTile(
+                            title = "My Grades",
+                            //subtitle = "View enrolled courses",
+                            icon = Icons.Filled.AdminPanelSettings,
+                            onClick = onNavigateToGrades,
+                            modifier = Modifier.weight(1f)
+                        )
+                        DashboardTile(
+                            title = "ISP",
+                            //subtitle = "View academic performance",
+                            icon = Icons.Filled.AdminPanelSettings,
+                            onClick = onNavigateToISP,
                             modifier = Modifier.weight(1f)
                         )
 
