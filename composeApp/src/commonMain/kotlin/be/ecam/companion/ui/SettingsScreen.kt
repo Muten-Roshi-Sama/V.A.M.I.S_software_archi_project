@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import kotlinx.coroutines.launch
 import androidx.compose.material3.rememberDrawerState
 
@@ -44,6 +45,8 @@ fun SettingsScreen(
     onOpenCalendar: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
     onOpenGrades: () -> Unit = {},
+    onOpenIspList: () -> Unit = {},
+
 ) {
     val scope = rememberCoroutineScope()
     var host by remember { mutableStateOf("") }
@@ -82,6 +85,11 @@ fun SettingsScreen(
                 DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
                     scope.launch { drawerState.close() }
                     onOpenCalendar()
+                }
+
+                DrawerItem("ISP", Icons.Filled.Bookmarks) {
+                    scope.launch { drawerState.close() }
+                    onOpenIspList()
                 }
 
                 DrawerItem("Grades", Icons.Filled.Check) {

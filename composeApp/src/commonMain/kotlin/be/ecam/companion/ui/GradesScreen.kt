@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,8 +39,10 @@ fun GradesScreen(
     onOpenCalendar: () -> Unit = {},
     onOpenGrades: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenIspList: () -> Unit = {},
+
 ) {
-    // ✅ règle demandée : si pas de note => pas affiché
+    // règle demandée : si pas de note => pas affiché
     val visibleGrades = remember(grades) { grades.filter { it.grade != null } }
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -69,6 +72,12 @@ fun GradesScreen(
                     scope.launch { drawerState.close() }
                     onOpenCalendar()
                 }
+
+                DrawerItem("ISP", Icons.Filled.Bookmarks) {
+                    scope.launch { drawerState.close() }
+                    onOpenIspList()
+                }
+
                 DrawerItem("Grades", Icons.Filled.Check) {
                     scope.launch { drawerState.close() }
                     onOpenGrades()

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,7 +43,9 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenTeachers: () -> Unit,
     onOpenBible: () -> Unit,
-    onOpenGrades: () -> Unit
+    onOpenGrades: () -> Unit,
+    onOpenIspList: () -> Unit,
+
 ) {
     val vm = koinInject<HomeViewModel>()
     LaunchedEffect(Unit) { vm.load() }
@@ -75,6 +78,11 @@ fun HomeScreen(
                 DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
                     scope.launch { drawerState.close() }
                     onOpenCalendar()
+                }
+
+                DrawerItem("ISP", Icons.Filled.Bookmarks) {
+                    scope.launch { drawerState.close() }
+                    onOpenIspList()
                 }
 
                 DrawerItem("Grades", Icons.Filled.Check) {
@@ -174,6 +182,19 @@ fun HomeScreen(
                         title = "Bible",
                         icon = Icons.Filled.MenuBook,
                         onClick = onOpenBible,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    HomeTile(
+                        title = "ISP",
+                        icon = Icons.Filled.Bookmarks,
+                        onClick = onOpenIspList,
                         modifier = Modifier.weight(1f)
                     )
                 }

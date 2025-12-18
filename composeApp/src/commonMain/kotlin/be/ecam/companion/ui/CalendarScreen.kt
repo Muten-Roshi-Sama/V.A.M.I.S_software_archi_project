@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -78,6 +79,8 @@ fun CalendarScreen(
     onOpenCalendar: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
     onOpenGrades: () -> Unit = {},
+    onOpenIspList: () -> Unit = {},
+
 ) {
     var today by remember {
         mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
@@ -126,6 +129,11 @@ fun CalendarScreen(
                 DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
                     scope.launch { drawerState.close() }
                     onOpenCalendar()
+                }
+
+                DrawerItem("ISP", Icons.Filled.Bookmarks) {
+                    scope.launch { drawerState.close() }
+                    onOpenIspList()
                 }
 
                 DrawerItem("Grades", Icons.Filled.Check) {
