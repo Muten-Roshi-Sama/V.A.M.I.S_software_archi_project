@@ -215,11 +215,11 @@ fun App(extraModules: List<Module> = emptyList()) {
                             CourseGradeUi("Artificial Intelligence", "AI4P", 10, 5),
                             CourseGradeUi("Project Management", "PM4T", 10, 5),
                         ),
-                        onOpenHome = { currentScreen = Screen.StudentDashboard },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
-                        onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenIspList = { currentScreen = Screen.AdminDashboard },
-                        onOpenGrades = { currentScreen = Screen.Grades }
+                        onOpenSettings = { currentScreen = Screen.Settings }
+
+
                     )
                 }
 

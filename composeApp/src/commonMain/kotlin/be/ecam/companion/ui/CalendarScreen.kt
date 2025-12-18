@@ -74,6 +74,7 @@ data class EventItem(
     val notes: String
 )
 
+@Suppress("SuspiciousIndentation")
 @OptIn(ExperimentalTime::class, ExperimentalAnimationApi::class)
 @Composable
 fun CalendarScreen(
@@ -112,54 +113,13 @@ fun CalendarScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            Column(
-                modifier = Modifier
-                    .width(240.dp)
-                    .fillMaxHeight()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
-                    .shadow(8.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
-                    .verticalScroll(state = rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(24.dp))
-
-                DrawerItem("Home", Icons.Filled.Home) {
-                    scope.launch { drawerState.close() }
-                    onOpenHome()
-                }
-
-                DrawerItem("Calendar", Icons.Filled.CalendarMonth) {
-                    scope.launch { drawerState.close() }
-                    onOpenCalendar()
-                }
-
-                DrawerItem("ISP", Icons.Filled.Bookmarks) {
-                    scope.launch { drawerState.close() }
-                    onOpenIspList()
-                }
-
-                DrawerItem("Grades", Icons.Filled.Check) {
-                    scope.launch { drawerState.close() }
-                    onOpenGrades()
-                }
-
-                DrawerItem("Settings", Icons.Filled.Settings) {
-                    scope.launch { drawerState.close() }
-                    onOpenSettings()
-                }
-
-            }
-        },
-        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.32f)
-    ) {
+        AppDrawer(
+            drawerState = drawerState,
+            scope = scope,
+            onOpenCalendar = onOpenCalendar,
+            onOpenSettings = onOpenSettings,
+            onOpenHome = onOpenHome
+        ){
         Row(modifier = modifier.fillMaxSize().padding(8.dp)) {
             // 🗓️ Partie gauche : calendrier
             Column(
@@ -169,6 +129,11 @@ fun CalendarScreen(
                     .padding(24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
+                IconButton(
+                    onClick = { scope.launch { drawerState.open() } }
+                ) {
+                    Icon(Icons.Filled.Menu, contentDescription = "Menu")
+                }
                 // --- En-tête : titre + profil ---
                 Row(
                     modifier = Modifier
@@ -178,11 +143,7 @@ fun CalendarScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    IconButton(
-                        onClick = { scope.launch { drawerState.open() } }
-                    ) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-                    }
+
 
                     // Partie droite : profil + nom/prénom
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -743,9 +704,9 @@ fun CalendarScreen(
                         }
                     }
                 }
-            }
+            }}
         }
-    }
+
 }
 
 // --- Autres fonctions inchangées ---

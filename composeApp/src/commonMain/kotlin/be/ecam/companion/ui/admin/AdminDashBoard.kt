@@ -52,7 +52,7 @@ fun AdminDashboard(
         scope.launch {
             try {
                 val admin = repository.fetchMyAdminProfile()
-                userInfo = "Welcome, ${admin.firstName} ${admin.lastName} (ID: ${admin.id})"
+                userInfo = "Welcome, ${admin.firstName} ${admin.lastName}"
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {
@@ -120,10 +120,7 @@ fun AdminDashboard(
 
                 Spacer(Modifier.height(24.dp))
 
-                Text(
-                    text = "Manage Tables",
-                    style = MaterialTheme.typography.headlineSmall
-                )
+
 
                 Spacer(Modifier.height(16.dp))
 
