@@ -77,6 +77,18 @@ data class EvaluationSeedDTO(
     val maxScore: Int
 )
 
+@Serializable
+data class CourseGradeRow(
+    val studentEmail: String,
+    val firstName: String?,
+    val lastName: String?,
+    val matricule: String?,
+    val activityName: String,
+    val session: String,
+    val score: Int,
+    val maxScore: Int
+)
+
 class StudentService(private val personService: PersonService = PersonService()) {
 
     private val ops = RoleService<StudentDTO, Student>(
@@ -136,6 +148,41 @@ class StudentService(private val personService: PersonService = PersonService())
                 throw IllegalArgumentException("Email '$emailField' is already registered (unique constraint).")
             }
             throw ex
+        }
+    }
+
+    fun getGradesByCourse(activityName: String): List<CourseGradeRow> = transaction {
+        val join = EvaluationTable.innerJoin(StudentTable).innerJoin(PersonTable)
+        join
+            .selectAll()
+            .where { EvaluationTable.activityName eq activityName }
+            .map { row ->
+                CourseGradeRow(
+                    studentEmail = row[PersonTable.email],
+                    firstName = row[PersonTable.firstName],
+                    lastName = row[PersonTable.lastName],
+                    matricule = row[StudentTable.studentId],
+                    activityName = row[EvaluationTable.activityName],
+                    session = row[EvaluationTable.session],
+                    score = row[EvaluationTable.score],
+                    maxScore = row[EvaluationTable.maxScore]
+                )
+            }
+            .sortedWith(compareBy<CourseGradeRow>({ it.matricule ?: "" }, { it.session }))
+    }
+
+    fun updateEvaluationByMatricule(matricule: String, activityName: String, session: String, newScore: Int) {
+        transaction {
+            val student = Student.find { StudentTable.studentId eq matricule }.firstOrNull()
+                ?: throw IllegalArgumentException("Student not found")
+            val updated = EvaluationTable.update({
+                (EvaluationTable.student eq student.id.value) and
+                        (EvaluationTable.activityName eq activityName) and
+                        (EvaluationTable.session eq session)
+            }) { r ->
+                r[score] = newScore
+            }
+            if (updated == 0) throw IllegalArgumentException("Evaluation not found")
         }
     }
 

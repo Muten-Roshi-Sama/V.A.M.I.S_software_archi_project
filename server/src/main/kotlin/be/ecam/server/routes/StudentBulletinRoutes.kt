@@ -7,6 +7,9 @@ import io.ktor.server.routing.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import be.ecam.server.services.StudentService
+import be.ecam.server.services.CourseGradeRow
+import io.ktor.server.request.*
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
@@ -33,6 +36,59 @@ fun Route.studentBulletinRoutes() {
             }
         }
         
+        get("/grades/by-course/{course}") {
+            val course = call.parameters["course"]
+            if (course.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Missing course parameter")
+                return@get
+            }
+            try {
+                val service = StudentService()
+                val rows: List<CourseGradeRow> = service.getGradesByCourse(course)
+                call.respond(rows)
+            } catch (e: Exception) {
+                println(" ERREUR: ${e.message}")
+                e.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (e.message ?: "unknown")))
+            }
+        }
+
+        @Serializable
+        data class GradeUpdateRequest(
+            val studentEmail: String? = null,
+            val studentId: String? = null,
+            val score: Int
+        )
+        authenticate("auth-jwt") {
+            put("/grades/by-course/{course}/{session}") {
+                val course = call.parameters["course"]
+                val session = call.parameters["session"]
+                if (course.isNullOrBlank() || session.isNullOrBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, "Missing course/session parameter")
+                    return@put
+                }
+                try {
+                    val body = call.receive<GradeUpdateRequest>()
+                    val service = StudentService()
+                    when {
+                        body.studentId != null -> service.updateEvaluationByMatricule(body.studentId, course, session, body.score)
+                        body.studentEmail != null -> service.updateEvaluation(body.studentEmail, course, session, body.score)
+                        else -> {
+                            call.respond(HttpStatusCode.BadRequest, "Provide studentId or studentEmail")
+                            return@put
+                        }
+                    }
+                    call.respond(HttpStatusCode.OK, mapOf("message" to "Grade updated"))
+                } catch (e: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to e.message))
+                } catch (e: Exception) {
+                    println(" ERREUR: ${e.message}")
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to (e.message ?: "unknown")))
+                }
+            }
+        }
+
         authenticate("auth-jwt") {
             get("/grades/me") {
                 println("\n🔹 [ROUTE] GET /crud/students/grades/me called")
