@@ -93,7 +93,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onLogout = { currentScreen = Screen.Login },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onOpenHome = { currentScreen = Screen.StudentDashboard },
                         onNavigateToISP = { currentScreen = Screen.ISP }
                     )
                 }
@@ -105,7 +105,25 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onLogout = { currentScreen = Screen.Login },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                        onOpenHome = { currentScreen = Screen.TeacherDashboard}
+                    )
+                }
+
+                Screen.Grades -> {
+                    GradesScreen(
+                        grades = listOf(
+                            CourseGradeUi("Web Development", "WD4P", 12, 5),
+                            CourseGradeUi("Advanced Database", "AD3T", 15, 5),
+                            CourseGradeUi("Accounting", "AC4T", null, 5), // ✅ ne s'affiche pas
+                            CourseGradeUi("Algorithm Complexity", "AL4T", 12, 5),
+                            CourseGradeUi("Artificial Intelligence", "AI4P", 10, 5),
+                            CourseGradeUi("Project Management", "PM4T", 10, 5),
+                        ),
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings }
+
+
                     )
                 }
 
@@ -139,6 +157,15 @@ fun App(extraModules: List<Module> = emptyList()) {
                     )
                 }
 
+                Screen.Bible -> {
+                    DataBibleScreen(
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings }
+                    )
+                }
+
                 // =======================
                 //       STUDENT
                 // =======================
@@ -147,27 +174,16 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onBack = { currentScreen = Screen.StudentDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                        onOpenHome = { currentScreen = Screen.StudentDashboard }
                     )
                 }
-
-
 
                 Screen.MyCourses -> {
                     MyCoursesScreen(
                         onBack = { currentScreen = Screen.StudentDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard }
-                    )
-                }
-
-                Screen.Bible -> {
-                    DataBibleScreen(
-                        onBack = { currentScreen = Screen.AdminDashboard },
-                        onOpenHome = { currentScreen = Screen.AdminDashboard },
-                        onOpenCalendar = { currentScreen = Screen.Calendar },
-                        onOpenSettings = { currentScreen = Screen.Settings }
+                        onOpenHome = { currentScreen = Screen.StudentDashboard }
                     )
                 }
 
@@ -204,23 +220,6 @@ fun App(extraModules: List<Module> = emptyList()) {
                             }
                         )
                     }
-                }
-                Screen.Grades -> {
-                    GradesScreen(
-                        grades = listOf(
-                            CourseGradeUi("Web Development", "WD4P", 12, 5),
-                            CourseGradeUi("Advanced Database", "AD3T", 15, 5),
-                            CourseGradeUi("Accounting", "AC4T", null, 5), // ✅ ne s'affiche pas
-                            CourseGradeUi("Algorithm Complexity", "AL4T", 12, 5),
-                            CourseGradeUi("Artificial Intelligence", "AI4P", 10, 5),
-                            CourseGradeUi("Project Management", "PM4T", 10, 5),
-                        ),
-                        onOpenHome = { currentScreen = Screen.AdminDashboard },
-                        onOpenCalendar = { currentScreen = Screen.Calendar },
-                        onOpenSettings = { currentScreen = Screen.Settings }
-
-
-                    )
                 }
 
 
@@ -272,7 +271,6 @@ sealed class Screen {
     object Calendar : Screen()
     object Settings : Screen()
     object Bible : Screen()
-
     object ISP : Screen()
     object Grades : Screen()
 

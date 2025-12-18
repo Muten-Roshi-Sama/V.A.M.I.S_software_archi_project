@@ -31,7 +31,7 @@ fun StudentDashboard(
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenHome: () -> Unit,
-    onNavigateToISP: () -> Unit
+    onNavigateToISP: () -> Unit,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repository = koinInject<ApiRepository>()
@@ -137,13 +137,6 @@ fun StudentDashboard(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        DashboardTile(
-                            title = "My Grades",
-                            //subtitle = "View enrolled courses",
-                            icon = Icons.Filled.AdminPanelSettings,
-                            onClick = onNavigateToGrades,
-                            modifier = Modifier.weight(1f)
-                        )
                         DashboardTile(
                             title = "ISP",
                             //subtitle = "View academic performance",

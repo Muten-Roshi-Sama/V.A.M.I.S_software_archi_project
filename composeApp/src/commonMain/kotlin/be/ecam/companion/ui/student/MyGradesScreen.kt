@@ -1,8 +1,11 @@
 package be.ecam.companion.ui.student
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -12,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.ecam.common.api.StudentBulletin
 import be.ecam.common.api.Evaluation
 import be.ecam.companion.data.ApiRepository
@@ -20,15 +22,14 @@ import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyGradesScreen(
     onBack: () -> Unit,
     onOpenCalendar: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenHome: () -> Unit) {
+    onOpenHome: () -> Unit
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val repository = koinInject<ApiRepository>()
     val repo = koinInject<ApiRepository>()
     var bulletin by remember { mutableStateOf<StudentBulletin?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -53,36 +54,32 @@ fun MyGradesScreen(
         onOpenCalendar = onOpenCalendar,
         onOpenSettings = onOpenSettings,
         onOpenHome = onOpenHome
-    ){
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("My Courses") },
-                navigationIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = { scope.launch { drawerState.open() } }
-                        ) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-                        }
-
-                        TextButton(onClick = onBack) {
-                            Text("← Back")
-                        }
-                    }
-                }
-            )
-
-        }
-    ) { padding ->
+    ) {
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(16.dp)
         ) {
+            // Menu + back
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                    Icon(Icons.Filled.Menu, contentDescription = "Menu")
+                }
+                TextButton(onClick = onBack) {
+                    Text("← Back")
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                "My Grades",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(16.dp))
+
             when {
                 isLoading -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -97,7 +94,8 @@ fun MyGradesScreen(
                 }
                 else -> {
                     val b = bulletin!!
-                    
+
+                    // Infos étudiant
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -107,7 +105,7 @@ fun MyGradesScreen(
                         Column(Modifier.padding(16.dp)) {
                             Text(
                                 text = "${b.firstName} ${b.lastName}",
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             Text("Email: ${b.studentEmail}")
@@ -124,67 +122,81 @@ fun MyGradesScreen(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
+
                     Spacer(Modifier.height(8.dp))
 
-                    if (b.evaluations.isEmpty()) {
-                        Text("No evaluations yet", style = MaterialTheme.typography.bodyMedium)
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(b.evaluations) { eval ->
-                                EvaluationCard(eval)
-                            }
+                    // Table header
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFF5DDFF))
+                            .border(1.dp, Color.Gray)
+                            .padding(vertical = 10.dp)
+                    ) {
+                        TableCell("Course name", weight = 0.55f, isHeader = true)
+                        TableCell("Session", weight = 0.15f, isHeader = true)
+                        TableCell("Score", weight = 0.15f, isHeader = true)
+                        TableCell("Max", weight = 0.15f, isHeader = true)
+                    }
+
+                    Spacer(Modifier.height(2.dp))
+
+                    // Body scrollable
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        items(b.evaluations) { eval ->
+                            EvaluationRow(eval)
                         }
                     }
                 }
             }
         }
-    }}
+    }
 }
 
 @Composable
-fun EvaluationCard(evaluation: Evaluation) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = evaluation.activityName,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = "Session: ${evaluation.session}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
-            Spacer(Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Score:",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                
-                val percentage = (evaluation.score.toFloat() / evaluation.maxScore * 100).toInt()
-                val scoreColor = when {
-                    percentage >= 50 -> Color(0xFF4CAF50)
-                    else -> Color(0xFFF44336)
-                }
-                
-                Text(
-                    text = "${evaluation.score} / ${evaluation.maxScore} ($percentage%)",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = scoreColor
-                )
-            }
+private fun RowScope.TableCell(
+    text: String,
+    weight: Float,
+    isHeader: Boolean = false,
+    gradeColor: Boolean = false
+) {
+    val color = when {
+        gradeColor -> {
+            val g = text.toIntOrNull()
+            if (g != null && g < 10) Color.Red else Color(0xFF00AA00)
         }
+        else -> Color.Black
+    }
+
+    Text(
+        text = text,
+        modifier = Modifier
+            .weight(weight)
+            .padding(horizontal = 12.dp),
+        fontWeight = if (isHeader) FontWeight.Bold else FontWeight.Normal,
+        color = color
+    )
+}
+
+@Composable
+fun EvaluationRow(evaluation: Evaluation) {
+    val percentage = (evaluation.score.toFloat() / evaluation.maxScore * 100).toInt()
+    val scoreColor = if (percentage >= 50) Color(0xFF00AA00) else Color.Red
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Color.Gray)
+            .padding(vertical = 12.dp)
+    ) {
+        TableCell(evaluation.activityName, weight = 0.55f)
+        TableCell(evaluation.session, weight = 0.15f)
+        TableCell(evaluation.score.toString(), weight = 0.15f, gradeColor = true)
+        TableCell(evaluation.maxScore.toString(), weight = 0.15f)
     }
 }
