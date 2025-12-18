@@ -44,6 +44,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.TextField
 import androidx.compose.foundation.border
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import kotlinx.datetime.*
@@ -115,6 +117,9 @@ fun CalendarScreen(
                     .shadow(8.dp)
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(vertical = 24.dp, horizontal = 16.dp)
+                    .verticalScroll(state = rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text("Menu", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(24.dp))
@@ -143,6 +148,8 @@ fun CalendarScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 // --- En-tête : titre + profil ---
                 Row(
