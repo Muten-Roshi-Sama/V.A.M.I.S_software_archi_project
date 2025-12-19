@@ -55,17 +55,15 @@ util/ # Utility tests
 
 ### Running the Backend
 ```bash
-cd server
-
 ./gradlew :server:run
 ```
 
 Other useful commands:
+```bash
+:server:build
 
-> :server:build
-
-> :server:clean
-
+:server:clean
+```
 The server will start on http://localhost:8080 by default.
 
 ### Running Tests
@@ -117,6 +115,6 @@ All endpoints are protected by role-based guards. See route files for details.
 | Ibtihal| [Ibtihal-mrn](https://github.com/Ibtihal-mrn)| Frontend  | - User dashboards<br>- Login screen<br>- App navigation UI<br>- Teacher and admin UI |
 | Mehdi  | [Melmaado](https://github.com/Melmaado)      | Frontend  | - UI mockups<br>- Dashboard design<br>- Student UI components Grades, Annual Study Program |
 | Salwa  | [SalwaHm](https://github.com/SalwaHm)        | Backend   | - Academic tables (courses, schedules, options, etc.)<br>- Backend model/service/route setup<br>- Frontend integration of academic tables |
-| Vass   | [Muten-Roshi-Sama](https://github.com/Muten-Roshi-Sama) | Backend | - Backend foundations<br>- User models/services/utils/CRUD Routes and tests<br>- DTO/DAO models serialization for frontend ease-of-use<br>- JWT authentication and session management<br>- Database seeding/setup<br>- Security and endpoints are protected by role-based guards<br>- Automated test integration of users CRUD endpoints/authentication<br>- Fullstack/backend-frontend connections (KtorApiRepository) |
+| Vass   | [Muten-Roshi-Sama](https://github.com/Muten-Roshi-Sama) | Backend | - Project Architecture<br>- Backend foundations<br>- User models/services/utils/CRUD Routes and tests<br>- DAO/DTO models serialization<br>- Database seeding/setup<br>- JWT authentication and session management<br>- Security and endpoints protection by role-based guards<br>- Automated test integration of users and CRUD endpoints/authentication<br>- Fullstack/backend-frontend connections (KtorApiRepository) |
 
 
