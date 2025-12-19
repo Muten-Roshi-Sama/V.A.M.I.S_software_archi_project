@@ -237,7 +237,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                     CalendarScreen(
                         modifier = Modifier,
                         scheduledByDate = homeVm.scheduledByDate,
-                        onOpenHome = { currentScreen = Screen.AdminDashboard },
+                        onOpenHome = { currentScreen = Screen.StudentDashboard },
                         onOpenCalendar = { },
                         onOpenSettings = { currentScreen = Screen.Settings }
                     )
