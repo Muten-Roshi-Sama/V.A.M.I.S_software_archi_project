@@ -6,8 +6,7 @@ import androidx.compose.ui.layout.ContentScale
 
 object AppImages {
     const val ECAM_LOGO_URL: String =
-        "https://www.ecam.be/wp-content/uploads/2023/12/logo_ECAM_entier_sansfond-2.png"
-
+        "https://wsrv.nl/?url=https://www.ecam.be/wp-content/uploads/2023/12/logo_ECAM_entier_sansfond-2.png"
     const val ECAM_LOGIN_SIDE_URL: String =
         "https://www.cerdecam.be/image/ecam.jpg"
 
