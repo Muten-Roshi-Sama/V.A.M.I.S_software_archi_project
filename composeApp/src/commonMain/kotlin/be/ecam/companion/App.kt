@@ -80,7 +80,7 @@ fun App(extraModules: List<Module> = emptyList()) {
                         onOpenSettings = { currentScreen = Screen.Settings },
                         onOpenHome = { currentScreen = Screen.AdminDashboard },
                         onNavigateToBible = { currentScreen = Screen.Bible },
-                        onNavigateToGrades = { currentScreen = Screen.Grades }
+                        onNavigateToGrades = { currentScreen = Screen.AllGrades }
                     )
                 }
 
@@ -132,6 +132,15 @@ fun App(extraModules: List<Module> = emptyList()) {
                 // =======================
                 Screen.AdminList -> {
                     ListAdmins(
+                        onBack = { currentScreen = Screen.AdminDashboard },
+                        onOpenCalendar = { currentScreen = Screen.Calendar },
+                        onOpenSettings = { currentScreen = Screen.Settings },
+                        onOpenHome = { currentScreen = Screen.AdminDashboard }
+                    )
+                }
+
+                Screen.AllGrades -> {
+                    AllGrades(
                         onBack = { currentScreen = Screen.AdminDashboard },
                         onOpenCalendar = { currentScreen = Screen.Calendar },
                         onOpenSettings = { currentScreen = Screen.Settings },
@@ -273,6 +282,8 @@ sealed class Screen {
     object Grades : Screen()
 
     object IspEdit : Screen()
+
+    object AllGrades : Screen()
 
 
 }

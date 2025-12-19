@@ -33,22 +33,23 @@ fun AllGrades(
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val repo = koinInject<ApiRepository>()
-    var bulletin by remember { mutableStateOf<StudentBulletin?>(null) }
+    var bulletins by remember {
+        mutableStateOf<List<StudentBulletin>>(emptyList())
+    }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            try {
-                bulletin = repo.fetchMyGrades()
-            } catch (e: Exception) {
-                error = e.message
-            } finally {
-                isLoading = false
-            }
+        try {
+            bulletins = repo.fetchAllStudentBulletins()
+        } catch (e: Exception) {
+            error = e.message
+        } finally {
+            isLoading = false
         }
     }
+
 
     AppDrawer(
         drawerState = drawerState,
@@ -75,7 +76,7 @@ fun AllGrades(
             Spacer(Modifier.height(16.dp))
 
             Text(
-                "My Grades",
+                "Student's grades",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -91,70 +92,63 @@ fun AllGrades(
                 error != null -> {
                     Text("Error: $error", color = Color.Red)
                 }
-                bulletin == null -> {
+                bulletins == null -> {
                     Text("No grades available")
                 }
                 else -> {
-                    val b = bulletin!!
+                    if (bulletins.isEmpty()) {
+                        Text("No grades available")
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(bulletins) { b ->
 
-                    // Infos étudiant
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
-                    ) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(
-                                text = "${b.firstName} ${b.lastName}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text("Email: ${b.studentEmail}")
-                            Text("Matricule: ${b.matricule}")
-                            Text("Year: ${b.year}")
-                            b.option?.let { Text("Option: $it") }
-                        }
-                    }
+                                // ===== Carte étudiant =====
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    )
+                                ) {
+                                    Column(Modifier.padding(16.dp)) {
+                                        Text(
+                                            "${b.firstName} ${b.lastName}",
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text("Email: ${b.studentEmail}")
+                                        Text("Matricule: ${b.matricule}")
+                                        Text("Year: ${b.year}")
+                                        b.option?.let { Text("Option: $it") }
+                                    }
+                                }
 
-                    Spacer(Modifier.height(16.dp))
+                                Spacer(Modifier.height(8.dp))
 
-                    Text(
-                        "Evaluations",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                                // ===== Header tableau =====
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFFF5DDFF))
+                                        .border(1.dp, Color.Gray)
+                                        .padding(vertical = 10.dp)
+                                ) {
+                                    TableCell("Course", 0.55f, true)
+                                    TableCell("Session", 0.15f, true)
+                                    TableCell("Score", 0.15f, true)
+                                    TableCell("Max", 0.15f, true)
+                                }
 
-                    Spacer(Modifier.height(8.dp))
-
-                    // Table header
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xFFF5DDFF))
-                            .border(1.dp, Color.Gray)
-                            .padding(vertical = 10.dp)
-                    ) {
-                        TableCell("Course name", weight = 0.55f, isHeader = true)
-                        TableCell("Session", weight = 0.15f, isHeader = true)
-                        TableCell("Score", weight = 0.15f, isHeader = true)
-                        TableCell("Max", weight = 0.15f, isHeader = true)
-                    }
-
-                    Spacer(Modifier.height(2.dp))
-
-                    // Body scrollable
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        items(b.evaluations) { eval ->
-                            EvaluationRow(eval)
+                                // ===== Évaluations =====
+                                b.evaluations.forEach { eval ->
+                                    EvaluationRow(eval)
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
     }
