@@ -79,6 +79,8 @@ interface ApiRepository {
 
     // -------- Student Bulletins & Grades ----------
     suspend fun fetchMyGrades(): StudentBulletin
+    suspend fun updateStudentGradeByMatricule(matricule: String, course: String, session: String, score: Int)
+    // Update grade student by matricule
 
 
     // -------- Schedules ----------

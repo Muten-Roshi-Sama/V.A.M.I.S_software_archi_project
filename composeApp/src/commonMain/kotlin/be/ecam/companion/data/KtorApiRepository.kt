@@ -20,7 +20,13 @@ import kotlinx.serialization.json.Json
 class KtorApiRepository(
     private val client: HttpClient,
     private val baseUrlProvider: () -> String,
-    ) : ApiRepository {
+) : ApiRepository {
+    @Serializable
+    private data class GradeUpdateRequest(
+        val studentId: String? = null,
+        val studentEmail: String? = null,
+        val score: Int
+    )
     private fun baseUrl() = baseUrlProvider()
 
     @Serializable
@@ -77,7 +83,7 @@ class KtorApiRepository(
     private var accessToken: String? = null
 
     // ========================
-    //           Auth 
+    //           Auth
     // ========================
     override suspend fun login(email: String, password: String): LoginResponse {
         return try {
@@ -105,7 +111,7 @@ class KtorApiRepository(
 
 
     // ============================
-    //           Admin CRUD 
+    //           Admin CRUD
     // ============================
     override suspend fun fetchAdmins(): List<AdminDTO> {
         return getOrThrow("${baseUrl()}/crud/admins") {
@@ -163,7 +169,7 @@ class KtorApiRepository(
     }
 
     // ============================
-    //           Student CRUD 
+    //           Student CRUD
     // ============================
     override suspend fun fetchStudents(): List<StudentDTO> {
         return getOrThrow("${baseUrl()}/crud/students") {
@@ -272,7 +278,7 @@ class KtorApiRepository(
 
 
     // ============================
-    //           Teacher 
+    //           Teacher
     // ============================
     override suspend fun fetchAllTeachers(): List<Teacher> {
         return getOrThrow("${baseUrl()}/crud/teachers") {
@@ -281,7 +287,7 @@ class KtorApiRepository(
     }
 
     // ============================
-    //           Bible (Study Plans) 
+    //           Bible (Study Plans)
     // ============================
     override suspend fun fetchBible(): List<ProgramWithDetails> {
         return getOrThrow("${baseUrl()}/crud/bible") {
@@ -290,11 +296,27 @@ class KtorApiRepository(
     }
 
     // ============================
-    //           Student Bulletins & Grades 
+    //           Student Bulletins & Grades
     // ============================
     override suspend fun fetchMyGrades(): StudentBulletin {
         return getOrThrow("${baseUrl()}/crud/students/grades/me") {
             bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+        }
+    }
+
+    override suspend fun updateStudentGradeByMatricule(matricule: String, course: String, session: String, score: Int) {
+        val request = GradeUpdateRequest(studentId = matricule, score = score)
+        val response: HttpResponse = client.put("${baseUrl()}/crud/students/grades/by-course/$course/$session") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+        if (!response.status.isSuccess()) {
+            throw ApiHttpException(
+                status = response.status.value,
+                description = response.status.description,
+                serverMessage = responseMessage(response),
+            )
         }
     }
 
@@ -361,19 +383,3 @@ class KtorApiRepository(
         return getOrThrow("${baseUrl()}/api/hello")
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

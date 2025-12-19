@@ -21,6 +21,7 @@ import be.ecam.companion.ui.AppDrawer
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+
 @Composable
 fun AllGrades(
     onBack: () -> Unit,
@@ -169,8 +170,38 @@ fun AllGrades(
 
                             // ===== Évaluations =====
                             b.evaluations.forEach { eval ->
-                                EvaluationRow(eval)
+                                var showDialog by remember { mutableStateOf(false) }
+
+                                // Ligne d'évaluation cliquable
+                                EvaluationRow(evaluation = eval, onClick = { showDialog = true })
+
+                                if (showDialog) {
+                                    EditGradeDialog(
+                                        evaluation = eval,
+                                        onDismiss = { showDialog = false },
+                                        onConfirm = { newScore ->
+                                            // Appel API pour mettre à jour la note
+                                            scope.launch {
+                                                try {
+                                                    repo.updateStudentGradeByMatricule(
+                                                        matricule = b.matricule,
+                                                        course = eval.activityName,
+                                                        session = eval.session,
+                                                        score = newScore
+                                                    )
+                                                    // mettre à jour localement pour que le UI se rafraîchisse
+                                                    eval.score = newScore
+                                                } catch (e: Exception) {
+                                                    // Ici tu peux gérer l'erreur si tu veux
+                                                } finally {
+                                                    showDialog = false
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
                             }
+
                         }
                     }
                 }

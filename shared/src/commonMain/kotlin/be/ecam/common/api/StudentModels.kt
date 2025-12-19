@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 data class Evaluation(
     val activityName: String,
     val session: String = "Janvier 2025",
-    val score: Int,
+    var score: Int,
     val maxScore: Int
 )
 
