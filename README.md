@@ -22,26 +22,26 @@ V.A.M.I.S is a full-stack, multi-role academic management system built with Kotl
 ## Backend Structure
 ```
 server/
-src/
-main/
-kotlin/be/ecam/server/
-Application.kt # Ktor entrypoint
-models/ # Exposed ORM models (Admin, Student, Teacher, etc.)
-services/ # Business logic (AdminService, StudentService, etc.)
-routes/ # Ktor route handlers (AdminRoutes, StudentRoutes, etc.)
-db/ # DatabaseFactory, SeedManager, migrations
-auth/ # JWT, authentication helpers
-util/ # Validation, helpers
-resources/
-data/ # Seed JSONs for admins, students, teachers, etc.
-test/
-kotlin/be/ecam/server/
-routes/ # Route-level tests (AdminRoutesTest, StudentRoutesTest, TeacherRoutesTest)
-services/ # Service-level tests
-models/ # Model CRUD tests
-db/ # Seed validation tests
-testutils/ # Test DB setup
-util/ # Utility tests
+  src/
+    main/
+      kotlin/be/ecam/server/
+        Application.kt         # Ktor entrypoint
+        models/                # Exposed ORM models (Admin, Student, Teacher, etc.)
+        services/              # Business logic (AdminService, StudentService, etc.)
+        routes/                # Ktor route handlers (AdminRoutes, StudentRoutes, etc.)
+        db/                    # DatabaseFactory, SeedManager, migrations
+        auth/                  # JWT, authentication helpers
+        util/                  # Validation, helpers
+      resources/
+        data/                  # Seed JSONs for admins, students, teachers, etc.
+    test/
+      kotlin/be/ecam/server/
+        routes/                # Route-level tests (AdminRoutesTest, StudentRoutesTest, TeacherRoutesTest)
+        services/              # Service-level tests
+        models/                # Model CRUD tests
+        db/                    # Seed validation tests
+        testutils/             # Test DB setup
+        util/                  # Utility tests
 ```
 
 
