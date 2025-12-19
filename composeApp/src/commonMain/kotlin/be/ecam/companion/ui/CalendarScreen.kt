@@ -311,7 +311,8 @@ fun CalendarScreen(
                                 MaterialTheme.colorScheme.surfaceVariant,
                                 shape = MaterialTheme.shapes.medium
                             )
-                        }
+                    ) {
+                        // Intentionally empty placeholder.
                     }
                 }
 
@@ -806,6 +807,8 @@ fun CalendarScreen(
             }
         }
     }
+}
+
 }
 
 // --- Autres fonctions inchangées ---

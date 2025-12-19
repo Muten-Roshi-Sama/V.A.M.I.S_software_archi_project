@@ -107,15 +107,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    LoginSideVisual(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    )
-
-                Text("Connexion", style = MaterialTheme.typography.headlineMedium)
-                Spacer(Modifier.height(24.dp))
-
+                    Spacer(modifier = Modifier.weight(1f))
                     LoginFormPanel(
                         modifier = Modifier
                             .weight(1.2f)
@@ -123,6 +115,7 @@ fun LoginScreen(
                             .padding(24.dp),
                         content = formContent
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             } else {
                 LoginFormPanel(
