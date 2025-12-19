@@ -60,6 +60,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import be.ecam.companion.data.Course
 import be.ecam.companion.data.ApiRepository
+import be.ecam.common.api.CalendarNoteCreateRequest
 import org.koin.compose.koinInject
 import kotlinx.coroutines.launch
 
@@ -103,6 +104,27 @@ fun CalendarScreen(
     // Map mutable interne pour gérer les évènements créés depuis l’UI
     var events by remember {
         mutableStateOf(scheduledByDate.toMutableMap())
+    }
+
+    // API (JWT) — used to load/save notes for the authenticated student
+    val apiRepository: ApiRepository = koinInject()
+
+    // Load existing notes for this student (server-side persistence)
+    LaunchedEffect(Unit) {
+        if (!apiRepository.isAuthenticated()) return@LaunchedEffect
+
+        runCatching { apiRepository.fetchMyCalendarNotes() }
+            .onSuccess { serverNotes ->
+                val byDate: Map<LocalDate, List<String>> = serverNotes
+                    .groupBy { LocalDate.parse(it.date) }
+                    .mapValues { (_, list) ->
+                        list.map { n ->
+                            val assignedLabel = (n.courseName ?: n.courseCode) + " (${n.courseCode})"
+                            "Assigné à: $assignedLabel — Note: ${n.note}"
+                        }
+                    }
+                events = byDate.toMutableMap()
+            }
     }
 
     // Champs du formulaire
@@ -213,12 +235,17 @@ fun CalendarScreen(
                 }
 
 
-                Spacer(Modifier.height(8.dp))
-
-                // --- Boutons Week / Month ---
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Bouton "Ajouter un évènement" + Formulaire en dessous (mobile-friendly)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, top = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                // 🟦 Bouton principal
+                Button(
+                    onClick = { showAddEventPanel = !showAddEventPanel }
                 ) {
                     FilterChip(
                         selected = mode == CalendarMode.Week,
@@ -232,22 +259,21 @@ fun CalendarScreen(
                     )
                 }
 
-                Spacer(Modifier.height(8.dp))
-
-                // --- Jours de la semaine ---
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                // 🧩 Formulaire animé sous le bouton
+                AnimatedVisibility(
+                    visible = showAddEventPanel,
+                    enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
+                    exit = slideOutHorizontally(animationSpec = tween(200)) + fadeOut()
                 ) {
-                    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-                    for (d in days) {
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                            Text(
-                                d,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                shape = MaterialTheme.shapes.medium
                             )
-                        }
+                    ) {
+                        // Intentionally empty placeholder.
                     }
                 }
 
@@ -372,12 +398,31 @@ fun CalendarScreen(
                                 var isLoadingCourses by remember { mutableStateOf(true) }
                                 var courseLoadError by remember { mutableStateOf<String?>(null) }
 
-                                // Récupération des cours via ApiRepository injecté par Koin
-                                val apiRepository: ApiRepository = koinInject()
                                 LaunchedEffect(Unit) {
                                     try {
                                         isLoadingCourses = true
-                                        //courses = apiRepository.fetchAllCourses()
+                                        val profile = apiRepository.fetchMyStudentProfile()
+                                        val programs = apiRepository.fetchBible()
+
+                                        val filteredPrograms = when {
+                                            profile.studyYear.isNullOrBlank() -> programs
+                                            !profile.optionCode.isNullOrBlank() -> programs.filter {
+                                                it.year == profile.studyYear && it.optionCode == profile.optionCode
+                                            }
+                                            else -> programs.filter { it.year == profile.studyYear }
+                                        }
+
+                                        courses = filteredPrograms
+                                            .flatMap { it.courses }
+                                            .distinctBy { it.courseCode }
+                                            .map {
+                                                Course(
+                                                    code = it.courseCode,
+                                                    name = it.courseName,
+                                                    totalHours = it.totalHours,
+                                                )
+                                            }
+                                            .sortedBy { it.name }
                                     } catch (e: Exception) {
                                         courseLoadError = e.message
                                     } finally {
@@ -612,24 +657,40 @@ fun CalendarScreen(
                                                     LocalDate.parse(date)
                                                 } catch (e: Exception) {
                                                     null
-                                                }
+                                                } ?: return@Button
 
-                                                // Use the selected course (assignedCourse) instead of free-text assignedTo
-                                                if (parsedDate != null && assignedCourse != null && notes.isNotBlank()) {
-                                                    val text = "Assigné à: ${assignedCourse?.name ?: ""} — Note: $notes"
+                                                val selectedCourse = assignedCourse ?: return@Button
+                                                val noteText = notes.takeIf { it.isNotBlank() } ?: return@Button
 
-                                                    val updatedList = events[parsedDate]?.toMutableList() ?: mutableListOf()
-                                                    updatedList.add(text)
+                                                scope.launch {
+                                                    runCatching {
+                                                        apiRepository.upsertMyCalendarNote(
+                                                            CalendarNoteCreateRequest(
+                                                                date = parsedDate.toString(),
+                                                                courseCode = selectedCourse.code,
+                                                                courseName = selectedCourse.name,
+                                                                note = noteText,
+                                                            )
+                                                        )
+                                                    }.onSuccess { saved ->
+                                                        val assignedLabel = (saved.courseName ?: saved.courseCode) + " (${saved.courseCode})"
+                                                        val text = "Assigné à: $assignedLabel — Note: ${saved.note}"
 
-                                                    events = events.toMutableMap().apply {
-                                                        put(parsedDate, updatedList)
+                                                        val updatedList = (events[parsedDate] ?: emptyList())
+                                                            .filterNot { it.contains("(${saved.courseCode})") }
+                                                            .toMutableList()
+                                                        updatedList.add(text)
+
+                                                        events = events.toMutableMap().apply {
+                                                            put(parsedDate, updatedList)
+                                                        }
+
+                                                        showAddEventPanel = false
+                                                        assignedCourse = null
+                                                        date = ""
+                                                        notes = ""
                                                     }
                                                 }
-
-                                                showAddEventPanel = false
-                                                assignedCourse = null
-                                                date = ""
-                                                notes = ""
                                             }
                                         ) {
                                             Text("Confirmer")
@@ -706,6 +767,8 @@ fun CalendarScreen(
                 }
             }}
         }
+
+}
 
 }
 

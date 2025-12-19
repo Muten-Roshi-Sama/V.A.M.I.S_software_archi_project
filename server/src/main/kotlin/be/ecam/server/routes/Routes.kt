@@ -17,6 +17,7 @@ import be.ecam.server.services.AdminService
 import be.ecam.server.services.StudentService
 import be.ecam.server.services.TeacherService
 import be.ecam.server.services.ScheduleService
+import be.ecam.server.services.CalendarNoteService
 
 // Handlers
 import be.ecam.server.routes.auth.AuthRoutes
@@ -24,6 +25,7 @@ import be.ecam.server.routes.handlers.AdminRoutes
 import be.ecam.server.routes.handlers.StudentRoutes
 import be.ecam.server.routes.handlers.TeacherRoutes
 import be.ecam.server.routes.handlers.scheduleRoutes
+import be.ecam.server.routes.handlers.CalendarNoteRoutes
 // import be.ecam.server.routes.handlers.TeacherRoutes
 
 
@@ -91,6 +93,7 @@ fun Application.configureRoutes() {
     val adminService = AdminService()
     val teacherService = TeacherService()
     val studentService = StudentService()
+    val calendarNoteService = CalendarNoteService()
 
 
     // 2. Build authenticator and token factory
@@ -117,13 +120,15 @@ fun Application.configureRoutes() {
     val adminRoutes = AdminRoutes(adminService)
     val studentRoutes = StudentRoutes(studentService)
     val teacherRoutes = TeacherRoutes(teacherService)
+    val calendarNoteRoutes = CalendarNoteRoutes(studentService, calendarNoteService)
 
     // 5. Build registry
     val registry = CrudRegistry(
         mapOf(
             "admins" to adminRoutes,
             "students" to studentRoutes,
-            "teachers" to teacherRoutes
+            "teachers" to teacherRoutes,
+            "calendar_notes" to calendarNoteRoutes
         )
     )
 

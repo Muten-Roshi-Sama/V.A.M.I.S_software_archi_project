@@ -107,14 +107,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    LoginSideVisual(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    )
-
-                    Spacer(Modifier.width(24.dp))
-
+                    Spacer(modifier = Modifier.weight(1f))
                     LoginFormPanel(
                         modifier = Modifier
                             .weight(1.2f)
@@ -122,6 +115,7 @@ fun LoginScreen(
                             .padding(24.dp),
                         content = formContent
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             } else {
                 LoginFormPanel(
@@ -184,20 +178,6 @@ private fun LoginHeaderVisual(modifier: Modifier = Modifier) {
             modifier = Modifier.size(140.dp),
             contentDescription = "ECAM logo",
             contentScale = ContentScale.Fit,
-        )
-    }
-}
-
-@Composable
-private fun LoginSideVisual(modifier: Modifier = Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        RemoteImage(
-            url = AppImages.ECAM_LOGIN_SIDE_URL,
-            contentDescription = "ECAM login side image",
-            modifier = Modifier
-                .fillMaxSize()
-                .border(2.dp, MaterialTheme.colorScheme.outlineVariant),
-            contentScale = ContentScale.Crop,
         )
     }
 }
