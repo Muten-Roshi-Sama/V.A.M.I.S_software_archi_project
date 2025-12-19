@@ -235,51 +235,47 @@ fun CalendarScreen(
                 }
 
 
-            // Bouton "Ajouter un évènement" + Formulaire en dessous (mobile-friendly)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, top = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                // 🟦 Bouton principal
-                Button(
-                    onClick = { showAddEventPanel = !showAddEventPanel }
-                ) {
-                    FilterChip(
-                        selected = mode == CalendarMode.Week,
-                        onClick = { slideDirection = 0; mode = CalendarMode.Week },
-                        label = { Text("Week") }
-                    )
-                    FilterChip(
-                        selected = mode == CalendarMode.Month,
-                        onClick = { slideDirection = 0; mode = CalendarMode.Month },
-                        label = { Text("Month") }
-                    )
-                }
+            Spacer(Modifier.height(8.dp))
 
-                // 🧩 Formulaire animé sous le bouton
-                AnimatedVisibility(
-                    visible = showAddEventPanel,
-                    enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
-                    exit = slideOutHorizontally(animationSpec = tween(200)) + fadeOut()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                MaterialTheme.colorScheme.surfaceVariant,
-                                shape = MaterialTheme.shapes.medium
-                            )
-                    ) {
-                        // Intentionally empty placeholder.
+            // --- Boutons Week / Month ---
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = mode == CalendarMode.Week,
+                    onClick = { slideDirection = 0; mode = CalendarMode.Week },
+                    label = { Text("Week") }
+                )
+                FilterChip(
+                    selected = mode == CalendarMode.Month,
+                    onClick = { slideDirection = 0; mode = CalendarMode.Month },
+                    label = { Text("Month") }
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // --- Jours de la semaine ---
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                for (d in days) {
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            d,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
                     }
                 }
+            }
 
-                Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(4.dp))
 
-                var dialogDate by remember { mutableStateOf(initialDialogDate) }
+            var dialogDate by remember { mutableStateOf(initialDialogDate) }
 
                 // --- Zone du calendrier ---
                 Box(
@@ -357,13 +353,13 @@ fun CalendarScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Bouton "Ajouter un évènement" + Formulaire à sa droite
-                Row(
+                // Bouton "Ajouter un évènement" + Formulaire en dessous (mobile-friendly)
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 8.dp, top = 8.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.Top
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.Start
                 ) {
                     // 🟦 Bouton principal
                     Button(
@@ -372,7 +368,7 @@ fun CalendarScreen(
                         Text("Ajouter un évènement")
                     }
 
-                    // 🧩 Formulaire animé à droite du bouton
+                    // 🧩 Formulaire animé sous le bouton
                     AnimatedVisibility(
                         visible = showAddEventPanel,
                         enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
@@ -381,7 +377,6 @@ fun CalendarScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 16.dp)
                                 .background(
                                     MaterialTheme.colorScheme.surfaceVariant,
                                     shape = MaterialTheme.shapes.medium
@@ -765,11 +760,9 @@ fun CalendarScreen(
                         }
                     }
                 }
-            }}
+            }
         }
-
-}
-
+    }
 }
 
 // --- Autres fonctions inchangées ---
