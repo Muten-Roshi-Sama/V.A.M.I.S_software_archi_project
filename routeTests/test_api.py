@@ -1,83 +1,113 @@
-
-# test_api.py
+import os
+import time
 import requests
-import json
-
-# Make sure the server is running before executing these tests
-
-#    Response :
-    #        === Testing Login ===
-    #        Status: 200
-    #        Response: {"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlY2FtIiwiYXVkIjoiZWNhbS1hdWRpZW5jZSIsImlkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjQ5NDYxMzh9.WWeUdNvFIXthmE22Az9jXwgMeX83yv4S7-icubm56og"}
-    #        Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlY2FtIiwiYXVkIjoiZWNhbS1hdWRpZW5jZSIsImlkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjQ5NDYxMzh9.WWeUdNvFIXthmE22Az9jXwgMeX83yv4S7-icubm56og
-    #
-    #    === Testing GET all admins ===
-    #    Status: 200
-    #    Response: [{"id":1,"firstName":"admin134565432345676543","lastName":"One","email":"admin1@admin.com","createdAt":"2025-12-05T13:36:36.943448200Z"},{"id":2,"firstName":"admin234566543","lastName":"Two","email":"admin2@admin.com","createdAt":"2025-12-05T13:36:37.047480100Z"}]
-    #
-    #    === Testing GET admin by ID (1) ===
-    #    Status: 200
-    #    Response: {"id":1,"firstName":"admin134565432345676543","lastName":"One","email":"admin1@admin.com","createdAt":"2025-12-05T13:36:36.943448200Z"}
-    #
-    #    === Testing GET admin count ===
-    #    Status: 200
-    #    Response: {"count":2}
-    #
-    #    === Testing CREATE admin ===
-    #    Status: 201
-    #    Response: {"id":3,"firstName":"Test","lastName":"Admin","email":"test@admin.com","createdAt":"2025-12-05T13:48:59.312270800Z"}
 
 
+# Make sure the server is running before executing this script.
+# You can override the base URL with:
+#   BASE_URL=http://127.0.0.1:8080 python routeTests/test_api.py
 
 
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:8080").rstrip("/")
 
-BASE_URL = "http://localhost:8080"
 
-# 1. Test login
-print("=== Testing Login ===")
-login_data = {
-    "email": "admin1@admin.com",
-    "password": "pass123"
-}
-response = requests.post(f"{BASE_URL}/auth/login", json=login_data)
-print(f"Status: {response.status_code}")
-print(f"Response: {response.text}")
+def _login(email: str, password: str) -> str:
+    r = requests.post(f"{BASE_URL}/auth/login", json={"email": email, "password": password}, timeout=10)
+    assert r.status_code == 200, f"Login failed: HTTP {r.status_code} — {r.text}"
+    token = r.json().get("accessToken")
+    assert token, f"Missing accessToken in response: {r.text}"
+    return token
 
-if response.status_code == 200:
-    token = response.json()["accessToken"]
-    print(f"Token: {token}\n")
-    
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    # 2. Test GET all admins
-    print("=== Testing GET all admins ===")
-    response = requests.get(f"{BASE_URL}/crud/admins", headers=headers)
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text}\n")
-    
-    # 3. Test GET admin by ID
-    print("=== Testing GET admin by ID (1) ===")
-    response = requests.get(f"{BASE_URL}/crud/admins/by/1", headers=headers)
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text}\n")
-    
-    # 4. Test GET admin count
-    print("=== Testing GET admin count ===")
-    response = requests.get(f"{BASE_URL}/crud/admins/count", headers=headers)
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text}\n")
-    
-    # 5. Test CREATE admin
-    print("=== Testing CREATE admin ===")
-    new_admin = {
-        "email": "test@admin.com",
-        "firstName": "Test",
-        "lastName": "Admin",
-        "phoneNumber": "+32123456789",
-        "password": "testpass"
+
+def _auth_headers(token: str) -> dict:
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_admin_smoke() -> None:
+    print("=== Admin: login + smoke endpoints ===")
+    token = _login("admin1@school.com", "admin123")
+    headers = _auth_headers(token)
+
+    r = requests.get(f"{BASE_URL}/crud/admins/count", headers=headers, timeout=10)
+    assert r.status_code == 200, f"GET /crud/admins/count failed: HTTP {r.status_code} — {r.text}"
+    assert "count" in r.json(), f"Unexpected response for count: {r.text}"
+
+    r = requests.get(f"{BASE_URL}/crud/admins", headers=headers, timeout=10)
+    assert r.status_code == 200, f"GET /crud/admins failed: HTTP {r.status_code} — {r.text}"
+    assert isinstance(r.json(), list), f"Expected list, got: {r.text}"
+
+    print("OK\n")
+
+
+def test_student_calendar_notes_roundtrip() -> None:
+    print("=== Student: calendar-notes POST/GET upsert ===")
+    token = _login("alice@student.school.com", "pass123")
+    headers = _auth_headers(token)
+
+    today = time.strftime("%Y-%m-%d")
+    course_code = "INFO1"
+    course_name = "Introduction to Programming"
+
+    # 1) Create note
+    payload = {
+        "date": today,
+        "courseCode": course_code,
+        "courseName": course_name,
+        "note": f"Test note (v1) @ {int(time.time())}",
     }
-    response = requests.post(f"{BASE_URL}/crud/admins", json=new_admin, headers=headers)
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text}\n")
-else:
-    print("Login failed!")
+    r = requests.post(f"{BASE_URL}/crud/calendar_notes/me", json=payload, headers=headers, timeout=10)
+    assert r.status_code == 200, f"POST /crud/calendar-notes/me failed: HTTP {r.status_code} — {r.text}"
+    created = r.json()
+    assert created["date"] == today
+    assert created["courseCode"] == course_code
+    assert created.get("note"), "Expected a note in response"
+
+    # 2) Fetch notes for this date
+    r = requests.get(
+        f"{BASE_URL}/crud/calendar_notes/me",
+        params={"startDate": today, "endDate": today},
+        headers=headers,
+        timeout=10,
+    )
+    assert r.status_code == 200, f"GET /crud/calendar-notes/me failed: HTTP {r.status_code} — {r.text}"
+    notes = r.json()
+    assert isinstance(notes, list), f"Expected list, got: {r.text}"
+    assert any(n["date"] == today and n["courseCode"] == course_code for n in notes), "Created note not found in list"
+
+    # 3) Upsert same (date, course) with new text
+    payload2 = {
+        "date": today,
+        "courseCode": course_code,
+        "courseName": course_name,
+        "note": f"Test note (v2) @ {int(time.time())}",
+    }
+    r = requests.post(f"{BASE_URL}/crud/calendar_notes/me", json=payload2, headers=headers, timeout=10)
+    assert r.status_code == 200, f"POST(upsert) /crud/calendar-notes/me failed: HTTP {r.status_code} — {r.text}"
+    updated = r.json()
+    assert updated["date"] == today
+    assert updated["courseCode"] == course_code
+    assert updated["note"] == payload2["note"], "Upsert did not update note"
+
+    # 4) Fetch again and ensure only one entry for that course+date and it matches v2
+    r = requests.get(
+        f"{BASE_URL}/crud/calendar_notes/me",
+        params={"startDate": today, "endDate": today},
+        headers=headers,
+        timeout=10,
+    )
+    assert r.status_code == 200, f"GET(after upsert) /crud/calendar-notes/me failed: HTTP {r.status_code} — {r.text}"
+    notes2 = [n for n in r.json() if n["date"] == today and n["courseCode"] == course_code]
+    assert len(notes2) == 1, f"Expected 1 note for ({today}, {course_code}), got {len(notes2)}"
+    assert notes2[0]["note"] == payload2["note"], "Stored note does not match upserted note"
+
+    print("OK\n")
+
+
+def main() -> None:
+    test_admin_smoke()
+    test_student_calendar_notes_roundtrip()
+    print("All route tests passed")
+
+
+if __name__ == "__main__":
+    main()
