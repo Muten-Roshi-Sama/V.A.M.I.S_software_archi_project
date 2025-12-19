@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Button
@@ -60,6 +61,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import be.ecam.companion.data.Course
 import be.ecam.companion.data.ApiRepository
+import be.ecam.common.api.StudentDTO
 import be.ecam.common.api.CalendarNoteCreateRequest
 import org.koin.compose.koinInject
 import kotlinx.coroutines.launch
@@ -108,6 +110,18 @@ fun CalendarScreen(
 
     // API (JWT) — used to load/save notes for the authenticated student
     val apiRepository: ApiRepository = koinInject()
+
+    val defaultProfileImageUrl =
+        "https://media.istockphoto.com/id/1495088043/fr/vectoriel/ic%C3%B4ne-de-profil-utilisateur-avatar-ou-ic%C3%B4ne-de-personne-photo-de-profil-symbole-portrait.jpg?s=612x612&w=0&k=20&c=moNRZjYtVpH-I0mAe-ZfjVkuwgCOqH-BRXFLhQkZoP8="
+
+    var studentProfile by remember { mutableStateOf<StudentDTO?>(null) }
+
+    LaunchedEffect(Unit) {
+        if (!apiRepository.isAuthenticated()) return@LaunchedEffect
+
+        runCatching { apiRepository.fetchMyStudentProfile() }
+            .onSuccess { studentProfile = it }
+    }
 
     // Load existing notes for this student (server-side persistence)
     LaunchedEffect(Unit) {
@@ -170,22 +184,26 @@ fun CalendarScreen(
                     // Partie droite : profil + nom/prénom
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // Image de profil
-                        Box(
+                        RemoteImage(
+                            url = defaultProfileImageUrl,
+                            contentDescription = "Profile image",
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color.Gray, shape = CircleShape)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape),
+                            contentScale = ContentScale.Crop,
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Column(verticalArrangement = Arrangement.Center) {
                             Text(
-                                text = "NOM",
+                                text = (studentProfile?.lastName ?: "NOM").uppercase(),
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Prénom",
+                                text = studentProfile?.firstName ?: "Prénom",
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
