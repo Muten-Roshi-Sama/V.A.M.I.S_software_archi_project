@@ -32,7 +32,19 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        // Configuration du navigateur Web
+        browser {
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                devServer = (devServer ?: org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer()).apply {
+                    port = 8081 // Le site Web tournera sur le port 8081
+                    
+                    static = (static ?: mutableListOf()).apply {
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
         binaries.executable()
     }
 
@@ -40,11 +52,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            // Ktor Android engine (choose exactly one)
+            // Ktor Android engine
             implementation(libs.ktor.client.android)
-            // Ktor client logging (debug diagnostics)
             implementation(libs.ktor.client.logging)
-            // Remote images (URL)
             implementation(libs.kamel.image)
         }
         commonMain.dependencies {
@@ -62,7 +72,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            // Ktor client
+            // Ktor client core
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -76,17 +86,13 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
-            // Remote images (URL)
             implementation(libs.kamel.image)
         }
         iosMain.dependencies {
-            // Ktor iOS engine (Darwin)
             implementation(libs.ktor.client.darwin)
-            // Remote images (URL)
             implementation(libs.kamel.image)
         }
         wasmJsMain.dependencies {
-            // Ktor JS engine for Wasm/JS target
             implementation(libs.ktor.client.js)
         }
     }

@@ -32,15 +32,16 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:${ktor_version}")
     implementation("io.ktor:ktor-server-auth:${ktor_version}")
     implementation("io.ktor:ktor-server-auth-jwt:${ktor_version}")
-    implementation("com.auth0:java-jwt:4.4.0") // JWT library
+    
+    implementation("io.ktor:ktor-server-cors:${ktor_version}")
 
+    implementation("com.auth0:java-jwt:4.4.0") // JWT library
 
     // Test libs
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
-    testImplementation("io.mockk:mockk:1.14.6") // or latest mockk
+    testImplementation("io.mockk:mockk:1.14.6")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-//    testImplementation("org.junit.jupiter:junit-jupiter:5.9.4")
 
     // SQLite Database
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
@@ -50,25 +51,12 @@ dependencies {
 
     // datetime
     implementation("org.jetbrains.exposed:exposed-java-time:${exposedVersion}")
-
-    // JWT
-    implementation("io.ktor:ktor-server-auth:${ktor_version}")
-    implementation("io.ktor:ktor-server-auth-jwt:${ktor_version}")
 }
 
-//tasks.test {
-//    // Run tests on JUnit Platform (supports JUnit Jupiter and kotlin.test adapters)
-//    useJUnitPlatform()
-//
-//    testLogging {
-//        events("started", "passed", "skipped", "failed")
-//        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-//    }
-//}
-
-
-
-
-
-
-
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("started", "passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}

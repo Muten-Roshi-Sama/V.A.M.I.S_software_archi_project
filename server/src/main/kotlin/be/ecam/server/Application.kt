@@ -11,26 +11,45 @@ import be.ecam.server.routes.configureStaticRoutes
 import be.ecam.server.auth.installJwtAuth
 
 // Ktor
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
-import io.ktor.server.application.install
 import io.ktor.server.netty.EngineMain
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 
-
+// === IMPORTS AJOUTÉS POUR LE CORS ===
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+// ====================================
 
 // ====================== Main ==========================
 
-
 fun main(args: Array<String>) {
     // Start Ktor with configuration from application.conf (HTTP)
-    EngineMain.main(args)  // Starts the Ktor web server, also loads Application.module() down here
+    EngineMain.main(args)
 }
 
 fun Application.module() {
+    // === BLOC CORS AJOUTÉ ICI ===
+    // C'est ça qui va permettre à ton site (8081) de parler au serveur (8080)
+    install(CORS) {
+        allowMethod(HttpMethod.Options) // INDISPENSABLE pour que le navigateur vérifie la sécu
+        allowMethod(HttpMethod.Post)    // Pour le login
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        
+        // Autorise les infos d'authentification
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        
+        // Autorise ton site Web sur le port 8081
+        allowHost("localhost:8081")
+        allowHost("127.0.0.1:8081")
+    }
+    // ============================
+
     // 1. configure Server
-    installCommonPlugins()  // ContentNegotiation, StatusPages, CallLogging, etc.
-//    install(ContentNegotiation) { json() }   // Uses Ktor's Serialization when sending/receiving JSON's
+    installCommonPlugins()
 
     // 2. Configure Auth BEFORE routes
     installJwtAuth(
@@ -41,19 +60,10 @@ fun Application.module() {
 
     // 3. Setup DB
     DatabaseFactory.connect()
-    // DatabaseFactory.resetDb()  // Use this only when you need to reset the DB schema
+    // DatabaseFactory.resetDb() // Attention, ça efface tout !
     DatabaseFactory.initDb()
 
-
-
     // 4. Register Routes
-    configureStaticRoutes() // serves WASM + favicon
-    configureRoutes()       // API routes
-
-
+    configureStaticRoutes()
+    configureRoutes()
 }
-
-// ===========================================================================
-
-
-
