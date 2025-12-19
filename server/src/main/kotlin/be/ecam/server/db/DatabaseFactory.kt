@@ -12,6 +12,7 @@ import be.ecam.server.models.CourseTable
 import be.ecam.server.models.AnnualStudyPlanTable
 import be.ecam.server.models.PlanCourseTable
 import be.ecam.server.models.ScheduleTable
+import be.ecam.server.models.CalendarNoteTable
 
 // DAO Class
 import be.ecam.server.models.Admin
@@ -142,6 +143,7 @@ object DatabaseFactory {
             AnnualStudyPlanTable.selectAll().limit(1).toList()
             PlanCourseTable.selectAll().limit(1).toList()
             ScheduleTable.selectAll().limit(1).toList()
+            CalendarNoteTable.selectAll().limit(1).toList()
         }
     }
 
@@ -204,6 +206,7 @@ object DatabaseFactory {
         transaction {
             try {
                 SchemaUtils.drop(
+                    CalendarNoteTable,
                     ScheduleTable,
                     EvaluationTable,
                     PlanCourseTable,
@@ -238,7 +241,8 @@ object DatabaseFactory {
                     CourseTable,
                     AnnualStudyPlanTable,
                     PlanCourseTable,
-                    ScheduleTable
+                    ScheduleTable,
+                    CalendarNoteTable
                 )
                 println("✅ Created/ensured all listed tables.")
             } catch (e: Exception) {

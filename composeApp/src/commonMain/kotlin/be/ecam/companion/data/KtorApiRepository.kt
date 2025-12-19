@@ -336,6 +336,25 @@ class KtorApiRepository(
         }
     }
 
+    // ============================
+    //        Calendar Notes
+    // ============================
+    override suspend fun fetchMyCalendarNotes(startDate: String?, endDate: String?): List<CalendarNoteDTO> {
+        return getOrThrow("${baseUrl()}/crud/calendar_notes/me") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            if (startDate != null) parameter("startDate", startDate)
+            if (endDate != null) parameter("endDate", endDate)
+        }
+    }
+
+    override suspend fun upsertMyCalendarNote(request: CalendarNoteCreateRequest): CalendarNoteDTO {
+        return postOrThrow("${baseUrl()}/crud/calendar_notes/me") {
+            bearerAuth(accessToken ?: throw IllegalStateException("Not authenticated"))
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
     // -------- Legacy endpoints ----------
 
     override suspend fun fetchHello(): HelloResponse {

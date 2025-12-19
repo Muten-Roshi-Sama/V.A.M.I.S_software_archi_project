@@ -60,6 +60,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import be.ecam.companion.data.Course
 import be.ecam.companion.data.ApiRepository
+import be.ecam.common.api.CalendarNoteCreateRequest
 import org.koin.compose.koinInject
 import kotlinx.coroutines.launch
 
@@ -102,6 +103,27 @@ fun CalendarScreen(
     // Map mutable interne pour gérer les évènements créés depuis l’UI
     var events by remember {
         mutableStateOf(scheduledByDate.toMutableMap())
+    }
+
+    // API (JWT) — used to load/save notes for the authenticated student
+    val apiRepository: ApiRepository = koinInject()
+
+    // Load existing notes for this student (server-side persistence)
+    LaunchedEffect(Unit) {
+        if (!apiRepository.isAuthenticated()) return@LaunchedEffect
+
+        runCatching { apiRepository.fetchMyCalendarNotes() }
+            .onSuccess { serverNotes ->
+                val byDate: Map<LocalDate, List<String>> = serverNotes
+                    .groupBy { LocalDate.parse(it.date) }
+                    .mapValues { (_, list) ->
+                        list.map { n ->
+                            val assignedLabel = (n.courseName ?: n.courseCode) + " (${n.courseCode})"
+                            "Assigné à: $assignedLabel — Note: ${n.note}"
+                        }
+                    }
+                events = byDate.toMutableMap()
+            }
     }
 
     // Champs du formulaire
@@ -411,12 +433,31 @@ fun CalendarScreen(
                                 var isLoadingCourses by remember { mutableStateOf(true) }
                                 var courseLoadError by remember { mutableStateOf<String?>(null) }
 
-                                // Récupération des cours via ApiRepository injecté par Koin
-                                val apiRepository: ApiRepository = koinInject()
                                 LaunchedEffect(Unit) {
                                     try {
                                         isLoadingCourses = true
-                                        //courses = apiRepository.fetchAllCourses()
+                                        val profile = apiRepository.fetchMyStudentProfile()
+                                        val programs = apiRepository.fetchBible()
+
+                                        val filteredPrograms = when {
+                                            profile.studyYear.isNullOrBlank() -> programs
+                                            !profile.optionCode.isNullOrBlank() -> programs.filter {
+                                                it.year == profile.studyYear && it.optionCode == profile.optionCode
+                                            }
+                                            else -> programs.filter { it.year == profile.studyYear }
+                                        }
+
+                                        courses = filteredPrograms
+                                            .flatMap { it.courses }
+                                            .distinctBy { it.courseCode }
+                                            .map {
+                                                Course(
+                                                    code = it.courseCode,
+                                                    name = it.courseName,
+                                                    totalHours = it.totalHours,
+                                                )
+                                            }
+                                            .sortedBy { it.name }
                                     } catch (e: Exception) {
                                         courseLoadError = e.message
                                     } finally {
@@ -651,24 +692,40 @@ fun CalendarScreen(
                                                     LocalDate.parse(date)
                                                 } catch (e: Exception) {
                                                     null
-                                                }
+                                                } ?: return@Button
 
-                                                // Use the selected course (assignedCourse) instead of free-text assignedTo
-                                                if (parsedDate != null && assignedCourse != null && notes.isNotBlank()) {
-                                                    val text = "Assigné à: ${assignedCourse?.name ?: ""} — Note: $notes"
+                                                val selectedCourse = assignedCourse ?: return@Button
+                                                val noteText = notes.takeIf { it.isNotBlank() } ?: return@Button
 
-                                                    val updatedList = events[parsedDate]?.toMutableList() ?: mutableListOf()
-                                                    updatedList.add(text)
+                                                scope.launch {
+                                                    runCatching {
+                                                        apiRepository.upsertMyCalendarNote(
+                                                            CalendarNoteCreateRequest(
+                                                                date = parsedDate.toString(),
+                                                                courseCode = selectedCourse.code,
+                                                                courseName = selectedCourse.name,
+                                                                note = noteText,
+                                                            )
+                                                        )
+                                                    }.onSuccess { saved ->
+                                                        val assignedLabel = (saved.courseName ?: saved.courseCode) + " (${saved.courseCode})"
+                                                        val text = "Assigné à: $assignedLabel — Note: ${saved.note}"
 
-                                                    events = events.toMutableMap().apply {
-                                                        put(parsedDate, updatedList)
+                                                        val updatedList = (events[parsedDate] ?: emptyList())
+                                                            .filterNot { it.contains("(${saved.courseCode})") }
+                                                            .toMutableList()
+                                                        updatedList.add(text)
+
+                                                        events = events.toMutableMap().apply {
+                                                            put(parsedDate, updatedList)
+                                                        }
+
+                                                        showAddEventPanel = false
+                                                        assignedCourse = null
+                                                        date = ""
+                                                        notes = ""
                                                     }
                                                 }
-
-                                                showAddEventPanel = false
-                                                assignedCourse = null
-                                                date = ""
-                                                notes = ""
                                             }
                                         ) {
                                             Text("Confirmer")

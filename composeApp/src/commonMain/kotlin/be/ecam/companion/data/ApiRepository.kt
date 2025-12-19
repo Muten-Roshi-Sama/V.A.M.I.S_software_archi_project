@@ -84,6 +84,10 @@ interface ApiRepository {
     suspend fun fetchSchedulesByYear(studyYear: String): List<ScheduleDTO>
     suspend fun fetchSchedulesByTeacher(teacherName: String): List<ScheduleDTO>
 
+    // -------- Calendar Notes (per authenticated student) ----------
+    suspend fun fetchMyCalendarNotes(startDate: String? = null, endDate: String? = null): List<CalendarNoteDTO>
+    suspend fun upsertMyCalendarNote(request: CalendarNoteCreateRequest): CalendarNoteDTO
+
 
 }
 
