@@ -38,7 +38,7 @@ fun TeacherDashboard(
         scope.launch {
             try {
                 val teacher = repository.fetchMyTeacherProfile()
-                userInfo = "Welcome, ${teacher.firstName} ${teacher.lastName} (ID: ${teacher.teacherId})"
+                userInfo = "Welcome, ${teacher.firstName} ${teacher.lastName} "
             } catch (e: Exception) {
                 userInfo = "Error loading user info"
             } finally {

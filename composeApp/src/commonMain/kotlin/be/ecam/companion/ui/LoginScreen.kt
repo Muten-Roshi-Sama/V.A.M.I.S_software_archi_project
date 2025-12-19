@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import be.ecam.companion.data.ApiRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+
 
 @Composable
 fun LoginScreen(
@@ -21,8 +23,8 @@ fun LoginScreen(
     val repository = koinInject<ApiRepository>()
     val scope = rememberCoroutineScope()
 
-    var email by remember { mutableStateOf("admin1@school.com") }
-    var password by remember { mutableStateOf("admin123") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -59,7 +61,8 @@ fun LoginScreen(
                     onValueChange = { password = it },
                     label = { Text("Mot de passe") },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoading
+                    enabled = !isLoading,
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 if (error != null) {
