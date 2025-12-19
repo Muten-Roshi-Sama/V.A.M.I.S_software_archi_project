@@ -1,622 +1,622 @@
 [
-    {
-        "studentId":  "240001",
-        "email":  "student@student.school.com",
-        "firstName":  "Charlie",
-        "lastName":  "Martin",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-03T10:00:00Z"
-    },
-    {
-        "studentId":  "240002",
-        "email":  "alice@student.school.com",
-        "firstName":  "Alice",
-        "lastName":  "Dubois",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-01T10:00:00Z"
-    },
-    {
-        "studentId":  "240003",
-        "email":  "bob@student.school.com",
-        "firstName":  "Bob",
-        "lastName":  "Leroy",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-02T10:00:00Z"
-    },
-    {
-        "studentId":  "240004",
-        "email":  "charlie@student.school.com",
-        "firstName":  "Charlie",
-        "lastName":  "Martin",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-03T10:00:00Z"
-    },
-    {
-        "studentId":  "240005",
-        "email":  "TESTSTUDENT@student.com",
-        "firstName":  "TEST",
-        "lastName":  "STUDENT",
-        "password":  "pass123",
-        "studyYear":  "",
-        "optionCode":  "",
-        "createdAt":  "2024-01-03T10:00:00Z"
-    },
-    {
-        "studentId":  "240006",
-        "email":  "diana@student.school.com",
-        "firstName":  "Diana",
-        "lastName":  "Bernard",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "MECA",
-        "createdAt":  "2024-01-04T10:00:00Z"
-    },
-    {
-        "studentId":  "240007",
-        "email":  "emma@student.school.com",
-        "firstName":  "Emma",
-        "lastName":  "Rousseau",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-05T10:00:00Z"
-    },
-    {
-        "studentId":  "240008",
-        "email":  "frank@student.school.com",
-        "firstName":  "Frank",
-        "lastName":  "Petit",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "MECA",
-        "createdAt":  "2024-01-06T10:00:00Z"
-    },
-    {
-        "studentId":  "240009",
-        "email":  "grace@student.school.com",
-        "firstName":  "Grace",
-        "lastName":  "Laurent",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "MECA",
-        "createdAt":  "2024-01-07T10:00:00Z"
-    },
-    {
-        "studentId":  "240010",
-        "email":  "henry@student.school.com",
-        "firstName":  "Henry",
-        "lastName":  "Moreau",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-08T10:00:00Z"
-    },
-    {
-        "studentId":  "240011",
-        "email":  "iris@student.school.com",
-        "firstName":  "Iris",
-        "lastName":  "Martin",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-08T10:00:00Z"
-    },
-    {
-        "studentId":  "240012",
-        "email":  "jack@student.school.com",
-        "firstName":  "Jack",
-        "lastName":  "Dupre",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-09T10:00:00Z"
-    },
-    {
-        "studentId":  "240013",
-        "email":  "kate@student.school.com",
-        "firstName":  "Kate",
-        "lastName":  "Leclerc",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-09T10:00:00Z"
-    },
-    {
-        "studentId":  "240014",
-        "email":  "lucas@student.school.com",
-        "firstName":  "Lucas",
-        "lastName":  "Vincent",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-10T10:00:00Z"
-    },
-    {
-        "studentId":  "240015",
-        "email":  "marie@student.school.com",
-        "firstName":  "Marie",
-        "lastName":  "Renard",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-10T10:00:00Z"
-    },
-    {
-        "studentId":  "240016",
-        "email":  "nathan@student.school.com",
-        "firstName":  "Nathan",
-        "lastName":  "Michaux",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-11T10:00:00Z"
-    },
-    {
-        "studentId":  "240017",
-        "email":  "olivia@student.school.com",
-        "firstName":  "Olivia",
-        "lastName":  "Garnier",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-11T10:00:00Z"
-    },
-    {
-        "studentId":  "240018",
-        "email":  "paul@student.school.com",
-        "firstName":  "Paul",
-        "lastName":  "Fontaine",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-12T10:00:00Z"
-    },
-    {
-        "studentId":  "240019",
-        "email":  "quinn@student.school.com",
-        "firstName":  "Quinn",
-        "lastName":  "Girard",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-12T10:00:00Z"
-    },
-    {
-        "studentId":  "240020",
-        "email":  "rachel@student.school.com",
-        "firstName":  "Rachel",
-        "lastName":  "Besson",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-13T10:00:00Z"
-    },
-    {
-        "studentId":  "240021",
-        "email":  "samuel@student.school.com",
-        "firstName":  "Samuel",
-        "lastName":  "Lecomte",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-13T10:00:00Z"
-    },
-    {
-        "studentId":  "240022",
-        "email":  "tania@student.school.com",
-        "firstName":  "Tania",
-        "lastName":  "Germain",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-14T10:00:00Z"
-    },
-    {
-        "studentId":  "240023",
-        "email":  "ugo@student.school.com",
-        "firstName":  "Ugo",
-        "lastName":  "Prevost",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-14T10:00:00Z"
-    },
-    {
-        "studentId":  "240024",
-        "email":  "valerie@student.school.com",
-        "firstName":  "Valerie",
-        "lastName":  "Blanc",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-15T10:00:00Z"
-    },
-    {
-        "studentId":  "240025",
-        "email":  "william@student.school.com",
-        "firstName":  "William",
-        "lastName":  "Bonnet",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-15T10:00:00Z"
-    },
-    {
-        "studentId":  "240026",
-        "email":  "xavier@student.school.com",
-        "firstName":  "Xavier",
-        "lastName":  "Hubert",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-16T10:00:00Z"
-    },
-    {
-        "studentId":  "240027",
-        "email":  "yves@student.school.com",
-        "firstName":  "Yves",
-        "lastName":  "Jarry",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-16T10:00:00Z"
-    },
-    {
-        "studentId":  "240028",
-        "email":  "zoe@student.school.com",
-        "firstName":  "Zoe",
-        "lastName":  "Fournier",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-17T10:00:00Z"
-    },
-    {
-        "studentId":  "240029",
-        "email":  "adrian@student.school.com",
-        "firstName":  "Adrian",
-        "lastName":  "Collet",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-17T10:00:00Z"
-    },
-    {
-        "studentId":  "240030",
-        "email":  "beatrice@student.school.com",
-        "firstName":  "Beatrice",
-        "lastName":  "Legrand",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-18T10:00:00Z"
-    },
-    {
-        "studentId":  "240031",
-        "email":  "camille@student.school.com",
-        "firstName":  "Camille",
-        "lastName":  "Bourgeois",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-18T10:00:00Z"
-    },
-    {
-        "studentId":  "240032",
-        "email":  "damien@student.school.com",
-        "firstName":  "Damien",
-        "lastName":  "Moulin",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-19T10:00:00Z"
-    },
-    {
-        "studentId":  "240033",
-        "email":  "elise@student.school.com",
-        "firstName":  "Elise",
-        "lastName":  "Lefevre",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-19T10:00:00Z"
-    },
-    {
-        "studentId":  "240034",
-        "email":  "felix@student.school.com",
-        "firstName":  "Felix",
-        "lastName":  "Marchand",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-20T10:00:00Z"
-    },
-    {
-        "studentId":  "240035",
-        "email":  "giulia@student.school.com",
-        "firstName":  "Giulia",
-        "lastName":  "Lacroix",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-20T10:00:00Z"
-    },
-    {
-        "studentId":  "240036",
-        "email":  "hugo@student.school.com",
-        "firstName":  "Hugo",
-        "lastName":  "Germain",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-21T10:00:00Z"
-    },
-    {
-        "studentId":  "240037",
-        "email":  "isabelle@student.school.com",
-        "firstName":  "Isabelle",
-        "lastName":  "Blanchard",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-21T10:00:00Z"
-    },
-    {
-        "studentId":  "240038",
-        "email":  "jerome@student.school.com",
-        "firstName":  "Jerome",
-        "lastName":  "Thierry",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-22T10:00:00Z"
-    },
-    {
-        "studentId":  "240039",
-        "email":  "justine@student.school.com",
-        "firstName":  "Justine",
-        "lastName":  "Valentin",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-22T10:00:00Z"
-    },
-    {
-        "studentId":  "240040",
-        "email":  "kevin@student.school.com",
-        "firstName":  "Kevin",
-        "lastName":  "Barbier",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-23T10:00:00Z"
-    },
-    {
-        "studentId":  "240041",
-        "email":  "laura@student.school.com",
-        "firstName":  "Laura",
-        "lastName":  "Camus",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-23T10:00:00Z"
-    },
-    {
-        "studentId":  "240042",
-        "email":  "marc@student.school.com",
-        "firstName":  "Marc",
-        "lastName":  "David",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-24T10:00:00Z"
-    },
-    {
-        "studentId":  "240043",
-        "email":  "nadine@student.school.com",
-        "firstName":  "Nadine",
-        "lastName":  "Gaudin",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-24T10:00:00Z"
-    },
-    {
-        "studentId":  "240044",
-        "email":  "olivier@student.school.com",
-        "firstName":  "Olivier",
-        "lastName":  "Hebert",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-25T10:00:00Z"
-    },
-    {
-        "studentId":  "240045",
-        "email":  "patricia@student.school.com",
-        "firstName":  "Patricia",
-        "lastName":  "Joly",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-25T10:00:00Z"
-    },
-    {
-        "studentId":  "240046",
-        "email":  "quentin@student.school.com",
-        "firstName":  "Quentin",
-        "lastName":  "Kauffer",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-26T10:00:00Z"
-    },
-    {
-        "studentId":  "240047",
-        "email":  "roxane@student.school.com",
-        "firstName":  "Roxane",
-        "lastName":  "Leconte",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-26T10:00:00Z"
-    },
-    {
-        "studentId":  "240048",
-        "email":  "stephane@student.school.com",
-        "firstName":  "Stephane",
-        "lastName":  "Lemaire",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-27T10:00:00Z"
-    },
-    {
-        "studentId":  "240049",
-        "email":  "therese@student.school.com",
-        "firstName":  "Therese",
-        "lastName":  "Metzger",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-27T10:00:00Z"
-    },
-    {
-        "studentId":  "240050",
-        "email":  "ulrique@student.school.com",
-        "firstName":  "Ulrique",
-        "lastName":  "Neveu",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-28T10:00:00Z"
-    },
-    {
-        "studentId":  "240051",
-        "email":  "vanessa@student.school.com",
-        "firstName":  "Vanessa",
-        "lastName":  "Ogier",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-01-28T10:00:00Z"
-    },
-    {
-        "studentId":  "240052",
-        "email":  "walter@student.school.com",
-        "firstName":  "Walter",
-        "lastName":  "Pages",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-29T10:00:00Z"
-    },
-    {
-        "studentId":  "240053",
-        "email":  "ximena@student.school.com",
-        "firstName":  "Ximena",
-        "lastName":  "Quentin",
-        "password":  "pass123",
-        "studyYear":  "BA2",
-        "optionCode":  null,
-        "createdAt":  "2024-01-29T10:00:00Z"
-    },
-    {
-        "studentId":  "240054",
-        "email":  "yasmin@student.school.com",
-        "firstName":  "Yasmin",
-        "lastName":  "Raby",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-30T10:00:00Z"
-    },
-    {
-        "studentId":  "240055",
-        "email":  "zachariah@student.school.com",
-        "firstName":  "Zachariah",
-        "lastName":  "Schutz",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-30T10:00:00Z"
-    },
-    {
-        "studentId":  "240056",
-        "email":  "aline@student.school.com",
-        "firstName":  "Aline",
-        "lastName":  "Thomas",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-01-31T10:00:00Z"
-    },
-    {
-        "studentId":  "240057",
-        "email":  "boris@student.school.com",
-        "firstName":  "Boris",
-        "lastName":  "Urbon",
-        "password":  "pass123",
-        "studyYear":  "MA1",
-        "optionCode":  "EM",
-        "createdAt":  "2024-01-31T10:00:00Z"
-    },
-    {
-        "studentId":  "240058",
-        "email":  "claude@student.school.com",
-        "firstName":  "Claude",
-        "lastName":  "Vernard",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-02-01T10:00:00Z"
-    },
-    {
-        "studentId":  "240059",
-        "email":  "denise@student.school.com",
-        "firstName":  "Denise",
-        "lastName":  "Wagner",
-        "password":  "pass123",
-        "studyYear":  "MA2",
-        "optionCode":  "EM",
-        "createdAt":  "2024-02-01T10:00:00Z"
-    },
-    {
-        "studentId":  "240060",
-        "email":  "etienne@student.school.com",
-        "firstName":  "Etienne",
-        "lastName":  "Xavier",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-02-02T10:00:00Z"
-    },
-    {
-        "studentId":  "240061",
-        "email":  "fabienne@student.school.com",
-        "firstName":  "Fabienne",
-        "lastName":  "Yvon",
-        "password":  "pass123",
-        "studyYear":  "BA1",
-        "optionCode":  null,
-        "createdAt":  "2024-02-02T10:00:00Z"
-    },
-    {
-        "studentId":  "240062",
-        "email":  "gerard@student.school.com",
-        "firstName":  "Gerard",
-        "lastName":  "Zeller",
-        "password":  "pass123",
-        "studyYear":  "BA3",
-        "optionCode":  "INFO",
-        "createdAt":  "2024-02-03T10:00:00Z"
-    }
+  {
+    "studentId":  "240001",
+    "email":  "student@student.school.com",
+    "firstName":  "Charlie",
+    "lastName":  "Martin",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-03T10:00:00Z"
+  },
+  {
+    "studentId":  "240002",
+    "email":  "alice@student.school.com",
+    "firstName":  "Alice",
+    "lastName":  "Dubois",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-01T10:00:00Z"
+  },
+  {
+    "studentId":  "240003",
+    "email":  "bob@student.school.com",
+    "firstName":  "Bob",
+    "lastName":  "Leroy",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-02T10:00:00Z"
+  },
+  {
+    "studentId":  "240004",
+    "email":  "charlie@student.school.com",
+    "firstName":  "Charlie",
+    "lastName":  "Martin",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-03T10:00:00Z"
+  },
+  {
+    "studentId":  "240005",
+    "email":  "TESTSTUDENT@student.com",
+    "firstName":  "TEST",
+    "lastName":  "STUDENT",
+    "password":  "pass123",
+    "studyYear":  "",
+    "optionCode":  "",
+    "createdAt":  "2024-01-03T10:00:00Z"
+  },
+  {
+    "studentId":  "240006",
+    "email":  "diana@student.school.com",
+    "firstName":  "Diana",
+    "lastName":  "Bernard",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "MECA",
+    "createdAt":  "2024-01-04T10:00:00Z"
+  },
+  {
+    "studentId":  "240007",
+    "email":  "emma@student.school.com",
+    "firstName":  "Emma",
+    "lastName":  "Rousseau",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-05T10:00:00Z"
+  },
+  {
+    "studentId":  "240008",
+    "email":  "frank@student.school.com",
+    "firstName":  "Frank",
+    "lastName":  "Petit",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "MECA",
+    "createdAt":  "2024-01-06T10:00:00Z"
+  },
+  {
+    "studentId":  "240009",
+    "email":  "grace@student.school.com",
+    "firstName":  "Grace",
+    "lastName":  "Laurent",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "MECA",
+    "createdAt":  "2024-01-07T10:00:00Z"
+  },
+  {
+    "studentId":  "240010",
+    "email":  "henry@student.school.com",
+    "firstName":  "Henry",
+    "lastName":  "Moreau",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-08T10:00:00Z"
+  },
+  {
+    "studentId":  "240011",
+    "email":  "iris@student.school.com",
+    "firstName":  "Iris",
+    "lastName":  "Martin",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-08T10:00:00Z"
+  },
+  {
+    "studentId":  "240012",
+    "email":  "jack@student.school.com",
+    "firstName":  "Jack",
+    "lastName":  "Dupre",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-09T10:00:00Z"
+  },
+  {
+    "studentId":  "240013",
+    "email":  "kate@student.school.com",
+    "firstName":  "Kate",
+    "lastName":  "Leclerc",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-09T10:00:00Z"
+  },
+  {
+    "studentId":  "240014",
+    "email":  "lucas@student.school.com",
+    "firstName":  "Lucas",
+    "lastName":  "Vincent",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-10T10:00:00Z"
+  },
+  {
+    "studentId":  "240015",
+    "email":  "marie@student.school.com",
+    "firstName":  "Marie",
+    "lastName":  "Renard",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-10T10:00:00Z"
+  },
+  {
+    "studentId":  "240016",
+    "email":  "nathan@student.school.com",
+    "firstName":  "Nathan",
+    "lastName":  "Michaux",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-11T10:00:00Z"
+  },
+  {
+    "studentId":  "240017",
+    "email":  "olivia@student.school.com",
+    "firstName":  "Olivia",
+    "lastName":  "Garnier",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-11T10:00:00Z"
+  },
+  {
+    "studentId":  "240018",
+    "email":  "paul@student.school.com",
+    "firstName":  "Paul",
+    "lastName":  "Fontaine",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-12T10:00:00Z"
+  },
+  {
+    "studentId":  "240019",
+    "email":  "quinn@student.school.com",
+    "firstName":  "Quinn",
+    "lastName":  "Girard",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-12T10:00:00Z"
+  },
+  {
+    "studentId":  "240020",
+    "email":  "rachel@student.school.com",
+    "firstName":  "Rachel",
+    "lastName":  "Besson",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-13T10:00:00Z"
+  },
+  {
+    "studentId":  "240021",
+    "email":  "samuel@student.school.com",
+    "firstName":  "Samuel",
+    "lastName":  "Lecomte",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-13T10:00:00Z"
+  },
+  {
+    "studentId":  "240022",
+    "email":  "tania@student.school.com",
+    "firstName":  "Tania",
+    "lastName":  "Germain",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-14T10:00:00Z"
+  },
+  {
+    "studentId":  "240023",
+    "email":  "ugo@student.school.com",
+    "firstName":  "Ugo",
+    "lastName":  "Prevost",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-14T10:00:00Z"
+  },
+  {
+    "studentId":  "240024",
+    "email":  "valerie@student.school.com",
+    "firstName":  "Valerie",
+    "lastName":  "Blanc",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-15T10:00:00Z"
+  },
+  {
+    "studentId":  "240025",
+    "email":  "william@student.school.com",
+    "firstName":  "William",
+    "lastName":  "Bonnet",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-15T10:00:00Z"
+  },
+  {
+    "studentId":  "240026",
+    "email":  "xavier@student.school.com",
+    "firstName":  "Xavier",
+    "lastName":  "Hubert",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-16T10:00:00Z"
+  },
+  {
+    "studentId":  "240027",
+    "email":  "yves@student.school.com",
+    "firstName":  "Yves",
+    "lastName":  "Jarry",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-16T10:00:00Z"
+  },
+  {
+    "studentId":  "240028",
+    "email":  "zoe@student.school.com",
+    "firstName":  "Zoe",
+    "lastName":  "Fournier",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-17T10:00:00Z"
+  },
+  {
+    "studentId":  "240029",
+    "email":  "adrian@student.school.com",
+    "firstName":  "Adrian",
+    "lastName":  "Collet",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-17T10:00:00Z"
+  },
+  {
+    "studentId":  "240030",
+    "email":  "beatrice@student.school.com",
+    "firstName":  "Beatrice",
+    "lastName":  "Legrand",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-18T10:00:00Z"
+  },
+  {
+    "studentId":  "240031",
+    "email":  "camille@student.school.com",
+    "firstName":  "Camille",
+    "lastName":  "Bourgeois",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-18T10:00:00Z"
+  },
+  {
+    "studentId":  "240032",
+    "email":  "damien@student.school.com",
+    "firstName":  "Damien",
+    "lastName":  "Moulin",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-19T10:00:00Z"
+  },
+  {
+    "studentId":  "240033",
+    "email":  "elise@student.school.com",
+    "firstName":  "Elise",
+    "lastName":  "Lefevre",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-19T10:00:00Z"
+  },
+  {
+    "studentId":  "240034",
+    "email":  "felix@student.school.com",
+    "firstName":  "Felix",
+    "lastName":  "Marchand",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-20T10:00:00Z"
+  },
+  {
+    "studentId":  "240035",
+    "email":  "giulia@student.school.com",
+    "firstName":  "Giulia",
+    "lastName":  "Lacroix",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-20T10:00:00Z"
+  },
+  {
+    "studentId":  "240036",
+    "email":  "hugo@student.school.com",
+    "firstName":  "Hugo",
+    "lastName":  "Germain",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-21T10:00:00Z"
+  },
+  {
+    "studentId":  "240037",
+    "email":  "isabelle@student.school.com",
+    "firstName":  "Isabelle",
+    "lastName":  "Blanchard",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-21T10:00:00Z"
+  },
+  {
+    "studentId":  "240038",
+    "email":  "jerome@student.school.com",
+    "firstName":  "Jerome",
+    "lastName":  "Thierry",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-22T10:00:00Z"
+  },
+  {
+    "studentId":  "240039",
+    "email":  "justine@student.school.com",
+    "firstName":  "Justine",
+    "lastName":  "Valentin",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-22T10:00:00Z"
+  },
+  {
+    "studentId":  "240040",
+    "email":  "kevin@student.school.com",
+    "firstName":  "Kevin",
+    "lastName":  "Barbier",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-23T10:00:00Z"
+  },
+  {
+    "studentId":  "240041",
+    "email":  "laura@student.school.com",
+    "firstName":  "Laura",
+    "lastName":  "Camus",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-23T10:00:00Z"
+  },
+  {
+    "studentId":  "240042",
+    "email":  "marc@student.school.com",
+    "firstName":  "Marc",
+    "lastName":  "David",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-24T10:00:00Z"
+  },
+  {
+    "studentId":  "240043",
+    "email":  "nadine@student.school.com",
+    "firstName":  "Nadine",
+    "lastName":  "Gaudin",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-24T10:00:00Z"
+  },
+  {
+    "studentId":  "240044",
+    "email":  "olivier@student.school.com",
+    "firstName":  "Olivier",
+    "lastName":  "Hebert",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-25T10:00:00Z"
+  },
+  {
+    "studentId":  "240045",
+    "email":  "patricia@student.school.com",
+    "firstName":  "Patricia",
+    "lastName":  "Joly",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-25T10:00:00Z"
+  },
+  {
+    "studentId":  "240046",
+    "email":  "quentin@student.school.com",
+    "firstName":  "Quentin",
+    "lastName":  "Kauffer",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-26T10:00:00Z"
+  },
+  {
+    "studentId":  "240047",
+    "email":  "roxane@student.school.com",
+    "firstName":  "Roxane",
+    "lastName":  "Leconte",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-26T10:00:00Z"
+  },
+  {
+    "studentId":  "240048",
+    "email":  "stephane@student.school.com",
+    "firstName":  "Stephane",
+    "lastName":  "Lemaire",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-27T10:00:00Z"
+  },
+  {
+    "studentId":  "240049",
+    "email":  "therese@student.school.com",
+    "firstName":  "Therese",
+    "lastName":  "Metzger",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-27T10:00:00Z"
+  },
+  {
+    "studentId":  "240050",
+    "email":  "ulrique@student.school.com",
+    "firstName":  "Ulrique",
+    "lastName":  "Neveu",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-28T10:00:00Z"
+  },
+  {
+    "studentId":  "240051",
+    "email":  "vanessa@student.school.com",
+    "firstName":  "Vanessa",
+    "lastName":  "Ogier",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-01-28T10:00:00Z"
+  },
+  {
+    "studentId":  "240052",
+    "email":  "walter@student.school.com",
+    "firstName":  "Walter",
+    "lastName":  "Pages",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-29T10:00:00Z"
+  },
+  {
+    "studentId":  "240053",
+    "email":  "ximena@student.school.com",
+    "firstName":  "Ximena",
+    "lastName":  "Quentin",
+    "password":  "pass123",
+    "studyYear":  "BA2",
+    "optionCode":  null,
+    "createdAt":  "2024-01-29T10:00:00Z"
+  },
+  {
+    "studentId":  "240054",
+    "email":  "yasmin@student.school.com",
+    "firstName":  "Yasmin",
+    "lastName":  "Raby",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-30T10:00:00Z"
+  },
+  {
+    "studentId":  "240055",
+    "email":  "zachariah@student.school.com",
+    "firstName":  "Zachariah",
+    "lastName":  "Schutz",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-30T10:00:00Z"
+  },
+  {
+    "studentId":  "240056",
+    "email":  "aline@student.school.com",
+    "firstName":  "Aline",
+    "lastName":  "Thomas",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-01-31T10:00:00Z"
+  },
+  {
+    "studentId":  "240057",
+    "email":  "boris@student.school.com",
+    "firstName":  "Boris",
+    "lastName":  "Urbon",
+    "password":  "pass123",
+    "studyYear":  "MA1",
+    "optionCode":  "EM",
+    "createdAt":  "2024-01-31T10:00:00Z"
+  },
+  {
+    "studentId":  "240058",
+    "email":  "claude@student.school.com",
+    "firstName":  "Claude",
+    "lastName":  "Vernard",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-02-01T10:00:00Z"
+  },
+  {
+    "studentId":  "240059",
+    "email":  "denise@student.school.com",
+    "firstName":  "Denise",
+    "lastName":  "Wagner",
+    "password":  "pass123",
+    "studyYear":  "MA2",
+    "optionCode":  "EM",
+    "createdAt":  "2024-02-01T10:00:00Z"
+  },
+  {
+    "studentId":  "240060",
+    "email":  "etienne@student.school.com",
+    "firstName":  "Etienne",
+    "lastName":  "Xavier",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-02-02T10:00:00Z"
+  },
+  {
+    "studentId":  "240061",
+    "email":  "fabienne@student.school.com",
+    "firstName":  "Fabienne",
+    "lastName":  "Yvon",
+    "password":  "pass123",
+    "studyYear":  "BA1",
+    "optionCode":  null,
+    "createdAt":  "2024-02-02T10:00:00Z"
+  },
+  {
+    "studentId":  "240062",
+    "email":  "gerard@student.school.com",
+    "firstName":  "Gerard",
+    "lastName":  "Zeller",
+    "password":  "pass123",
+    "studyYear":  "BA3",
+    "optionCode":  "INFO",
+    "createdAt":  "2024-02-03T10:00:00Z"
+  }
 ]
