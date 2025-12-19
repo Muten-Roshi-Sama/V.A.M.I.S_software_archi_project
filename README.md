@@ -56,12 +56,14 @@ util/ # Utility tests
 ### Running the Backend
 ```bash
 cd server
+
 ./gradlew :server:run
 ```
 
 Other useful commands:
 
 > :server:build
+
 > :server:clean
 
 The server will start on http://localhost:8080 by default.
@@ -69,19 +71,19 @@ The server will start on http://localhost:8080 by default.
 ### Running Tests
 All tests use seeded test accounts.
 
-Default test credentials (see LoginHelper.kt):
+Default test credentials (see `LoginHelper.kt`):
 
-Admin: TESTADMIN@admin.com / pass123
-Student: TESTSTUDENT@student.com / pass123
-Teacher: TESTTEACHER@teacher.com / pass123
+- Admin: `TESTADMIN@admin.com` / `pass123`
+- Student: `TESTSTUDENT@student.com` / `pass123`
+- Teacher: `TESTTEACHER@teacher.com` / `pass123`
 
 
 ## API Overview
-/auth/login: Authenticate and receive JWT token.
-/crud/admins: Admin CRUD endpoints (list, create, update, delete, self-profile).
-/crud/students: Student CRUD endpoints (admin and self-service).
-/crud/teachers: Teacher CRUD endpoints (admin and self-service).
-/crud/schedules, /crud/bulletins, /crud/courses, etc.: Additional endpoints for academic data.
+- `/auth/login:` Authenticate and receive JWT token.
+- `/crud/admins:` Admin CRUD endpoints (list, create, update, delete, self-profile).
+- `/crud/students:` Student CRUD endpoints (admin and self-service).
+- `/crud/teachers:` Teacher CRUD endpoints (admin and self-service).
+- `/crud/schedules, /crud/bulletins, /crud/courses, etc.:` Additional endpoints for academic data.
 All endpoints are protected by role-based guards. See route files for details.
 
 
@@ -99,7 +101,6 @@ All endpoints are protected by role-based guards. See route files for details.
 - Solve out some UI features/bugs​
 - Link PAE window with backend
 ### Backend
-- Password Hashing in the database
 - Test files for AcademicTables routes, models, and services.
 - Protection of AcademicTables Routes using predefined role-guards.
 - Seeding of AcademicTables using the actual main SeedManager.kt
@@ -116,6 +117,6 @@ All endpoints are protected by role-based guards. See route files for details.
 | Ibtihal| [Ibtihal-mrn](https://github.com/Ibtihal-mrn)| Frontend  | - User dashboards<br>- Login screen<br>- App navigation UI<br>- Teacher and admin UI |
 | Mehdi  | [Melmaado](https://github.com/Melmaado)      | Frontend  | - UI mockups<br>- Dashboard design<br>- Student UI components Grades, Annual Study Program |
 | Salwa  | [SalwaHm](https://github.com/SalwaHm)        | Backend   | - Academic tables (courses, schedules, options, etc.)<br>- Backend model/service/route setup<br>- Frontend integration of academic tables |
-| Vass   | [Muten-Roshi-Sama](https://github.com/Muten-Roshi-Sama) | Backend | - Project architecture<br>- Backend foundations<br>- User models/services/utils/CRUD Routes and tests<br>- DTO/DAO models serialization for frontend ease-of-use<br>- JWT authentication and session management<br>- Database seeding/setup<br>- Security and endpoints are protected by role-based guards<br>- Automated test integration of users CRUD endpoints/authentication<br>- Fullstack/backend-frontend connections (KtorApiRepository) |
+| Vass   | [Muten-Roshi-Sama](https://github.com/Muten-Roshi-Sama) | Backend | - Backend foundations<br>- User models/services/utils/CRUD Routes and tests<br>- DTO/DAO models serialization for frontend ease-of-use<br>- JWT authentication and session management<br>- Database seeding/setup<br>- Security and endpoints are protected by role-based guards<br>- Automated test integration of users CRUD endpoints/authentication<br>- Fullstack/backend-frontend connections (KtorApiRepository) |
 
 
