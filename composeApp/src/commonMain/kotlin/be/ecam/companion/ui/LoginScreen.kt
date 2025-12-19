@@ -113,7 +113,8 @@ fun LoginScreen(
                             .fillMaxHeight()
                     )
 
-                    Spacer(Modifier.width(24.dp))
+                Text("Connexion", style = MaterialTheme.typography.headlineMedium)
+                Spacer(Modifier.height(24.dp))
 
                     LoginFormPanel(
                         modifier = Modifier
@@ -184,20 +185,6 @@ private fun LoginHeaderVisual(modifier: Modifier = Modifier) {
             modifier = Modifier.size(140.dp),
             contentDescription = "ECAM logo",
             contentScale = ContentScale.Fit,
-        )
-    }
-}
-
-@Composable
-private fun LoginSideVisual(modifier: Modifier = Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        RemoteImage(
-            url = AppImages.ECAM_LOGIN_SIDE_URL,
-            contentDescription = "ECAM login side image",
-            modifier = Modifier
-                .fillMaxSize()
-                .border(2.dp, MaterialTheme.colorScheme.outlineVariant),
-            contentScale = ContentScale.Crop,
         )
     }
 }

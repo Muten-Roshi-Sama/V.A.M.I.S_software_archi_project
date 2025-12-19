@@ -274,12 +274,17 @@ fun CalendarScreen(
                 }
 
 
-                Spacer(Modifier.height(8.dp))
-
-                // --- Boutons Week / Month ---
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Bouton "Ajouter un évènement" + Formulaire en dessous (mobile-friendly)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, top = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                // 🟦 Bouton principal
+                Button(
+                    onClick = { showAddEventPanel = !showAddEventPanel }
                 ) {
                     FilterChip(
                         selected = mode == CalendarMode.Week,
@@ -293,20 +298,18 @@ fun CalendarScreen(
                     )
                 }
 
-                Spacer(Modifier.height(8.dp))
-
-                // --- Jours de la semaine ---
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                // 🧩 Formulaire animé sous le bouton
+                AnimatedVisibility(
+                    visible = showAddEventPanel,
+                    enter = slideInHorizontally(animationSpec = tween(200)) + fadeIn(),
+                    exit = slideOutHorizontally(animationSpec = tween(200)) + fadeOut()
                 ) {
-                    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-                    for (d in days) {
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                            Text(
-                                d,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                shape = MaterialTheme.shapes.medium
                             )
                         }
                     }
