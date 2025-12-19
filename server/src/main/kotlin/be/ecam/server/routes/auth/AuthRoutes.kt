@@ -38,6 +38,7 @@ class AuthRoutes(
 ) {
 
     fun register(parent: Route) {
+        
         parent.route("/auth") {
             // POST /auth/login
             post("/login") {
