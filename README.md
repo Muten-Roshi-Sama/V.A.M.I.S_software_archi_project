@@ -1,185 +1,120 @@
-# Objectives and evaluation
-
-## Objective
-
-Build a student-facing “companion” application using this template. Your solution must use:
-- Kotlin Compose Multiplatform for the client UI (Android, iOS, Desktop/JVM, Web/Wasm).
-- Ktor for the backend server provided in this repository.
-
-Purpose
-The app should help students with day-to-day school-related matters. Example features (pick a realistic subset):
-- Schedule and calendar: courses, exams, reminders, notifications.
-- Coursework: assignments, deadlines, submissions checklist, grade tracking.
-- Information hub: announcements, news feed, FAQs, campus map/contacts.
-- Productivity: simple notes/to-dos, bookmarks/links, offline-first for key data.
-- Communication: read-only messages/alerts from the school or a mock feed.
-
-Constraints
-- Keep the baseline stack: Kotlin Compose Multiplatform + Ktor. You may refactor, rewrite, or delete example code, but do not replace the core technologies.
-- Favor official JetBrains/Google libraries. Third-party dependencies beyond these must be justified and pre-approved (during meeting).
-- Aim for accessibility (scalable text, contrast), basic security (no secrets in client; validate on server), and performance (smooth UI at 60fps on modest devices).
-
-Deliverable outcome
-- A functional prototype demonstrating a coherent student companion experience across supported platforms.
-
-## Evaluation
-
-Group project with mandatory check-ins every two weeks. Meetings are for scope tracking, blockers, and feedback.
-
-Milestones
-- First meeting: present a realistic scope proposal for the deadline. Define target platforms for the demo, user stories, and a mini roadmap.
-- Iterations: show incremental progress at each meeting (UI walkthroughs, server endpoints, tests, or usability improvements).
-- Final session: live demo of the agreed scope running on the declared platforms.
-
-Grading rubric (indicative weights)
-- Group criteria (70%)
-  - Attendance and preparation for meetings (10%)
-  - Collaboration and organization: task board, commits, PRs, reviews (10%)
-  - Product scope and delivery: implements the agreed features by the deadline (20%)
-  - Cross-platform readiness: runs on declared targets; graceful fallbacks if a platform is dropped with justification (10%)
-  - Code quality: architecture, readability, tests where relevant, stable builds (15%)
-  - UX and creativity: thoughtful flows, polish, accessibility basics (5%)
-- Individual criteria (30%)
-  - Demonstrated contribution and ownership: commits, issues, documentation, initiative (25%)
-  - Professionalism: communication, reliability, responsiveness to feedback (5%)
-
-Definition of Done (for each feature)
-- Implemented and integrated on the declared platforms.
-- Basic tests or manual test notes, and a short demo scenario.
-- No critical bugs or crashes; acceptable performance.
-- Documented in README or a SHORT_SCOPE.md (feature description, how to use, known limitations).
-
-Submission and demo
-- Prepare a demo focused on user value, not only code.
-- Include a short written scope summary and platform matrix in the README.
-- Provide instructions to run the app and server; ensure the final commit builds.
-
-Policies
-- Use of AI is allowed but must be clearly disclosed in the repo (WHAT was generated, WHERE it’s used, and any manual edits).
-- Respect academic integrity. Cite assets and sources. Avoid sensitive data; use mock data.
-- Late or missed milestones must be discussed in advance; scope may be reduced rather than slipping the deadline.
-
-## A few notes
-
-Usage of AI is authorized but should be fully disclosed.
-
-To limit the risk of supply chain attack, code dependencies (libraries) are limited to official Google/jetBrains ones.
-
-# Technical aspect
-
-## Project architecture
-
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
-
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-      folder is the appropriate location.
-
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
-
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
-
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
-
-## Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-## Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
-
-## Build and Run Server
-
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-
-- on macOS/Linux
-  ```shell
-  ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
-
-## Build and Run Web Application
-
-The Ktor server is configured to host an existing wasm distribution of the Compose app.
-Before running the server, run this:
-
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:wasmJsBrowserDistribution
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:wasmJsBrowserDistribution
-  ```
-
-## Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
-
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
-channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
 # V.A.M.I.S (Virtual Academic Management and Information System)
 
+## Overview
+V.A.M.I.S is a full-stack, multi-role academic management system built with Kotlin, Ktor, Exposed ORM, and Compose Multiplatform. It supports robust CRUD operations, authentication, and role-based dashboards for Admins, Students, and Teachers. The backend is designed for extensibility, testability, and clean separation of concerns.
+
+## Features
+- **Test-driven development:** Tests are run when building the app, ensuring everything works as expected.
+- **Role-Based Authentication:** JWT-secured login for Admin, Student, and Teacher accounts.
+- **Protected Endpoints:** All API endpoints are user-protected.
+- **Admin Panel:** Full CRUD for users, role management, and system monitoring.
+- **Student & Teacher Dashboards:** Secure self-service endpoints for profile management and password updates.
+- **Course & Grade Management:** Endpoints for managing courses, grades, schedules, and bulletins.
+- **Seeded Database:** Automatic test/seed data loading for reliable development and CI.
+- **Comprehensive Test Suite:** End-to-end route tests for all major roles and services.
+
+## Tech Stack
+- **Backend:** Kotlin, Ktor, Exposed ORM, SQLite
+- **Frontend:** Compose Multiplatform (Android/iOS/Desktop/Web)
+- **Testing:** Ktor TestApplication, JUnit, Kotlin Test
+- **Build:** Gradle (Kotlin DSL)
+
+## Backend Structure
+```
+server/
+  src/
+    main/
+      kotlin/be/ecam/server/
+        Application.kt         # Ktor entrypoint
+        models/                # Exposed ORM models (Admin, Student, Teacher, etc.)
+        services/              # Business logic (AdminService, StudentService, etc.)
+        routes/                # Ktor route handlers (AdminRoutes, StudentRoutes, etc.)
+        db/                    # DatabaseFactory, SeedManager, migrations
+        auth/                  # JWT, authentication helpers
+        util/                  # Validation, helpers
+      resources/
+        data/                  # Seed JSONs for admins, students, teachers, etc.
+    test/
+      kotlin/be/ecam/server/
+        routes/                # Route-level tests (AdminRoutesTest, StudentRoutesTest, TeacherRoutesTest)
+        services/              # Service-level tests
+        models/                # Model CRUD tests
+        db/                    # Seed validation tests
+        testutils/             # Test DB setup
+        util/                  # Utility tests
+```
+
+
+
+## Getting Started
+
+### Prerequisites
+- JDK 17+
+- Gradle (wrapper included)
+- (Optional) Android Studio or IntelliJ IDEA for Compose frontend
+
+### Running the Backend
+```bash
+./gradlew :server:run
+```
+
+Other useful commands:
+```bash
+:server:build
+
+:server:clean
+```
+The server will start on http://localhost:8080 by default.
+
+### Running Tests
+All tests use seeded test accounts.
+
+Default test credentials (see `LoginHelper.kt`):
+
+- Admin: `TESTADMIN@admin.com` / `pass123`
+- Student: `TESTSTUDENT@student.com` / `pass123`
+- Teacher: `TESTTEACHER@teacher.com` / `pass123`
+
+
+## API Overview
+- `/auth/login:` Authenticate and receive JWT token.
+- `/crud/admins:` Admin CRUD endpoints (list, create, update, delete, self-profile).
+- `/crud/students:` Student CRUD endpoints (admin and self-service).
+- `/crud/teachers:` Teacher CRUD endpoints (admin and self-service).
+- `/crud/schedules, /crud/bulletins, /crud/courses, etc.:` Additional endpoints for academic data.
+All endpoints are protected by role-based guards. See route files for details.
+
+
+
+## Dev Notes
+- Database Seeding: On first run or test, the database is seeded from data.
+- Test Isolation: Each test class initializes a fresh DB state for reliability.
+- Extensibility: Add new roles/services/routes by following the existing pattern in services/ and routes/handlers/.
+
+
+
+## Next to implement
+### Frontend
+- Hide features (grey out) based on roles.​
+- Solve out some UI features/bugs​
+- Link PAE window with backend
+### Backend
+- Test files for AcademicTables routes, models, and services.
+- Protection of AcademicTables Routes using predefined role-guards.
+- Seeding of AcademicTables using the actual main SeedManager.kt
+- Verify SOLID principles for AcademicTables
 
 
 
 
+## Authors and Contributors
 
-
-
-
-
-## Backend :
-
-📁 ARCHITECTURE OVERVIEW
-Our implementation follows a 3-tier architecture:
-
-- Data Layer - Database models & tables (Admin.kt)
-- Business Logic Layer - Services (AdminService.kt)
-- Shared Layer - DTOs for cross-platform communication (shared/Models.kt)
-
-
-
+| Name   | GitHub                                      | Role/Area | Main Contributions |
+|--------|---------------------------------------------|-----------|--------------------|
+| Ayoub  | [Ayoub21061](https://github.com/Ayoub21061) | Frontend  | - Full frontend integration for iOS<br>- Full frontend integration for Android<br>- User calendar UI and features |
+| Ibtihal| [Ibtihal-mrn](https://github.com/Ibtihal-mrn)| Frontend  | - User dashboards<br>- Login screen<br>- App navigation UI<br>- Teacher and admin UI |
+| Mehdi  | [Melmaado](https://github.com/Melmaado)      | Frontend  | - UI mockups<br>- Dashboard design<br>- Student UI components Grades, Annual Study Program |
+| Salwa  | [SalwaHm](https://github.com/SalwaHm)        | Backend   | - Academic tables (courses, schedules, options, etc.)<br>- Backend model/service/route setup<br>- Frontend integration of academic tables |
+| Vass   | [Muten-Roshi-Sama](https://github.com/Muten-Roshi-Sama) | Backend | - Project Architecture<br>- Backend foundations<br>- User models/services/utils/CRUD Routes and tests<br>- DAO/DTO models serialization<br>- Database seeding/setup<br>- JWT authentication and session management<br>- Security and endpoints protection by role-based guards<br>- Automated test integration of users and CRUD endpoints/authentication<br>- Fullstack/backend-frontend connections (KtorApiRepository) |
 
 
